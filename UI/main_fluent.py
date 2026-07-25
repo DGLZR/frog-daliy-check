@@ -7455,42 +7455,41 @@ def main():
                 print(f"[更新检查] 发生错误: {e}")
         
         def showUpdateBadge(self, show):
-            """显示/隐藏更新红点"""
+            """显示/隐藏发现新版本标签"""
             if show:
                 if not self._update_badge:
-                    self._update_badge = QLabel(self)
-                    self._update_badge.setFixedSize(10, 10)
+                    self._update_badge = QLabel("发现新版本", self)
                     self._update_badge.setStyleSheet("""
                         QLabel {
-                            background-color: #EF4444;
-                            border-radius: 5px;
-                            border: 2px solid white;
+                            background-color: #16A34A;
+                            color: white;
+                            padding: 4px 12px;
+                            border-radius: 10px;
+                            font-size: 12px;
+                            font-weight: bold;
                         }
                     """)
-                # 定位到设置图标右上角
+                    self._update_badge.setCursor(Qt.PointingHandCursor)
+                    self._update_badge.mousePressEvent = lambda e: self.settingsPage.checkUpdate()
+                
+                # 定位到标题栏右侧
                 self._update_badge.show()
                 self._update_badge.raise_()
-                # 延迟定位，因为导航栏可能还没完全渲染
                 QTimer.singleShot(100, self._positionUpdateBadge)
             else:
                 if self._update_badge:
                     self._update_badge.hide()
         
         def _positionUpdateBadge(self):
-            """定位更新红点"""
+            """定位发现新版本标签到标题右侧"""
             if self._update_badge and self._update_badge.isVisible():
-                # 找到设置按钮的位置
                 try:
-                    settings_btn = self.navigationInterface.widget("settingsPage")
-                    if settings_btn:
-                        pos = settings_btn.mapTo(self, QPoint(0, 0))
-                        self._update_badge.move(
-                            pos.x() + settings_btn.width() - 12,
-                            pos.y() + 2
-                        )
+                    # FluentWindow 的标题栏高度约为 40px，标题文字居中
+                    # 标题"工作日报助手"大约在左侧 200px 位置
+                    self._update_badge.adjustSize()
+                    self._update_badge.move(175, 8)
                 except:
-                    # 如果找不到，隐藏徽章
-                    self._update_badge.hide()
+                    pass
         
         def setupSystemTray(self):
             """设置系统托盘图标和菜单"""
