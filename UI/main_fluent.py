@@ -7484,10 +7484,9 @@ def main():
             """定位发现新版本标签到标题右侧"""
             if self._update_badge and self._update_badge.isVisible():
                 try:
-                    # FluentWindow 的标题栏高度约为 40px，标题文字居中
-                    # 标题"工作日报助手"大约在左侧 200px 位置
                     self._update_badge.adjustSize()
-                    self._update_badge.move(175, 8)
+                    # 与标题文字垂直居中对齐
+                    self._update_badge.move(175, 12)
                 except:
                     pass
         
