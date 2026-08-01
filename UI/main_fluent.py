@@ -195,13 +195,13 @@ class LoginWindow(QWidget):
         self.modeSubtitle = QLabel("请输入您的账号信息")
         self.modeSubtitle.setStyleSheet("font-size: 12px; color: #666666; border: none; background: transparent;")
         mainLayout.addWidget(self.modeSubtitle)
-        mainLayout.addSpacing(16)
+        mainLayout.addSpacing(20)
         
         # ========== 邮箱输入框 ==========
         emailLabel = QLabel("邮箱")
         emailLabel.setStyleSheet("font-size: 12px; font-weight: bold; color: #374151; border: none; background: transparent;")
         mainLayout.addWidget(emailLabel)
-        mainLayout.addSpacing(6)
+        mainLayout.addSpacing(8)
         
         emailContainer = QWidget()
         emailContainer.setStyleSheet("background: transparent; border: none;")
@@ -252,7 +252,7 @@ class LoginWindow(QWidget):
         emailLayout.addWidget(self.sendCodeBtn)
         
         mainLayout.addWidget(emailContainer)
-        mainLayout.addSpacing(16)
+        mainLayout.addSpacing(20)
         
         # ========== 密码输入框 ==========
         self.passwordLabel = QLabel("密码")
@@ -360,9 +360,9 @@ class LoginWindow(QWidget):
         forgotLayout = QHBoxLayout()
         forgotLayout.addStretch()
         
-        forgotBtn = QPushButton("忘记密码？")
-        forgotBtn.setCursor(Qt.PointingHandCursor)
-        forgotBtn.setStyleSheet("""
+        self.forgotBtn = QPushButton("忘记密码？")
+        self.forgotBtn.setCursor(Qt.PointingHandCursor)
+        self.forgotBtn.setStyleSheet("""
             QPushButton {
                 background: transparent;
                 color: #16A34A;
@@ -374,8 +374,8 @@ class LoginWindow(QWidget):
                 color: #15803D;
             }
         """)
-        forgotBtn.clicked.connect(self.toggle_forgot_mode)
-        forgotLayout.addWidget(forgotBtn)
+        self.forgotBtn.clicked.connect(self.toggle_forgot_mode)
+        forgotLayout.addWidget(self.forgotBtn)
         forgotLayout.addStretch()
         
         mainLayout.addLayout(forgotLayout)
@@ -459,6 +459,7 @@ class LoginWindow(QWidget):
             self.passwordInput.setPlaceholderText("请输入密码")
             self.passwordInput.setEchoMode(QLineEdit.Password)
             self.rememberCheckBox.setVisible(True)
+            self.forgotBtn.setVisible(True)
         else:
             # 注册模式
             self.modeTitle.setText("注册")
@@ -475,6 +476,7 @@ class LoginWindow(QWidget):
             self.passwordInput.setPlaceholderText("设置密码（至少6位）")
             self.passwordInput.setEchoMode(QLineEdit.Password)
             self.rememberCheckBox.setVisible(False)
+            self.forgotBtn.setVisible(False)
         
         # 清空输入框
         self.emailInput.clear()
@@ -491,6 +493,9 @@ class LoginWindow(QWidget):
         self.switchBtn.setVisible(True)
         self.modeSubtitle.setText("通过验证码重置您的密码")
         self.submitBtn.setText("重置密码")
+        
+        # 隐藏忘记密码按钮
+        self.forgotBtn.setVisible(False)
         
         # 显示验证码输入框和发送按钮
         self.sendCodeBtn.setVisible(True)
@@ -6653,7 +6658,7 @@ def main():
             aboutLayout.addWidget(aboutTitle)
             
             aboutText = QLabel(
-                "工作日报助手 v0.3\n"
+                "工作日报助手 v1.0\n"
                 "自动截图分析工作内容，生成工作日报。"
             )
             aboutText.setWordWrap(True)
@@ -6685,7 +6690,7 @@ def main():
                 print(f"[checkUpdate] 开始检查, silent={silent}")
                 response = requests.get(
                     f"{API_BASE_URL}/api/check-update",
-                    params={"current_version": "v0.3"},
+                    params={"current_version": "v1.0"},
                     timeout=5
                 )
                 
@@ -6722,8 +6727,8 @@ def main():
                 
                 if result.get('success'):
                     has_update = result.get('has_update', False)
-                    current_version = result.get('current_version', 'v0.3')
-                    latest_version = result.get('latest_version', 'v0.3')
+                    current_version = result.get('current_version', 'v1.0')
+                    latest_version = result.get('latest_version', 'v1.0')
                     update_log = result.get('update_log', '')
                     download_url = result.get('download_url', '')
                     
@@ -7442,7 +7447,7 @@ def main():
                     self.showUpdateBadge(True)
                     # 弹窗提示
                     dialog = UpdateDialog(
-                        result.get('current_version', 'v0.3'),
+                        result.get('current_version', 'v1.0'),
                         result.get('latest_version', ''),
                         result.get('update_log', ''),
                         result.get('download_url', ''),
