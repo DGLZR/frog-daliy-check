@@ -14,9 +14,10 @@ import sys; sys.setrecursionlimit(sys.getrecursionlimit() * 5)
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # 顶部导入 PyQt5 组件（供 LoginWindow 使用）
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QApplication, QCheckBox
-from PyQt5.QtCore import Qt, pyqtSignal, QPoint, QTimer
-from PyQt5.QtGui import QPixmap, QPainter, QPainterPath
+from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
+                             QPushButton, QApplication, QCheckBox, QGraphicsOpacityEffect)
+from PyQt5.QtCore import Qt, pyqtSignal, QPoint, QTimer, QPropertyAnimation, QEasingCurve
+from PyQt5.QtGui import QPixmap, QPainter, QPainterPath, QLinearGradient, QPen, QBrush, QColor
 from datetime import datetime, timedelta, timezone
 
 # 东八区时区
@@ -79,7 +80,7 @@ def get_system_dpi_scale():
 API_BASE_URL = "http://129.204.12.226"
 
 class LoginWindow(QWidget):
-    """登录/注册窗口 - Fluent Design 风格"""
+    """登录/注册窗口 - 高端美观设计"""
     login_success = pyqtSignal()  # 登录成功信号
     
     def __init__(self, parent=None):
@@ -87,44 +88,113 @@ class LoginWindow(QWidget):
         self.is_login_mode = True  # True=登录模式, False=注册模式
         self.is_forgot_mode = False  # True=找回密码模式
         self._is_logging_in = False  # 是否正在登录（防止closeEvent误触发）
+        self._anim_widgets = []  # 用于入场动画的控件列表
         self.setup_ui()
         self._load_remember_account()
+        # 延迟播放入场动画
+        QTimer.singleShot(50, self._play_entrance_animations)
+    
+    def paintEvent(self, event):
+        """绘制渐变背景和装饰元素"""
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        
+        w, h = self.width(), self.height()
+        
+        # 主渐变背景：从浅绿到白
+        gradient = QLinearGradient(0, 0, w, h)
+        gradient.setColorAt(0.0, QColor("#E8F5E9"))
+        gradient.setColorAt(0.5, QColor("#F1F8F2"))
+        gradient.setColorAt(1.0, QColor("#FFFFFF"))
+        painter.fillRect(self.rect(), gradient)
+        
+        # 顶部装饰大圆（右上角，浅绿）
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QColor(22, 163, 74, 18))
+        painter.drawEllipse(w - 140, -100, 280, 280)
+        
+        # 左上角小圆
+        painter.setBrush(QColor(22, 163, 74, 25))
+        painter.drawEllipse(-60, -60, 160, 160)
+        
+        # 左下角装饰圆
+        painter.setBrush(QColor(76, 175, 80, 15))
+        painter.drawEllipse(-80, h - 120, 220, 220)
+        
+        # 右下角小圆点装饰
+        painter.setBrush(QColor(22, 163, 74, 30))
+        painter.drawEllipse(w - 60, h - 80, 40, 40)
+        painter.setBrush(QColor(76, 175, 80, 20))
+        painter.drawEllipse(w - 110, h - 40, 24, 24)
+        
+        # 顶部细绿条装饰
+        painter.setBrush(QColor(22, 163, 74, 200))
+        painter.drawRoundedRect(0, 0, w, 4, 0, 0)
+        
+        painter.end()
+    
+    def _play_entrance_animations(self):
+        """播放入场动画（交错淡入+上移）"""
+        for i, widget in enumerate(self._anim_widgets):
+            # 淡入
+            opacity = QGraphicsOpacityEffect(widget)
+            opacity.setOpacity(0)
+            widget.setGraphicsEffect(opacity)
+            
+            fade = QPropertyAnimation(opacity, b"opacity")
+            fade.setDuration(500)
+            fade.setStartValue(0.0)
+            fade.setEndValue(1.0)
+            fade.setEasingCurve(QEasingCurve.OutCubic)
+            
+            # 保存引用防止被回收
+            if not hasattr(self, '_entrance_anims'):
+                self._entrance_anims = []
+            self._entrance_anims.append(opacity)
+            self._entrance_anims.append(fade)
+            
+            QTimer.singleShot(i * 90, fade.start)
     
     def setup_ui(self):
         """设置界面"""
         self.setWindowTitle("工作日报助手 - 登录")
-        self.setFixedSize(420, 520)
-        self.setStyleSheet("background-color: #F7F8F7;")
+        self.setFixedSize(440, 580)
+        self.setAttribute(Qt.WA_StyledBackground, True)
         
         # 主布局
         mainLayout = QVBoxLayout(self)
-        mainLayout.setContentsMargins(40, 30, 40, 30)
+        mainLayout.setContentsMargins(44, 36, 44, 28)
         mainLayout.setSpacing(0)
         
         # ========== 顶部 Logo 区域 ==========
         logoLayout = QHBoxLayout()
-        logoLayout.setSpacing(12)
+        logoLayout.setSpacing(14)
         
-        # Logo 图标（使用图片）
+        # Logo 图标（使用图片，带绿色光环）
         logoIcon = QLabel()
-        logoIcon.setFixedSize(48, 48)
+        logoIcon.setFixedSize(52, 52)
         logoIcon.setAlignment(Qt.AlignCenter)
         
-        # 加载头像图片
         avatar_path = r"C:\Users\20057\Desktop\frog.jpg"
         if os.path.exists(avatar_path):
             pixmap = QPixmap(avatar_path)
-            pixmap = pixmap.scaled(48, 48, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+            pixmap = pixmap.scaled(44, 44, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
             
-            # 创建圆形头像
-            rounded = QPixmap(48, 48)
+            # 创建带绿色光环的圆形头像
+            rounded = QPixmap(52, 52)
             rounded.fill(Qt.transparent)
             painter = QPainter(rounded)
             painter.setRenderHint(QPainter.Antialiasing)
+            # 外圈绿色光环
+            painter.setPen(QPen(QColor("#16A34A"), 3))
+            painter.setBrush(QBrush(QColor("#E8F5E9")))
+            painter.drawEllipse(2, 2, 48, 48)
+            # 内圈头像
             path = QPainterPath()
-            path.addEllipse(0, 0, 48, 48)
+            path.addEllipse(6, 6, 40, 40)
             painter.setClipPath(path)
-            painter.drawPixmap(0, 0, pixmap)
+            painter.setPen(Qt.NoPen)
+            painter.drawPixmap(6, 6, pixmap)
             painter.end()
             
             logoIcon.setPixmap(rounded)
@@ -132,8 +202,8 @@ class LoginWindow(QWidget):
             logoIcon.setStyleSheet("""
                 QLabel {
                     background-color: #16A34A;
-                    border-radius: 12px;
-                    font-size: 24px;
+                    border-radius: 26px;
+                    font-size: 26px;
                     color: white;
                 }
             """)
@@ -143,29 +213,35 @@ class LoginWindow(QWidget):
         
         # 标题
         titleLayout = QVBoxLayout()
-        titleLayout.setSpacing(2)
+        titleLayout.setSpacing(3)
         
         titleLabel = QLabel("工作日报助手")
-        titleLabel.setStyleSheet("font-size: 20px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+        titleLabel.setStyleSheet("font-size: 22px; font-weight: 800; color: #14532D; border: none; background: transparent; letter-spacing: 1px;")
         titleLayout.addWidget(titleLabel)
         
         subtitleLabel = QLabel("AI 驱动的智能工作报告工具")
-        subtitleLabel.setStyleSheet("font-size: 12px; color: #666666; border: none; background: transparent;")
+        subtitleLabel.setStyleSheet("font-size: 11px; color: #6B7280; border: none; background: transparent; letter-spacing: 0.5px;")
         titleLayout.addWidget(subtitleLabel)
         
         logoLayout.addLayout(titleLayout)
         logoLayout.addStretch()
         
         mainLayout.addLayout(logoLayout)
-        mainLayout.addSpacing(30)
+        self._anim_widgets.append(logoIcon)
+        mainLayout.addSpacing(28)
         
         # ========== 登录/注册标题行 ==========
         headerLayout = QHBoxLayout()
         headerLayout.setSpacing(8)
         
         self.modeTitle = QLabel("登录")
-        self.modeTitle.setStyleSheet("font-size: 22px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+        self.modeTitle.setStyleSheet("font-size: 26px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
         headerLayout.addWidget(self.modeTitle)
+        
+        # 标题下方绿色装饰条
+        self.titleAccent = QLabel()
+        self.titleAccent.setFixedSize(36, 4)
+        self.titleAccent.setStyleSheet("background-color: #16A34A; border-radius: 2px; border: none;")
         
         headerLayout.addStretch()
         
@@ -179,27 +255,30 @@ class LoginWindow(QWidget):
                 font-size: 14px;
                 font-weight: bold;
                 border: none;
-                padding: 4px 8px;
+                padding: 4px 10px;
+                border-radius: 6px;
             }
             QPushButton:hover {
                 color: #15803D;
+                background-color: rgba(22, 163, 74, 0.08);
             }
         """)
         self.switchBtn.clicked.connect(self.toggle_mode)
         headerLayout.addWidget(self.switchBtn)
         
         mainLayout.addLayout(headerLayout)
-        mainLayout.addSpacing(8)
+        mainLayout.addWidget(self.titleAccent)
+        mainLayout.addSpacing(6)
         
         # 副标题
         self.modeSubtitle = QLabel("请输入您的账号信息")
-        self.modeSubtitle.setStyleSheet("font-size: 12px; color: #666666; border: none; background: transparent;")
+        self.modeSubtitle.setStyleSheet("font-size: 12px; color: #6B7280; border: none; background: transparent;")
         mainLayout.addWidget(self.modeSubtitle)
-        mainLayout.addSpacing(20)
+        mainLayout.addSpacing(22)
         
         # ========== 邮箱输入框 ==========
         emailLabel = QLabel("邮箱")
-        emailLabel.setStyleSheet("font-size: 12px; font-weight: bold; color: #374151; border: none; background: transparent;")
+        emailLabel.setStyleSheet("font-size: 12px; font-weight: 700; color: #374151; border: none; background: transparent;")
         mainLayout.addWidget(emailLabel)
         mainLayout.addSpacing(8)
         
@@ -211,40 +290,48 @@ class LoginWindow(QWidget):
         
         self.emailInput = QLineEdit()
         self.emailInput.setPlaceholderText("请输入邮箱地址")
-        self.emailInput.setFixedHeight(42)
+        self.emailInput.setFixedHeight(44)
         self.emailInput.setStyleSheet("""
             QLineEdit {
                 background-color: white;
-                border: 1px solid #E5E7EB;
-                border-radius: 8px;
+                border: 1.5px solid #E5E7EB;
+                border-radius: 10px;
                 padding: 0 14px;
                 font-size: 13px;
                 color: #1a1a1a;
             }
+            QLineEdit:hover {
+                border: 1.5px solid #A7F3D0;
+            }
             QLineEdit:focus {
                 border: 2px solid #16A34A;
+                background-color: #FAFFFB;
             }
         """)
         emailLayout.addWidget(self.emailInput, 1)
         
-        # 发送验证码按钮（注册模式显示）
+        # 发送验证码按钮（注册/找回密码模式显示）
         self.sendCodeBtn = QPushButton("发送验证码")
         self.sendCodeBtn.setCursor(Qt.PointingHandCursor)
-        self.sendCodeBtn.setFixedSize(100, 42)
+        self.sendCodeBtn.setFixedSize(104, 44)
         self.sendCodeBtn.setStyleSheet("""
             QPushButton {
                 background-color: #16A34A;
                 color: white;
                 border: none;
-                border-radius: 8px;
+                border-radius: 10px;
                 font-size: 12px;
                 font-weight: bold;
             }
             QPushButton:hover {
                 background-color: #15803D;
             }
+            QPushButton:pressed {
+                background-color: #14532D;
+            }
             QPushButton:disabled {
-                background-color: #A5D6A7;
+                background-color: #A7F3D0;
+                color: #6EE7B7;
             }
         """)
         self.sendCodeBtn.clicked.connect(self.send_verification_code)
@@ -252,33 +339,37 @@ class LoginWindow(QWidget):
         emailLayout.addWidget(self.sendCodeBtn)
         
         mainLayout.addWidget(emailContainer)
-        mainLayout.addSpacing(20)
+        mainLayout.addSpacing(18)
         
         # ========== 密码输入框 ==========
         self.passwordLabel = QLabel("密码")
-        self.passwordLabel.setStyleSheet("font-size: 12px; font-weight: bold; color: #374151; border: none; background: transparent;")
+        self.passwordLabel.setStyleSheet("font-size: 12px; font-weight: 700; color: #374151; border: none; background: transparent;")
         mainLayout.addWidget(self.passwordLabel)
-        mainLayout.addSpacing(6)
+        mainLayout.addSpacing(8)
         
         self.passwordInput = QLineEdit()
         self.passwordInput.setPlaceholderText("请输入密码")
-        self.passwordInput.setFixedHeight(42)
+        self.passwordInput.setFixedHeight(44)
         self.passwordInput.setEchoMode(QLineEdit.Password)
         self.passwordInput.setStyleSheet("""
             QLineEdit {
                 background-color: white;
-                border: 1px solid #E5E7EB;
-                border-radius: 8px;
+                border: 1.5px solid #E5E7EB;
+                border-radius: 10px;
                 padding: 0 14px;
                 font-size: 13px;
                 color: #1a1a1a;
             }
+            QLineEdit:hover {
+                border: 1.5px solid #A7F3D0;
+            }
             QLineEdit:focus {
                 border: 2px solid #16A34A;
+                background-color: #FAFFFB;
             }
         """)
         mainLayout.addWidget(self.passwordInput)
-        mainLayout.addSpacing(8)
+        mainLayout.addSpacing(10)
         
         # ========== 记住账号密码（登录模式显示）==========
         self.rememberCheckBox = QCheckBox("记住账号密码")
@@ -294,8 +385,11 @@ class LoginWindow(QWidget):
                 width: 16px;
                 height: 16px;
                 border: 2px solid #D1D5DB;
-                border-radius: 3px;
+                border-radius: 4px;
                 background: white;
+            }
+            QCheckBox::indicator:hover {
+                border-color: #16A34A;
             }
             QCheckBox::indicator:checked {
                 background-color: #16A34A;
@@ -303,54 +397,67 @@ class LoginWindow(QWidget):
             }
         """)
         mainLayout.addWidget(self.rememberCheckBox)
-        mainLayout.addSpacing(16)
+        mainLayout.addSpacing(14)
         
-        # ========== 验证码输入框（注册模式显示）==========
+        # ========== 验证码输入框（注册/找回密码模式显示）==========
         self.codeLabel = QLabel("验证码")
-        self.codeLabel.setStyleSheet("font-size: 12px; font-weight: bold; color: #374151; border: none; background: transparent;")
+        self.codeLabel.setStyleSheet("font-size: 12px; font-weight: 700; color: #374151; border: none; background: transparent;")
         self.codeLabel.setVisible(False)
         mainLayout.addWidget(self.codeLabel)
-        mainLayout.addSpacing(6)
+        mainLayout.addSpacing(8)
         
         self.codeInput = QLineEdit()
         self.codeInput.setPlaceholderText("请输入验证码")
-        self.codeInput.setFixedHeight(42)
+        self.codeInput.setFixedHeight(44)
         self.codeInput.setStyleSheet("""
             QLineEdit {
                 background-color: white;
-                border: 1px solid #E5E7EB;
-                border-radius: 8px;
+                border: 1.5px solid #E5E7EB;
+                border-radius: 10px;
                 padding: 0 14px;
                 font-size: 13px;
                 color: #1a1a1a;
+                letter-spacing: 4px;
+                font-weight: bold;
+            }
+            QLineEdit:hover {
+                border: 1.5px solid #A7F3D0;
             }
             QLineEdit:focus {
                 border: 2px solid #16A34A;
+                background-color: #FAFFFB;
             }
         """)
         self.codeInput.setVisible(False)
         mainLayout.addWidget(self.codeInput)
         
-        mainLayout.addSpacing(24)
+        mainLayout.addSpacing(22)
         
         # ========== 登录/注册按钮 ==========
-        self.submitBtn = QPushButton("登录")
-        self.submitBtn.setFixedHeight(44)
+        self.submitBtn = QPushButton("登  录")
+        self.submitBtn.setFixedHeight(46)
         self.submitBtn.setCursor(Qt.PointingHandCursor)
         self.submitBtn.setStyleSheet("""
             QPushButton {
-                background-color: #16A34A;
+                background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                    stop:0 #16A34A, stop:1 #22C55E);
                 color: white;
                 border: none;
-                border-radius: 8px;
+                border-radius: 12px;
                 font-size: 15px;
                 font-weight: bold;
+                letter-spacing: 2px;
             }
             QPushButton:hover {
-                background-color: #15803D;
+                background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                    stop:0 #15803D, stop:1 #16A34A);
             }
             QPushButton:pressed {
                 background-color: #14532D;
+            }
+            QPushButton:disabled {
+                background-color: #A7F3D0;
+                color: #6EE7B7;
             }
         """)
         self.submitBtn.clicked.connect(self.on_submit)
@@ -368,10 +475,11 @@ class LoginWindow(QWidget):
                 color: #16A34A;
                 font-size: 12px;
                 border: none;
-                padding: 4px 0;
+                padding: 6px 4px;
             }
             QPushButton:hover {
                 color: #15803D;
+                text-decoration: underline;
             }
         """)
         self.forgotBtn.clicked.connect(self.toggle_forgot_mode)
@@ -379,7 +487,7 @@ class LoginWindow(QWidget):
         forgotLayout.addStretch()
         
         mainLayout.addLayout(forgotLayout)
-        mainLayout.addSpacing(10)
+        mainLayout.addSpacing(8)
         
         # ========== 底部提示 ==========
         bottomLayout = QHBoxLayout()
@@ -401,6 +509,7 @@ class LoginWindow(QWidget):
             }
             QPushButton:hover {
                 color: #15803D;
+                text-decoration: underline;
             }
         """)
         bottomLayout.addWidget(termsBtn)
@@ -421,12 +530,19 @@ class LoginWindow(QWidget):
             }
             QPushButton:hover {
                 color: #15803D;
+                text-decoration: underline;
             }
         """)
         bottomLayout.addWidget(privacyBtn)
         bottomLayout.addStretch()
         
         mainLayout.addLayout(bottomLayout)
+        
+        # 收集需要入场动画的控件
+        self._anim_widgets.extend([
+            self.modeTitle, self.modeSubtitle,
+            self.emailInput, self.passwordInput, self.submitBtn
+        ])
     
     def toggle_mode(self):
         """切换登录/注册/找回密码模式"""
