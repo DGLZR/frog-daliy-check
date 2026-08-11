@@ -6248,9 +6248,11 @@ def main():
 
     class UpdateDialog(QDialog):
         """更新弹窗"""
-        def __init__(self, current_version, latest_version, update_log, download_url, parent=None):
+        def __init__(self, current_version, latest_version, update_log, download_url, parent=None, force_update=False):
             super().__init__(parent)
             self.download_url = download_url
+            self.force_update = force_update
+            self._update_downloaded = False
             self.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
             self.setAttribute(Qt.WA_TranslucentBackground)
             self.setModal(True)
@@ -6269,6 +6271,23 @@ def main():
             cardLayout = QVBoxLayout(card)
             cardLayout.setContentsMargins(24, 24, 24, 24)
             cardLayout.setSpacing(16)
+            
+            # 强制更新标识
+            if self.force_update:
+                forceBadge = QLabel("⚡ 强制更新 · 此版本必须更新后才能继续使用")
+                forceBadge.setStyleSheet("""
+                    QLabel {
+                        background-color: #FEF2F2;
+                        color: #DC2626;
+                        padding: 8px 12px;
+                        border-radius: 8px;
+                        font-size: 12px;
+                        font-weight: bold;
+                        border: 1px solid #FECACA;
+                    }
+                """)
+                forceBadge.setAlignment(Qt.AlignCenter)
+                cardLayout.addWidget(forceBadge)
             
             # 版本号标题
             versionTitle = QLabel(f"{current_version} → {latest_version}")
@@ -6308,24 +6327,43 @@ def main():
             btnLayout = QHBoxLayout()
             btnLayout.setSpacing(12)
             
-            closeBtn = QPushButton("关闭")
-            closeBtn.setFixedHeight(40)
-            closeBtn.setCursor(Qt.PointingHandCursor)
-            closeBtn.setStyleSheet("""
-                QPushButton {
-                    background-color: #F44336;
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    font-size: 14px;
-                    font-weight: bold;
-                }
-                QPushButton:hover { background-color: #E53935; }
-            """)
-            closeBtn.clicked.connect(self.close)
-            btnLayout.addWidget(closeBtn)
+            # 强制更新时不显示关闭按钮，改为显示退出软件按钮
+            if not self.force_update:
+                closeBtn = QPushButton("关闭")
+                closeBtn.setFixedHeight(40)
+                closeBtn.setCursor(Qt.PointingHandCursor)
+                closeBtn.setStyleSheet("""
+                    QPushButton {
+                        background-color: #F44336;
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        font-size: 14px;
+                        font-weight: bold;
+                    }
+                    QPushButton:hover { background-color: #E53935; }
+                """)
+                closeBtn.clicked.connect(self.close)
+                btnLayout.addWidget(closeBtn)
+            else:
+                exitBtn = QPushButton("退出软件")
+                exitBtn.setFixedHeight(40)
+                exitBtn.setCursor(Qt.PointingHandCursor)
+                exitBtn.setStyleSheet("""
+                    QPushButton {
+                        background-color: #9CA3AF;
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        font-size: 14px;
+                        font-weight: bold;
+                    }
+                    QPushButton:hover { background-color: #6B7280; }
+                """)
+                exitBtn.clicked.connect(self.exitApp)
+                btnLayout.addWidget(exitBtn)
             
-            updateBtn = QPushButton("更新")
+            updateBtn = QPushButton("立即更新" if self.force_update else "更新")
             updateBtn.setFixedHeight(40)
             updateBtn.setCursor(Qt.PointingHandCursor)
             updateBtn.setStyleSheet("""
@@ -6402,6 +6440,8 @@ def main():
                     parent=self
                 )
                 
+                # 标记已下载，允许关闭（强制更新时）
+                self._update_downloaded = True
                 self.close()
                 
             except Exception as e:
@@ -6414,6 +6454,34 @@ def main():
                     duration=3000,
                     parent=self
                 )
+        
+        def reject(self):
+            """强制更新时阻止 ESC / 拒绝关闭"""
+            if self.force_update:
+                return
+            super().reject()
+        
+        def exitApp(self):
+            """退出整个软件"""
+            from PyQt5.QtWidgets import QApplication
+            self._update_downloaded = True  # 放行弹窗关闭
+            self.accept()  # 结束弹窗模态循环
+            app = QApplication.instance()
+            if app:
+                app.quit()  # 退出主程序
+        
+        def keyPressEvent(self, event):
+            """强制更新时拦截 ESC 键"""
+            if self.force_update and event.key() == Qt.Key_Escape:
+                return
+            super().keyPressEvent(event)
+        
+        def closeEvent(self, event):
+            """强制更新时阻止关闭（下载完成后除外）"""
+            if self.force_update and not self._update_downloaded:
+                event.ignore()
+                return
+            super().closeEvent(event)
 
     class SettingsPage(QWidget):
         """设置页面"""
@@ -6847,8 +6915,9 @@ def main():
                     latest_version = result.get('latest_version', 'v1.0')
                     update_log = result.get('update_log', '')
                     download_url = result.get('download_url', '')
+                    force_update = result.get('force_update', False)
                     
-                    print(f"[checkUpdate] has_update={has_update}, latest={latest_version}")
+                    print(f"[checkUpdate] has_update={has_update}, latest={latest_version}, force={force_update}")
                     
                     if has_update:
                         if not silent:
@@ -6857,7 +6926,8 @@ def main():
                                 latest_version,
                                 update_log,
                                 download_url,
-                                self
+                                self,
+                                force_update=force_update
                             )
                             dialog.exec_()
                         return result
@@ -7567,7 +7637,8 @@ def main():
                         result.get('latest_version', ''),
                         result.get('update_log', ''),
                         result.get('download_url', ''),
-                        self
+                        self,
+                        force_update=result.get('force_update', False)
                     )
                     dialog.exec_()
                 else:
