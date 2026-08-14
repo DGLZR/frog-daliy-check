@@ -7851,7 +7851,7 @@ def main():
             aboutLayout.addWidget(aboutTitle)
             
             aboutText = QLabel(
-                "工作日报助手 v1.0\n"
+                "工作日报助手 v1.1\n"
                 "自动截图分析工作内容，生成工作日报。"
             )
             aboutText.setWordWrap(True)
@@ -7883,7 +7883,7 @@ def main():
                 print(f"[checkUpdate] 开始检查, silent={silent}")
                 response = requests.get(
                     f"{API_BASE_URL}/api/check-update",
-                    params={"current_version": "v1.0"},
+                    params={"current_version": "v1.1"},
                     timeout=5
                 )
                 
@@ -7920,8 +7920,8 @@ def main():
                 
                 if result.get('success'):
                     has_update = result.get('has_update', False)
-                    current_version = result.get('current_version', 'v1.0')
-                    latest_version = result.get('latest_version', 'v1.0')
+                    current_version = result.get('current_version', 'v1.1')
+                    latest_version = result.get('latest_version', 'v1.1')
                     update_log = result.get('update_log', '')
                     download_url = result.get('download_url', '')
                     force_update = result.get('force_update', False)
@@ -8644,7 +8644,7 @@ def main():
                     self.showUpdateBadge(True)
                     # 弹窗提示
                     dialog = UpdateDialog(
-                        result.get('current_version', 'v1.0'),
+                        result.get('current_version', 'v1.1'),
                         result.get('latest_version', ''),
                         result.get('update_log', ''),
                         result.get('download_url', ''),
