@@ -39,6 +39,154 @@ def get_current_time():
     return get_now().strftime('%H:%M:%S')
 
 
+def _write_xlsx(file_path, sheets):
+    """
+    用标准库生成 .xlsx 文件（无第三方依赖，Excel/WPS 可直接打开）
+
+    参数:
+        file_path: 输出文件路径
+        sheets: 列表，每个元素为 dict:
+            {
+                "name":   工作表名称,
+                "headers": 表头列表（可为空列表）,
+                "rows":    二维数据列表（每行一个列表）,
+                "widths":  可选，每列宽度列表
+            }
+    """
+    import zipfile
+    from xml.sax.saxutils import escape
+
+    def col_letter(idx):
+        """列序号转字母：0->A, 25->Z, 26->AA"""
+        letters = ""
+        idx += 1
+        while idx:
+            idx, rem = divmod(idx - 1, 26)
+            letters = chr(65 + rem) + letters
+        return letters
+
+    def cell_xml(r, c, value, style=0):
+        ref = f"{col_letter(c)}{r}"
+        if isinstance(value, bool):
+            value = 1 if value else 0
+        if isinstance(value, (int, float)):
+            if isinstance(value, float) and value.is_integer():
+                value = int(value)
+            return f'<c r="{ref}" s="{style}"><v>{value}</v></c>'
+        text = escape(str(value))
+        return f'<c r="{ref}" s="{style}" t="inlineStr"><is><t xml:space="preserve">{text}</t></is></c>'
+
+    def safe_sheet_name(name):
+        for ch in '[]:*?/\\':
+            name = name.replace(ch, '_')
+        return (name[:31] or "Sheet")
+
+    sheet_names = [safe_sheet_name(s["name"]) for s in sheets]
+
+    # ---- 生成每个工作表的 XML ----
+    worksheets_xml = []
+    for s in sheets:
+        headers = s.get("headers") or []
+        rows = s.get("rows") or []
+        widths = s.get("widths") or []
+        lines = ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>']
+        lines.append('<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">')
+        if widths:
+            cols = "".join(
+                f'<col min="{i + 1}" max="{i + 1}" width="{w}" customWidth="1"/>'
+                for i, w in enumerate(widths)
+            )
+            lines.append(f"<cols>{cols}</cols>")
+        lines.append("<sheetData>")
+        r = 1
+        if headers:
+            cells = "".join(cell_xml(r, c, h, style=1) for c, h in enumerate(headers))
+            lines.append(f'<row r="{r}">{cells}</row>')
+            r += 1
+        for row in rows:
+            cells = "".join(cell_xml(r, c, v, style=0) for c, v in enumerate(row))
+            lines.append(f'<row r="{r}">{cells}</row>')
+            r += 1
+        lines.append("</sheetData>")
+        lines.append("</worksheet>")
+        worksheets_xml.append("\n".join(lines))
+
+    # ---- 固定 XML 部件 ----
+    n_sheets = len(sheets)
+    content_types = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+        '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+        '<Default Extension="xml" ContentType="application/xml"/>'
+        '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+        + "".join(
+            f'<Override PartName="/xl/worksheets/sheet{i}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'
+            for i in range(1, n_sheets + 1)
+        )
+        + '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
+        '</Types>'
+    )
+    rels = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>'
+        '</Relationships>'
+    )
+    workbook = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
+        'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+        '<sheets>'
+        + "".join(
+            f'<sheet name="{escape(name)}" sheetId="{i + 1}" r:id="rId{i + 1}"/>'
+            for i, name in enumerate(sheet_names)
+        )
+        + '</sheets></workbook>'
+    )
+    wb_rels = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        + "".join(
+            f'<Relationship Id="rId{i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet{i + 1}.xml"/>'
+            for i in range(n_sheets)
+        )
+        + f'<Relationship Id="rId{n_sheets + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'
+        '</Relationships>'
+    )
+    styles = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+        '<fonts count="2">'
+        '<font><sz val="11"/><name val="Calibri"/></font>'
+        '<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>'
+        '</fonts>'
+        '<fills count="3">'
+        '<fill><patternFill patternType="none"/></fill>'
+        '<fill><patternFill patternType="gray125"/></fill>'
+        '<fill><patternFill patternType="solid"><fgColor rgb="FF2563EB"/></patternFill></fill>'
+        '</fills>'
+        '<borders count="1">'
+        '<border><left/><right/><top/><bottom/><diagonal/></border>'
+        '</borders>'
+        '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
+        '<cellXfs count="2">'
+        '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'
+        '<xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/>'
+        '</cellXfs>'
+        '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>'
+        '</styleSheet>'
+    )
+
+    with zipfile.ZipFile(file_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr('[Content_Types].xml', content_types)
+        zf.writestr('_rels/.rels', rels)
+        zf.writestr('xl/workbook.xml', workbook)
+        zf.writestr('xl/_rels/workbook.xml.rels', wb_rels)
+        zf.writestr('xl/styles.xml', styles)
+        for i, xml in enumerate(worksheets_xml, start=1):
+            zf.writestr(f'xl/worksheets/sheet{i}.xml', xml)
+
+
 SCALE_FACTOR = 1.0
 
 
@@ -1058,7 +1206,7 @@ def main():
                                  QSizePolicy, QPushButton, QTableWidget, QTableWidgetItem,
                                  QLineEdit, QDateEdit, QComboBox, QApplication,
                                  QMessageBox, QSystemTrayIcon, QMenu, QAction, QDialog,
-                                 QTextEdit, QLayout, QSplitter, QTextBrowser)
+                                 QTextEdit, QLayout, QSplitter, QTextBrowser, QSpinBox)
     from PyQt5.QtCore import Qt, QSize, QTimer, QDate, QPropertyAnimation, QEasingCurve, QDateTime, QThread, pyqtSignal, QRect, QPoint
     from PyQt5.QtGui import QFont, QColor, QPixmap, QPainter, QPainterPath, QBrush, QPen, QIcon
     from qfluentwidgets import (FluentWindow, NavigationItemPosition, StrongBodyLabel,
@@ -6483,6 +6631,867 @@ def main():
                 return
             super().closeEvent(event)
 
+    # ==================== 热力图画布（QPainter 自绘，渲染干净） ====================
+    
+    class HeatmapCanvas(QWidget):
+        """用 QPainter 精确绘制热力图，格子大小按可用宽度计算，渲染整齐"""
+        def __init__(self, parent=None):
+            super().__init__(parent)
+            self.matrix = []        # 二维列表 [row][col]
+            self.row_labels = []    # 左侧行标签 [(main, sub)] 或 [str]
+            self.col_labels = []    # [(col_index, text)]
+            self.col_label_pos = "bottom"  # top / bottom
+            self.left_gutter = 70
+            self.edge_gutter = 20
+            self.spacing = 4
+            self.max_cell = 26
+            self.min_cell = 8
+            self.setMinimumHeight(100)
+        
+        def setData(self, matrix, row_labels, col_labels, col_label_pos="bottom",
+                    left_gutter=70, spacing=4, max_cell=26):
+            self.matrix = matrix
+            self.row_labels = row_labels
+            self.col_labels = col_labels
+            self.col_label_pos = col_label_pos
+            self.left_gutter = left_gutter
+            self.spacing = spacing
+            self.max_cell = max_cell
+            self._recalc_height()
+            self.update()
+        
+        def _cols(self):
+            return max([len(r) for r in self.matrix]) if self.matrix else 0
+        
+        def _rows(self):
+            return len(self.matrix)
+        
+        def _cell_size(self):
+            cols = self._cols()
+            if cols <= 0:
+                return self.min_cell
+            avail = self.width() - self.left_gutter - 8
+            cell = (avail - (cols - 1) * self.spacing) / cols
+            cell = int(max(self.min_cell, min(self.max_cell, cell)))
+            return cell
+        
+        def _recalc_height(self):
+            rows = self._rows()
+            cell = self._cell_size() or self.min_cell
+            h = rows * cell + (rows - 1) * self.spacing
+            h += self.edge_gutter + 8
+            self.setMinimumHeight(max(80, h))
+        
+        def sizeHint(self):
+            rows = self._rows()
+            cell = self._cell_size() or self.min_cell
+            h = rows * cell + (rows - 1) * self.spacing
+            h += self.edge_gutter + 8
+            return QSize(self.width() or 600, max(80, h))
+        
+        def resizeEvent(self, event):
+            self._recalc_height()
+            super().resizeEvent(event)
+        
+        def _green(self, intensity):
+            if intensity <= 0:
+                return QColor("#EBEBEB")
+            levels = [QColor("#D6F5DE"), QColor("#A8EBC0"), QColor("#6FDB9B"),
+                      QColor("#34C777"), QColor("#16A34A")]
+            idx = min(len(levels) - 1, int(intensity * len(levels)))
+            return levels[idx]
+        
+        def paintEvent(self, event):
+            painter = QPainter(self)
+            painter.setRenderHint(QPainter.Antialiasing)
+            
+            rows = self._rows()
+            cols = self._cols()
+            if rows == 0 or cols == 0:
+                painter.end()
+                return
+            
+            cell = self._cell_size()
+            sp = self.spacing
+            x0 = self.left_gutter
+            y0 = self.edge_gutter if self.col_label_pos == "top" else 4
+            
+            # 最大值
+            max_v = 1
+            for r in self.matrix:
+                for v in r:
+                    max_v = max(max_v, v)
+            
+            # 画格子
+            for ri, row in enumerate(self.matrix):
+                for ci in range(cols):
+                    v = row[ci] if ci < len(row) else 0
+                    intensity = v / max_v if max_v > 0 else 0
+                    color = self._green(intensity) if v > 0 else QColor("#EBEBEB")
+                    x = x0 + ci * (cell + sp)
+                    y = y0 + ri * (cell + sp)
+                    painter.setPen(Qt.NoPen)
+                    painter.setBrush(color)
+                    painter.drawRoundedRect(x, y, cell, cell, 3, 3)
+                    # 数值文字（时段模式格子较大时显示）
+                    if v > 0 and cell >= 22:
+                        painter.setPen(QColor("white") if intensity > 0.5 else QColor("#333333"))
+                        painter.setFont(QFont("Microsoft YaHei", 8, QFont.Bold))
+                        painter.drawText(QRect(x, y, cell, cell), Qt.AlignCenter, str(v))
+            
+            # 行标签（左侧）
+            painter.setPen(QColor("#888888"))
+            painter.setFont(QFont("Microsoft YaHei", 9))
+            for ri in range(rows):
+                y = y0 + ri * (cell + sp)
+                label = self.row_labels[ri] if ri < len(self.row_labels) else ""
+                if isinstance(label, tuple):
+                    main, sub = label
+                    painter.drawText(QRect(0, y - 2, self.left_gutter - 6, cell), Qt.AlignRight | Qt.AlignTop, main)
+                    painter.setPen(QColor("#BBBBBB"))
+                    painter.setFont(QFont("Microsoft YaHei", 8))
+                    painter.drawText(QRect(0, y + cell // 2, self.left_gutter - 6, cell), Qt.AlignRight | Qt.AlignTop, sub)
+                    painter.setPen(QColor("#888888"))
+                    painter.setFont(QFont("Microsoft YaHei", 9))
+                else:
+                    painter.drawText(QRect(0, y, self.left_gutter - 6, cell), Qt.AlignRight | Qt.AlignVCenter, label)
+            
+            # 列标签
+            painter.setPen(QColor("#999999"))
+            painter.setFont(QFont("Microsoft YaHei", 9))
+            for ci, text in self.col_labels:
+                x = x0 + ci * (cell + sp)
+                if self.col_label_pos == "top":
+                    painter.drawText(QRect(x, 0, cell * 3 + sp * 2, self.edge_gutter - 4), Qt.AlignLeft | Qt.AlignVCenter, text)
+                else:
+                    y = y0 + rows * (cell + sp) + 2
+                    painter.drawText(QRect(x, y, cell * 3 + sp * 2, 16), Qt.AlignLeft | Qt.AlignVCenter, text)
+            
+            painter.end()
+
+    # ==================== 热力图页面 ====================
+    
+    class HeatmapPage(QWidget):
+        """热力图页面 - 时段/年度热力图 + 导出数据表格"""
+        def __init__(self, parent=None):
+            super().__init__(parent)
+            self.setObjectName("heatmapPage")
+            self.mode = "period"  # period=时段, year=年度
+            self._records_cache = []
+            self._build_ui()
+            # 先设置模式按钮可见性，再延迟渲染（等待布局完成，保证画布宽度正确）
+            self._update_mode_buttons()
+            QTimer.singleShot(0, self.updateData)
+        
+        def _build_ui(self):
+            scrollLayout = QVBoxLayout(self)
+            scrollLayout.setContentsMargins(0, 0, 0, 0)
+            scrollLayout.setSpacing(0)
+            
+            scrollArea = QScrollArea()
+            scrollArea.setWidgetResizable(True)
+            scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            scrollArea.setStyleSheet("QScrollArea { border: none; background-color: #F5F6F7; }")
+            
+            contentWidget = QWidget()
+            contentWidget.setStyleSheet("background-color: #F5F6F7; border: none;")
+            layout = QVBoxLayout(contentWidget)
+            layout.setContentsMargins(24, 20, 24, 20)
+            layout.setSpacing(18)
+            
+            # ========== 顶部工具栏 ==========
+            topBar = QHBoxLayout()
+            topBar.setSpacing(10)
+            
+            # 热力图标签按钮（激活态）
+            heatTag = QPushButton("🔥 热力图")
+            heatTag.setFixedHeight(36)
+            heatTag.setStyleSheet("""
+                QPushButton {
+                    background-color: white; color: #1a1a1a;
+                    border: 1px solid #E5E7EB; border-radius: 8px;
+                    font-size: 13px; font-weight: bold; padding: 0 16px;
+                }
+            """)
+            topBar.addWidget(heatTag)
+            
+            # 时段/年度 切换
+            self.periodBtn = QPushButton("📅 时段")
+            self.yearBtn = QPushButton("📆 年度")
+            for b in (self.periodBtn, self.yearBtn):
+                b.setFixedHeight(36)
+                b.setCursor(Qt.PointingHandCursor)
+            self.periodBtn.clicked.connect(lambda: self.set_mode("period"))
+            self.yearBtn.clicked.connect(lambda: self.set_mode("year"))
+            topBar.addWidget(self.periodBtn)
+            topBar.addWidget(self.yearBtn)
+            
+            topBar.addStretch()
+            
+            # 生成热力图按钮（导出对应的数据表格 .xlsx）
+            self.exportBtn = QPushButton("🖼 生成热力图")
+            self.exportBtn.setFixedHeight(36)
+            self.exportBtn.setCursor(Qt.PointingHandCursor)
+            self.exportBtn.setStyleSheet("""
+                QPushButton {
+                    background-color: #16A34A; color: white;
+                    border: none; border-radius: 8px;
+                    font-size: 13px; font-weight: bold; padding: 0 18px;
+                }
+                QPushButton:hover { background-color: #15803D; }
+            """)
+            self.exportBtn.clicked.connect(self.export_heatmap_table)
+            topBar.addWidget(self.exportBtn)
+            
+            # 年度选择（年度模式，使用 Fluent CalendarPicker，取所选日期的年份）
+            self.yearLabel = QLabel("年份")
+            self.yearLabel.setStyleSheet("font-size: 12px; color: #666666; border: none; background: transparent;")
+            self.yearEdit = CalendarPicker()
+            self.yearEdit.setDateFormat("yyyy/MM/dd")
+            self.yearEdit.setFixedWidth(140)
+            self.yearEdit.setDate(QDate.currentDate())
+            self.yearEdit.dateChanged.connect(lambda: self.updateData())
+            topBar.addWidget(self.yearLabel)
+            topBar.addWidget(self.yearEdit)
+            
+            # 日期范围（时段模式，使用 Fluent CalendarPicker）
+            self.startLabel = QLabel("从")
+            self.startLabel.setStyleSheet("font-size: 12px; color: #666666; border: none; background: transparent;")
+            self.startEdit = CalendarPicker()
+            self.startEdit.setDateFormat("yyyy/MM/dd")
+            self.startEdit.setFixedWidth(140)
+            self.startEdit.setDate(QDate.currentDate().addDays(-6))
+            self.startEdit.dateChanged.connect(lambda: self.updateData())
+            topBar.addWidget(self.startLabel)
+            topBar.addWidget(self.startEdit)
+            
+            self.endLabel = QLabel("至")
+            self.endLabel.setStyleSheet("font-size: 12px; color: #666666; border: none; background: transparent;")
+            self.endEdit = CalendarPicker()
+            self.endEdit.setDateFormat("yyyy/MM/dd")
+            self.endEdit.setFixedWidth(140)
+            self.endEdit.setDate(QDate.currentDate())
+            self.endEdit.dateChanged.connect(lambda: self.updateData())
+            topBar.addWidget(self.endLabel)
+            topBar.addWidget(self.endEdit)
+            
+            layout.addLayout(topBar)
+            
+            # 副标题
+            subtitle = QLabel("查看多时段工作热力分布，直观了解工作节奏")
+            subtitle.setStyleSheet("font-size: 12px; color: #888888; border: none; background: transparent;")
+            layout.addWidget(subtitle)
+            
+            # ========== 统计卡片 ==========
+            statsCard = QFrame()
+            statsCard.setStyleSheet("QFrame { background-color: white; border-radius: 16px; border: 1px solid #F0F0F0; }")
+            statsLayout = QHBoxLayout(statsCard)
+            statsLayout.setContentsMargins(24, 18, 24, 18)
+            statsLayout.setSpacing(30)
+            
+            self.statCount = QLabel("0")
+            self.statDuration = QLabel("0h")
+            self.statActiveDays = QLabel("0")
+            self.statDailyAvg = QLabel("0")
+            stat_configs = [
+                (self.statCount, "记录条数"),
+                (self.statDuration, "专注时长"),
+                (self.statActiveDays, "活跃天数"),
+                (self.statDailyAvg, "日均记录"),
+            ]
+            for label, sub in stat_configs:
+                w = QWidget()
+                w.setStyleSheet("border: none; background: transparent;")
+                vl = QVBoxLayout(w)
+                vl.setSpacing(4)
+                label.setStyleSheet("font-size: 22px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
+                vl.addWidget(label)
+                sl = QLabel(sub)
+                sl.setStyleSheet("font-size: 11px; color: #999999; border: none; background: transparent;")
+                vl.addWidget(sl)
+                statsLayout.addWidget(w)
+            
+            statsLayout.addStretch()
+            self.statSlogan = QLabel("工作轨迹，清晰可见")
+            self.statSlogan.setStyleSheet("font-size: 12px; color: #BBBBBB; border: none; background: transparent;")
+            statsLayout.addWidget(self.statSlogan)
+            layout.addWidget(statsCard)
+            
+            # ========== 热力图区域 ==========
+            self.heatCard = QFrame()
+            self.heatCard.setStyleSheet("QFrame { background-color: white; border-radius: 16px; border: 1px solid #F0F0F0; }")
+            self.heatCardLayout = QVBoxLayout(self.heatCard)
+            self.heatCardLayout.setContentsMargins(20, 18, 20, 18)
+            self.heatCardLayout.setSpacing(12)
+            layout.addWidget(self.heatCard)
+            
+            # ========== 年度概览（年度模式）==========
+            self.yearOverviewCard = QFrame()
+            self.yearOverviewCard.setStyleSheet("QFrame { background-color: white; border-radius: 16px; border: 1px solid #F0F0F0; }")
+            self.yearOverviewLayout = QVBoxLayout(self.yearOverviewCard)
+            self.yearOverviewLayout.setContentsMargins(24, 18, 24, 18)
+            self.yearOverviewLayout.setSpacing(12)
+            layout.addWidget(self.yearOverviewCard)
+            
+            layout.addStretch()
+            
+            scrollArea.setWidget(contentWidget)
+            scrollLayout.addWidget(scrollArea)
+        
+        def set_mode(self, mode):
+            self.mode = mode
+            self._update_mode_buttons()
+            self.updateData()
+        
+        def _update_mode_buttons(self):
+            active = """
+                QPushButton { background-color: #1a1a1a; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; padding: 0 16px; }
+            """
+            inactive = """
+                QPushButton { background-color: white; color: #374151; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 13px; padding: 0 16px; }
+                QPushButton:hover { background-color: #F9FAFB; }
+            """
+            if self.mode == "period":
+                self.periodBtn.setStyleSheet(active)
+                self.yearBtn.setStyleSheet(inactive)
+                self.yearLabel.setVisible(False)
+                self.yearEdit.setVisible(False)
+                self.startLabel.setVisible(True)
+                self.startEdit.setVisible(True)
+                self.endLabel.setVisible(True)
+                self.endEdit.setVisible(True)
+                self.statSlogan.setText("工作轨迹，清晰可见")
+                self.yearOverviewCard.setVisible(False)
+            else:
+                self.yearBtn.setStyleSheet(active)
+                self.periodBtn.setStyleSheet(inactive)
+                self.yearLabel.setVisible(True)
+                self.yearEdit.setVisible(True)
+                self.startLabel.setVisible(False)
+                self.startEdit.setVisible(False)
+                self.endLabel.setVisible(False)
+                self.endEdit.setVisible(False)
+                self.statSlogan.setText("让时间说话，让努力有迹可循")
+                self.yearOverviewCard.setVisible(True)
+        
+        def _load_records(self):
+            from store import read_records
+            return read_records()
+        
+        def _green_color(self, intensity):
+            # 从浅到深的绿色
+            if intensity <= 0:
+                return "#EBEBEB"
+            levels = ["#D6F5DE", "#A8EBC0", "#6FDB9B", "#34C777", "#16A34A"]
+            idx = min(len(levels) - 1, int(intensity * len(levels)))
+            return levels[idx]
+        
+        def updateData(self):
+            records = self._load_records()
+            self._records_cache = records
+            
+            # 清空热力图区域
+            while self.heatCardLayout.count():
+                item = self.heatCardLayout.takeAt(0)
+                if item.widget():
+                    item.widget().deleteLater()
+            
+            if self.mode == "period":
+                self._render_period(records)
+            else:
+                self._render_year(records)
+        
+        def _render_period(self, records):
+            start = self.startEdit.date
+            end = self.endEdit.date
+            if end < start:
+                start, end = end, start
+            
+            # 展示所选范围内所有天
+            n_days = start.daysTo(end) + 1
+            days = [start.addDays(i) for i in range(n_days)]
+            
+            # 统计
+            day_hour = {}
+            day_count = {}
+            day_min = {}
+            total_count = 0
+            total_min = 0.0
+            for r in records:
+                d = QDate.fromString(r.get('日期', ''), "yyyy-MM-dd")
+                if not d.isValid() or d < start or d > end:
+                    continue
+                t = r.get('时间', '00:00:00')
+                try:
+                    hour = int(t.split(':')[0])
+                except:
+                    hour = 0
+                key = d.toString("yyyy-MM-dd")
+                day_hour.setdefault(key, [0] * 24)
+                day_hour[key][hour] += 1
+                day_count[key] = day_count.get(key, 0) + 1
+                try:
+                    day_min[key] = day_min.get(key, 0) + float(r.get('持续时长(分钟)', 0))
+                except:
+                    pass
+                total_count += 1
+                try:
+                    total_min += float(r.get('持续时长(分钟)', 0))
+                except:
+                    pass
+            
+            active_days = len([k for k in day_count if day_count[k] > 0])
+            daily_avg = round(total_count / n_days) if n_days > 0 else 0
+            
+            self.statCount.setText(str(total_count))
+            self.statDuration.setText(f"{total_min / 60:.1f}h")
+            self.statActiveDays.setText(str(active_days))
+            self.statDailyAvg.setText(str(daily_avg))
+            
+            # 标题
+            title = QLabel("时段记录")
+            title.setStyleSheet("font-size: 15px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
+            self.heatCardLayout.addWidget(title)
+            
+            # 构建矩阵与标签
+            matrix = []
+            row_labels = []
+            for d in days:
+                key = d.toString("yyyy-MM-dd")
+                matrix.append(day_hour.get(key, [0] * 24))
+                if d == QDate.currentDate():
+                    dname = "今天"
+                elif d == QDate.currentDate().addDays(-1):
+                    dname = "昨天"
+                else:
+                    dname = d.toString("MM-dd")
+                row_labels.append((dname, f"{day_count.get(key, 0)}条 · {day_min.get(key, 0):.0f}min"))
+            
+            col_labels = [(h, f"{h}:00") for h in range(0, 24, 3)]
+            
+            canvas = HeatmapCanvas(self)
+            canvas.setData(matrix, row_labels, col_labels,
+                           col_label_pos="bottom", left_gutter=70, spacing=5, max_cell=30)
+            
+            # 直接加入布局，画布按行数自然撑高；
+            # 超过页面高度时由页面外层滚动条整体往下浏览
+            self.heatCardLayout.addWidget(canvas)
+        
+        def _render_year(self, records):
+            year = self.yearEdit.date.year()
+            
+            # 统计 date -> count
+            date_count = {}
+            total_count = 0
+            total_min = 0.0
+            for r in records:
+                dstr = r.get('日期', '')
+                if not dstr.startswith(str(year)):
+                    continue
+                date_count[dstr] = date_count.get(dstr, 0) + 1
+                total_count += 1
+                try:
+                    total_min += float(r.get('持续时长(分钟)', 0))
+                except:
+                    pass
+            
+            active_days = len([k for k in date_count if date_count[k] > 0])
+            daily_avg = round(total_count / active_days) if active_days > 0 else 0
+            
+            self.statCount.setText(str(total_count))
+            self.statDuration.setText(f"{total_min / 60:.1f}h")
+            self.statActiveDays.setText(str(active_days))
+            self.statDailyAvg.setText(str(daily_avg))
+            
+            title = QLabel(f"{year} 年度记录")
+            title.setStyleSheet("font-size: 15px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
+            self.heatCardLayout.addWidget(title)
+            
+            # 构建周x7网格
+            import datetime as dt
+            jan1 = dt.date(year, 1, 1)
+            dec31 = dt.date(year, 12, 31)
+            # 从1月1日所在周的周一开始
+            start_monday = jan1 - dt.timedelta(days=jan1.weekday())
+            
+            # 构建周x7矩阵
+            matrix = []
+            d = start_monday
+            week = 0
+            month_labels = []
+            last_month = None
+            while d <= dec31:
+                col = []
+                for row in range(7):
+                    cur = d + dt.timedelta(days=row)
+                    col.append(date_count.get(cur.strftime("%Y-%m-%d"), 0) if cur.year == year else 0)
+                matrix.append(col)
+                if d.month != last_month and d.year == year:
+                    month_labels.append((week, f"{d.month}月"))
+                    last_month = d.month
+                d += dt.timedelta(days=7)
+                week += 1
+            
+            # 转置为 [7行][week列]
+            matrix_t = [[matrix[w][r] for w in range(len(matrix))] for r in range(7)]
+            row_labels = ["周一", "", "周三", "", "周五", "", ""]
+            
+            canvas = HeatmapCanvas(self)
+            canvas.setData(matrix_t, row_labels, month_labels,
+                           col_label_pos="top", left_gutter=40, spacing=3, max_cell=14)
+            self.heatCardLayout.addWidget(canvas)
+            
+            # 年度概览
+            self._render_year_overview(records, year, date_count, total_min)
+        
+        def _render_year_overview(self, records, year, date_count, total_min):
+            # 清空
+            while self.yearOverviewLayout.count():
+                item = self.yearOverviewLayout.takeAt(0)
+                if item.widget():
+                    item.widget().deleteLater()
+            
+            import datetime as dt
+            title = QLabel("年度概览")
+            title.setStyleSheet("font-size: 15px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
+            self.yearOverviewLayout.addWidget(title)
+            
+            # 最活跃月份
+            month_count = {}
+            weekday_count = {}
+            for dstr, c in date_count.items():
+                try:
+                    d = dt.datetime.strptime(dstr, "%Y-%m-%d").date()
+                    month_count[d.month] = month_count.get(d.month, 0) + c
+                    weekday_count[d.weekday()] = weekday_count.get(d.weekday(), 0) + c
+                except:
+                    pass
+            
+            if month_count:
+                best_month = max(month_count, key=month_count.get)
+                best_month_str = f"{best_month}月"
+                best_month_count = month_count[best_month]
+            else:
+                best_month_str, best_month_count = "-", 0
+            
+            wd_names = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+            if weekday_count:
+                best_wd = max(weekday_count, key=weekday_count.get)
+                best_wd_str = wd_names[best_wd]
+                best_wd_count = weekday_count[best_wd]
+            else:
+                best_wd_str, best_wd_count = "-", 0
+            
+            # 连续活跃天数
+            sorted_dates = sorted([dt.datetime.strptime(k, "%Y-%m-%d").date() for k in date_count if date_count[k] > 0])
+            max_streak = 0
+            cur_streak = 0
+            prev = None
+            for d in sorted_dates:
+                if prev and (d - prev).days == 1:
+                    cur_streak += 1
+                else:
+                    cur_streak = 1
+                max_streak = max(max_streak, cur_streak)
+                prev = d
+            
+            # 峰值日期 & 记录最多一天
+            if date_count:
+                peak_date = max(date_count, key=date_count.get)
+                peak_count = date_count[peak_date]
+            else:
+                peak_date, peak_count = "-", 0
+            
+            row = QHBoxLayout()
+            row.setSpacing(30)
+            configs = [
+                ("最活跃月份", best_month_str, f"{best_month_count} 条记录"),
+                ("最活跃星期", best_wd_str, f"{best_wd_count} 条记录"),
+                ("连续活跃天数", f"{max_streak} 天", "最长连续活跃"),
+                ("年度峰值日期", peak_date, f"{total_min / 60:.1f}h"),
+                ("记录最多一天", peak_date, f"{peak_count} 条记录"),
+            ]
+            for sub, main, sub2 in configs:
+                w = QWidget()
+                w.setStyleSheet("border: none; background: transparent;")
+                vl = QVBoxLayout(w)
+                vl.setSpacing(4)
+                s1 = QLabel(sub)
+                s1.setStyleSheet("font-size: 11px; color: #999999; border: none; background: transparent;")
+                m = QLabel(main)
+                m.setStyleSheet("font-size: 16px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
+                s2 = QLabel(sub2)
+                s2.setStyleSheet("font-size: 11px; color: #999999; border: none; background: transparent;")
+                vl.addWidget(s1)
+                vl.addWidget(m)
+                vl.addWidget(s2)
+                row.addWidget(w)
+            row.addStretch()
+            self.yearOverviewLayout.addLayout(row)
+        
+        # ==================== 导出表格（热力图数据 + 详细记录） ====================
+        
+        def export_heatmap_table(self):
+            """导出热力图对应的数据表格（.xlsx，无第三方依赖，Excel/WPS 可直接打开）"""
+            from PyQt5.QtWidgets import QFileDialog
+            from qfluentwidgets import InfoBar, InfoBarPosition
+            
+            mode_name = "时段" if self.mode == "period" else "年度"
+            default_name = f"热力图数据_{mode_name}_{QDate.currentDate().toString('yyyyMMdd')}.xlsx"
+            file_path, _ = QFileDialog.getSaveFileName(
+                self, "导出热力图数据表格", default_name, "Excel 文件 (*.xlsx)"
+            )
+            if not file_path:
+                return
+            if not file_path.lower().endswith(".xlsx"):
+                file_path += ".xlsx"
+            
+            records = self._records_cache or self._load_records()
+            try:
+                if self.mode == "period":
+                    sheets = self._build_period_table_sheets(records)
+                else:
+                    sheets = self._build_year_table_sheets(records)
+                _write_xlsx(file_path, sheets)
+                InfoBar.success(
+                    title="导出成功",
+                    content=f"数据表格已保存: {file_path}",
+                    orient=Qt.Horizontal, isClosable=True,
+                    position=InfoBarPosition.TOP, duration=3000, parent=self
+                )
+            except Exception as e:
+                InfoBar.error(
+                    title="导出失败",
+                    content=str(e),
+                    orient=Qt.Horizontal, isClosable=True,
+                    position=InfoBarPosition.TOP, duration=4000, parent=self
+                )
+        
+        def _build_period_table_sheets(self, records):
+            """构建时段模式的数据表：汇总统计 / 时段分布表 / 类型统计 / 详细记录"""
+            from store import WORK_TYPES
+            
+            start = self.startEdit.date
+            end = self.endEdit.date
+            if end < start:
+                start, end = end, start
+            n_days = start.daysTo(end) + 1
+            days = [start.addDays(i) for i in range(n_days)]
+            
+            day_hour = {}
+            day_count = {}
+            day_min = {}
+            day_first = {}
+            day_last = {}
+            type_count = {}
+            type_min = {}
+            total_count = 0
+            total_min = 0.0
+            detail_rows = []
+            for r in records:
+                d = QDate.fromString(r.get('日期', ''), "yyyy-MM-dd")
+                if not d.isValid() or d < start or d > end:
+                    continue
+                t = r.get('时间', '00:00:00')
+                try:
+                    hour = int(t.split(':')[0])
+                except Exception:
+                    hour = 0
+                wt = r.get('工作类型', '其他')
+                try:
+                    mins = float(r.get('持续时长(分钟)', 0) or 0)
+                except Exception:
+                    mins = 0.0
+                
+                key = d.toString("yyyy-MM-dd")
+                day_hour.setdefault(key, [0] * 24)[hour] += 1
+                day_count[key] = day_count.get(key, 0) + 1
+                day_min[key] = day_min.get(key, 0) + mins
+                day_first.setdefault(key, t)
+                day_last[key] = t
+                type_count[wt] = type_count.get(wt, 0) + 1
+                type_min[wt] = type_min.get(wt, 0) + mins
+                total_count += 1
+                total_min += mins
+                detail_rows.append([r.get('日期', ''), t, wt, r.get('工作描述', ''), round(mins, 1)])
+            
+            active_days = len(day_count)
+            
+            # 1) 汇总统计
+            stats = [
+                ("日期范围", f"{start.toString('yyyy-MM-dd')} 至 {end.toString('yyyy-MM-dd')}"),
+                ("记录条数", total_count),
+                ("专注时长(小时)", round(total_min / 60, 2)),
+                ("活跃天数", active_days),
+                ("日均记录", round(total_count / n_days, 1) if n_days else 0),
+            ]
+            if day_first:
+                stats.append(("最早使用时间", sorted(day_first.values())[0]))
+                stats.append(("最晚使用时间", sorted(day_last.values())[-1]))
+            
+            # 2) 时段分布表（日期 × 24小时）
+            weekday_names = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+            matrix_rows = []
+            for d in days:
+                key = d.toString("yyyy-MM-dd")
+                counts = day_hour.get(key, [0] * 24)
+                if d == QDate.currentDate():
+                    dname = "今天"
+                elif d == QDate.currentDate().addDays(-1):
+                    dname = "昨天"
+                else:
+                    dname = weekday_names[d.dayOfWeek() - 1]
+                matrix_rows.append([key, dname] + counts + [day_count.get(key, 0), round(day_min.get(key, 0), 1)])
+            
+            # 3) 类型统计
+            type_rows = []
+            for wt in WORK_TYPES:
+                if type_count.get(wt, 0) > 0 or type_min.get(wt, 0) > 0:
+                    type_rows.append([wt, type_count.get(wt, 0), round(type_min.get(wt, 0), 1)])
+            for wt in type_count:
+                if wt not in WORK_TYPES:
+                    type_rows.append([wt, type_count[wt], round(type_min.get(wt, 0), 1)])
+            type_rows.sort(key=lambda x: -x[1])
+            
+            # 4) 详细记录（按日期、时间排序）
+            detail_rows.sort(key=lambda x: (x[0], x[1]))
+            
+            hour_headers = [f"{h:02d}:00" for h in range(24)]
+            return [
+                {"name": "汇总统计", "headers": ["统计项", "数值"], "rows": stats, "widths": [22, 40]},
+                {"name": "时段分布表",
+                 "headers": ["日期", "星期"] + hour_headers + ["合计", "持续时长(分钟)"],
+                 "rows": matrix_rows,
+                 "widths": [12, 10] + [6] * 24 + [8, 14]},
+                {"name": "类型统计",
+                 "headers": ["工作类型", "记录条数", "持续时长(分钟)"],
+                 "rows": type_rows, "widths": [14, 10, 16]},
+                {"name": "详细记录",
+                 "headers": ["日期", "时间", "工作类型", "工作描述", "持续时长(分钟)"],
+                 "rows": detail_rows, "widths": [12, 10, 12, 60, 16]},
+            ]
+        
+        def _build_year_table_sheets(self, records):
+            """构建年度模式的数据表：汇总统计 / 年度分布表 / 月度统计 / 星期统计 / 类型统计 / 详细记录"""
+            import datetime as dt
+            from store import WORK_TYPES
+            
+            year = self.yearEdit.date.year()
+            weekday_names = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+            
+            date_count = {}
+            date_min = {}
+            type_count = {}
+            type_min = {}
+            total_count = 0
+            total_min = 0.0
+            detail_rows = []
+            for r in records:
+                dstr = r.get('日期', '')
+                if not dstr.startswith(str(year)):
+                    continue
+                wt = r.get('工作类型', '其他')
+                try:
+                    mins = float(r.get('持续时长(分钟)', 0) or 0)
+                except Exception:
+                    mins = 0.0
+                date_count[dstr] = date_count.get(dstr, 0) + 1
+                date_min[dstr] = date_min.get(dstr, 0) + mins
+                type_count[wt] = type_count.get(wt, 0) + 1
+                type_min[wt] = type_min.get(wt, 0) + mins
+                total_count += 1
+                total_min += mins
+                detail_rows.append([dstr, r.get('时间', ''), wt, r.get('工作描述', ''), round(mins, 1)])
+            
+            active_days = len(date_count)
+            
+            # 月度 / 星期统计
+            month_count = {}
+            month_min = {}
+            weekday_count = {}
+            weekday_min = {}
+            for dstr in date_count:
+                d = dt.datetime.strptime(dstr, "%Y-%m-%d").date()
+                month_count[d.month] = month_count.get(d.month, 0) + date_count[dstr]
+                month_min[d.month] = month_min.get(d.month, 0) + date_min[dstr]
+                weekday_count[d.weekday()] = weekday_count.get(d.weekday(), 0) + date_count[dstr]
+                weekday_min[d.weekday()] = weekday_min.get(d.weekday(), 0) + date_min[dstr]
+            
+            # 汇总统计
+            best_month = max(month_count, key=month_count.get) if month_count else None
+            best_wd = max(weekday_count, key=weekday_count.get) if weekday_count else None
+            sorted_dates = sorted(
+                dt.datetime.strptime(k, "%Y-%m-%d").date()
+                for k in date_count if date_count[k] > 0
+            )
+            max_streak = 0
+            cur = 0
+            prev = None
+            for d in sorted_dates:
+                if prev and (d - prev).days == 1:
+                    cur += 1
+                else:
+                    cur = 1
+                max_streak = max(max_streak, cur)
+                prev = d
+            peak_date = max(date_count, key=date_count.get) if date_count else "-"
+            
+            stats = [
+                ("年份", year),
+                ("记录条数", total_count),
+                ("专注时长(小时)", round(total_min / 60, 2)),
+                ("活跃天数", active_days),
+                ("日均记录(按活跃日)", round(total_count / active_days, 1) if active_days else 0),
+                ("最活跃月份", f"{best_month}月" if best_month else "-"),
+                ("最活跃月份记录数", month_count[best_month] if best_month else 0),
+                ("最活跃星期", weekday_names[best_wd] if best_wd is not None else "-"),
+                ("最活跃星期记录数", weekday_count[best_wd] if best_wd is not None else 0),
+                ("连续活跃天数", max_streak),
+                ("年度峰值日期", peak_date),
+                ("峰值日期记录数", date_count.get(peak_date, 0)),
+            ]
+            
+            # 年度分布表：全年每天（与年度热力图对应）
+            daily_rows = []
+            d = dt.date(year, 1, 1)
+            while d <= dt.date(year, 12, 31):
+                dstr = d.strftime("%Y-%m-%d")
+                daily_rows.append([dstr, weekday_names[d.weekday()], date_count.get(dstr, 0), round(date_min.get(dstr, 0), 1)])
+                d += dt.timedelta(days=1)
+            
+            month_rows = [[f"{m}月", month_count.get(m, 0), round(month_min.get(m, 0), 1)] for m in range(1, 13)]
+            weekday_rows = [[weekday_names[i], weekday_count.get(i, 0), round(weekday_min.get(i, 0), 1)] for i in range(7)]
+            
+            type_rows = []
+            for wt in WORK_TYPES:
+                if type_count.get(wt, 0) > 0 or type_min.get(wt, 0) > 0:
+                    type_rows.append([wt, type_count.get(wt, 0), round(type_min.get(wt, 0), 1)])
+            for wt in type_count:
+                if wt not in WORK_TYPES:
+                    type_rows.append([wt, type_count[wt], round(type_min.get(wt, 0), 1)])
+            type_rows.sort(key=lambda x: -x[1])
+            
+            detail_rows.sort(key=lambda x: (x[0], x[1]))
+            
+            return [
+                {"name": "汇总统计", "headers": ["统计项", "数值"], "rows": stats, "widths": [22, 40]},
+                {"name": "年度分布表",
+                 "headers": ["日期", "星期", "记录数", "持续时长(分钟)"],
+                 "rows": daily_rows, "widths": [12, 10, 10, 16]},
+                {"name": "月度统计",
+                 "headers": ["月份", "记录数", "持续时长(分钟)"],
+                 "rows": month_rows, "widths": [10, 10, 16]},
+                {"name": "星期统计",
+                 "headers": ["星期", "记录数", "持续时长(分钟)"],
+                 "rows": weekday_rows, "widths": [10, 10, 16]},
+                {"name": "类型统计",
+                 "headers": ["工作类型", "记录条数", "持续时长(分钟)"],
+                 "rows": type_rows, "widths": [14, 10, 16]},
+                {"name": "详细记录",
+                 "headers": ["日期", "时间", "工作类型", "工作描述", "持续时长(分钟)"],
+                 "rows": detail_rows, "widths": [12, 10, 12, 60, 16]},
+            ]
+
     class SettingsPage(QWidget):
         """设置页面"""
         logout_signal = pyqtSignal()  # 退出登录信号
@@ -7421,7 +8430,7 @@ def main():
             """)
             
             # 更新日志
-            self.logText.setText(f"[{self.get_now().strftime('%H:%M:%S')}] 监控已启动，间隔 {self.selected_interval} 分钟\n等待第一个间隔结束后开始首次分析...")
+            self.logText.setText(f"[{get_now().strftime('%H:%M:%S')}] 监控已启动，间隔 {self.selected_interval} 分钟\n等待第一个间隔结束后开始首次分析...")
             
             # 启动定时监控
             start_monitor(
@@ -7469,7 +8478,7 @@ def main():
             
             # 更新日志
             current_text = self.logText.text()
-            self.logText.setText(current_text + f"\n[{self.get_now().strftime('%H:%M:%S')}] 监控已停止")
+            self.logText.setText(current_text + f"\n[{get_now().strftime('%H:%M:%S')}] 监控已停止")
             
             InfoBar.info(
                 title="监控已停止",
@@ -7486,7 +8495,7 @@ def main():
             if error:
                 # 分析失败
                 current_text = self.logText.text()
-                self.logText.setText(current_text + f"\n[{self.get_now().strftime('%H:%M:%S')}] ❌ 分析失败: {str(error)}")
+                self.logText.setText(current_text + f"\n[{get_now().strftime('%H:%M:%S')}] ❌ 分析失败: {str(error)}")
             elif result:
                 # 分析成功
                 work_type = result.get('type', '未知')
@@ -7494,7 +8503,7 @@ def main():
                 current_text = self.logText.text()
                 # 截断描述，避免日志过长
                 short_desc = description[:50] + "..." if len(description) > 50 else description
-                self.logText.setText(current_text + f"\n[{self.get_now().strftime('%H:%M:%S')}] ✅ [{work_type}] {short_desc}")
+                self.logText.setText(current_text + f"\n[{get_now().strftime('%H:%M:%S')}] ✅ [{work_type}] {short_desc}")
                 
                 # 更新其他页面数据
                 self.main_window.todayPage.updateData()
@@ -7522,6 +8531,7 @@ def main():
             self.monitorPage = MonitorPage(self)
             self.reportPage = ReportPage(self)
             self.historyReportPage = HistoryReportPage(self)
+            self.heatmapPage = HeatmapPage(self)
             self.settingsPage = SettingsPage(self)
             
             # 设置历史报告页面的抽屉引用
@@ -7538,6 +8548,7 @@ def main():
             self.addSubInterface(self.timelinePage, FluentIcon.PIE_SINGLE, "工作时间线")
             self.addSubInterface(self.reportPage, FluentIcon.DOCUMENT, "生成报告")
             self.addSubInterface(self.historyReportPage, FluentIcon.HISTORY, "历史报告")
+            self.addSubInterface(self.heatmapPage, FluentIcon.CALENDAR, "热力图")
             self.addSubInterface(self.monitorPage, FluentIcon.PLAY, "管理监控")
             self.addSubInterface(self.recordsPage, FluentIcon.DOCUMENT, "工作记录（内测）")
             self.addSubInterface(self.screenshotPage, FluentIcon.CAMERA, "截图分析（内测）")
