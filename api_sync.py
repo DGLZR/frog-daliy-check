@@ -36,7 +36,7 @@ def get_login_email():
     return None
 
 
-def sync_work_record(date, time, work_type, description, duration):
+def sync_work_record(date, time, work_type, description, duration, tokens=None):
     """
     同步工作记录到服务器
     
@@ -46,6 +46,7 @@ def sync_work_record(date, time, work_type, description, duration):
         work_type: 工作类型
         description: 工作描述
         duration: 持续时长(分钟)
+        tokens: 本次识别消耗的 token 用量字典 {'input':…, 'output':…, 'total':…}，可为 None
     
     返回值:
         (success: bool, message: str)
@@ -62,7 +63,8 @@ def sync_work_record(date, time, work_type, description, duration):
             "time": time,
             "work_type": work_type,
             "description": description,
-            "duration": duration
+            "duration": duration,
+            "tokens": tokens or {}
         }
         print(f"[同步] 同步工作记录: {data}")
         response = requests.post(
@@ -213,7 +215,7 @@ def sync_report_generated():
         return False, str(e)
 
 
-def upload_report(title, content, report_type="日报"):
+def upload_report(title, content, report_type="日报", tokens=None):
     """
     上传报告内容到服务器
     
@@ -221,6 +223,7 @@ def upload_report(title, content, report_type="日报"):
         title: 报告标题
         content: 报告内容（Markdown格式）
         report_type: 报告类型（日报/周报/月报）
+        tokens: 本次生成消耗的 token 用量字典 {'input':…, 'output':…, 'total':…}，可为 None
     
     返回值:
         (success: bool, message: str)
@@ -238,7 +241,8 @@ def upload_report(title, content, report_type="日报"):
                 "email": email,
                 "title": title,
                 "content": content,
-                "type": report_type
+                "type": report_type,
+                "tokens": tokens or {}
             },
             timeout=30
         )

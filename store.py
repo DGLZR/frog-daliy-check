@@ -58,6 +58,56 @@ RECORDS_FILE = os.path.join(DB_DIR, 'records.csv')
 # 工作类型列表，与screenshot.py中定义的类型保持一致
 WORK_TYPES = ["开发", "沟通", "生活", "学习", "设计", "管理", "文档", "娱乐", "产品", "会议", "运维", "测试", "数据分析", "其他"]
 
+# 活动记录表头（新增「消耗token数」列，用于记录每次识别消耗的 token）
+RECORD_HEADERS = ['ID', '日期', '时间', '工作类型', '工作描述', '持续时长(分钟)', '消耗token数']
+
+
+def format_token_count(n):
+    """
+    将 token 数量格式化为带量级单位的字符串
+
+    规则：
+        >= 10亿  -> xB（十亿）
+        >= 100万 -> xM（百万）
+        >= 1000  -> xK（千）
+        否则原样显示
+
+    参数：
+        n: token 数量（数值或字符串）
+    返回值：
+        格式化后的字符串，如 "12.5K"、"3.2M"、"1.1B"、"860"
+    """
+    try:
+        n = float(n)
+    except (TypeError, ValueError):
+        return "0"
+    if n >= 1_000_000_000:
+        return f"{n / 1_000_000_000:.1f}B"
+    if n >= 1_000_000:
+        return f"{n / 1_000_000:.1f}M"
+    if n >= 1_000:
+        return f"{n / 1_000:.1f}K"
+    return str(int(n))
+
+
+def _to_int(value, default=0):
+    """安全地把字符串/数值转成 int"""
+    try:
+        return int(float(value))
+    except (TypeError, ValueError):
+        return default
+
+
+def _parse_meta_value(line):
+    """
+    解析报告元信息行（形如 "**标签：** 值"）中的值
+
+    由于 Markdown 加粗的右 "**" 紧跟在全角冒号之后，直接按 "：" 切分
+    会得到 "** 值" 这样带前缀的结果，这里统一去掉前导 "*" 和空白。
+    """
+    value = line.split('：', 1)[-1].strip()
+    return value.lstrip('*').strip()
+
 
 # ==================== 初始化函数 ====================
 
@@ -96,7 +146,7 @@ def init_db():
     # 创建记录CSV文件（如果不存在）
     if not os.path.exists(RECORDS_FILE):
         # 定义记录表的列名
-        headers = ['ID', '日期', '时间', '工作类型', '工作描述', '持续时长(分钟)']
+        headers = RECORD_HEADERS
         
         with open(RECORDS_FILE, 'w', newline='', encoding='utf-8-sig') as f:
             writer = csv.writer(f)
@@ -198,12 +248,14 @@ def write_records(records):
     # 确保目录存在
     os.makedirs(DB_DIR, exist_ok=True)
     
-    # 定义表头
-    headers = ['ID', '日期', '时间', '工作类型', '工作描述', '持续时长(分钟)']
+    # 定义表头（含消耗token数列）
+    headers = RECORD_HEADERS
     
     # 覆盖写入整个文件
+    # restval='0'：旧记录缺少「消耗token数」列时默认补 0（向后兼容）
+    # extrasaction='ignore'：忽略记录里多余的字段，避免写入报错
     with open(RECORDS_FILE, 'w', newline='', encoding='utf-8-sig') as f:
-        writer = csv.DictWriter(f, fieldnames=headers)
+        writer = csv.DictWriter(f, fieldnames=headers, restval='0', extrasaction='ignore')
         writer.writeheader()  # 写入表头
         for record in records:
             writer.writerow(record)
@@ -613,7 +665,7 @@ def init_report_dir():
         print(f"已创建报告文件夹: {REPORT_DIR}")
 
 
-def save_report(title, content, report_type="日报", template_name="默认"):
+def save_report(title, content, report_type="日报", template_name="默认", tokens=None):
     """
     保存报告为 .md 文件
     
@@ -622,6 +674,7 @@ def save_report(title, content, report_type="日报", template_name="默认"):
         content: 报告内容
         report_type: 报告类型（日报/周报/月报）
         template_name: 使用的模板名称
+        tokens: 本次生成消耗的 token 字典 {'input':…, 'output':…, 'total':…}，可为 None
     
     返回值：
         保存的文件路径
@@ -633,12 +686,21 @@ def save_report(title, content, report_type="日报", template_name="默认"):
     filename = f"{now.strftime('%Y%m%d_%H%M%S')}_{report_type}.md"
     filepath = os.path.join(REPORT_DIR, filename)
     
+    # token 用量（缺省为 0）
+    tokens = tokens or {}
+    t_input = _to_int(tokens.get('input', 0))
+    t_output = _to_int(tokens.get('output', 0))
+    t_total = _to_int(tokens.get('total', 0), t_input + t_output)
+    
     # 生成报告内容
     report_content = f"""# {title}
 
 **生成时间：** {now.strftime('%Y-%m-%d %H:%M:%S')}
 **报告类型：** {report_type}
 **使用模板：** {template_name}
+**消耗Token：** {t_total}
+**输入Token：** {t_input}
+**输出Token：** {t_output}
 
 ---
 
@@ -680,6 +742,9 @@ def get_report_list():
                 generate_time = ""
                 template_name = "默认"
                 word_count = len(content)
+                token_total = 0
+                token_input = 0
+                token_output = 0
                 
                 # 简单解析标题
                 lines = content.split('\n')
@@ -687,11 +752,17 @@ def get_report_list():
                     if line.startswith('# '):
                         title = line[2:].strip()
                     if '**报告类型：**' in line:
-                        report_type = line.split('：')[-1].strip()
+                        report_type = _parse_meta_value(line)
                     if '**生成时间：**' in line:
-                        generate_time = line.split('：')[-1].strip()
+                        generate_time = _parse_meta_value(line)
                     if '**使用模板：**' in line:
-                        template_name = line.split('：')[-1].strip()
+                        template_name = _parse_meta_value(line)
+                    if '**消耗Token：**' in line:
+                        token_total = _to_int(_parse_meta_value(line))
+                    if '**输入Token：**' in line:
+                        token_input = _to_int(_parse_meta_value(line))
+                    if '**输出Token：**' in line:
+                        token_output = _to_int(_parse_meta_value(line))
                 
                 # 格式化时间
                 if generate_time:
@@ -714,7 +785,10 @@ def get_report_list():
                     'time': generate_time,
                     'word_count': word_count,
                     'output_method': '直接输出',
-                    'model': template_name
+                    'model': template_name,
+                    'token_total': token_total,
+                    'token_input': token_input,
+                    'token_output': token_output
                 })
             except Exception as e:
                 print(f"读取报告失败 {filename}: {e}")
@@ -723,6 +797,54 @@ def get_report_list():
     reports.sort(key=lambda x: x['filename'], reverse=True)
     
     return reports
+
+
+def get_token_stats():
+    """
+    统计 token 用量（活动分析 + 报告生成）
+
+    返回值：字典
+        today_analysis / all_analysis  —— 活动分析消耗 token（今日 / 全部）
+        today_report / all_report      —— 报告生成消耗 token（今日 / 全部，取报告总 token）
+        today_report_output / all_report_output —— 报告输出 token（今日 / 全部）
+        today_total / all_total        —— 合计（今日 / 全部）
+    """
+    today = get_today()
+
+    # ---- 活动分析 token（来自 records.csv 的「消耗token数」列）----
+    today_analysis = 0
+    all_analysis = 0
+    for r in read_records():
+        tokens = _to_int(r.get('消耗token数', 0))
+        all_analysis += tokens
+        if r.get('日期', '') == today:
+            today_analysis += tokens
+
+    # ---- 报告生成 token（来自各报告 .md 文件头）----
+    today_report = 0
+    all_report = 0
+    today_report_output = 0
+    all_report_output = 0
+    for rep in get_report_list():
+        total = _to_int(rep.get('token_total', 0))
+        output = _to_int(rep.get('token_output', 0))
+        all_report += total
+        all_report_output += output
+        # get_report_list 将当天报告的时间格式化为「今日 HH:MM」
+        if str(rep.get('time', '')).startswith('今日'):
+            today_report += total
+            today_report_output += output
+
+    return {
+        'today_analysis': today_analysis,
+        'today_report': today_report,
+        'today_report_output': today_report_output,
+        'today_total': today_analysis + today_report,
+        'all_analysis': all_analysis,
+        'all_report': all_report,
+        'all_report_output': all_report_output,
+        'all_total': all_analysis + all_report,
+    }
 
 
 def read_report(filepath):

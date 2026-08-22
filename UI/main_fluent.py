@@ -15,7 +15,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # 顶部导入 PyQt5 组件（供 LoginWindow 使用）
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
-                             QPushButton, QApplication, QCheckBox, QGraphicsOpacityEffect)
+                             QPushButton, QApplication, QCheckBox, QGraphicsOpacityEffect, QTextBrowser)
 from PyQt5.QtCore import Qt, pyqtSignal, QPoint, QTimer, QPropertyAnimation, QEasingCurve
 from PyQt5.QtGui import QPixmap, QPainter, QPainterPath, QLinearGradient, QPen, QBrush, QColor
 from datetime import datetime, timedelta, timezone
@@ -1200,6 +1200,21 @@ def main():
     base_font_size = max(9, int(12 / SCALE_FACTOR))
     app.setFont(QFont("Microsoft YaHei", base_font_size))
     
+    # 统一 ToolTip 样式：浅灰背景、更小字体、圆角细边框，观感更精致
+    # （报告列表的 Token 悬停详情等多行提示均生效）
+    _tooltip_font_size = max(10, min(13, base_font_size))
+    app.setStyleSheet(f"""
+        QToolTip {{
+            background-color: #F5F5F5;
+            color: #444444;
+            font-size: {_tooltip_font_size}px;
+            font-family: "Microsoft YaHei", sans-serif;
+            border: 1px solid #DCDCDC;
+            border-radius: 6px;
+            padding: 5px 9px;
+        }}
+    """)
+    
     from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
                                  QLabel, QFrame, QScrollArea, QCheckBox,
                                  QGraphicsDropShadowEffect, QGraphicsOpacityEffect,
@@ -1605,6 +1620,71 @@ def main():
             
             layout.addWidget(monitorCard)
             
+            # ========== 今日 Token 用量卡片 ==========
+            tokenCard = QFrame()
+            tokenCard.setStyleSheet("""
+                QFrame {
+                    background-color: white;
+                    border-radius: 12px;
+                    border: none;
+                }
+            """)
+            self.cards.append(tokenCard)
+            
+            tokenCardLayout = QVBoxLayout(tokenCard)
+            tokenCardLayout.setContentsMargins(20, 20, 20, 20)
+            tokenCardLayout.setSpacing(12)
+            
+            # 标题栏
+            tokenHeaderLayout = QHBoxLayout()
+            tokenIcon = QLabel("🪙")
+            tokenIcon.setStyleSheet("font-size: 16px; border: none; background: transparent;")
+            tokenHeaderLayout.addWidget(tokenIcon)
+            tokenTitle = QLabel("今日 Token 用量")
+            tokenTitle.setStyleSheet("font-size: 16px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            tokenHeaderLayout.addWidget(tokenTitle)
+            tokenHeaderLayout.addStretch()
+            self.todayTokenTotalLabel = QLabel("0")
+            self.todayTokenTotalLabel.setStyleSheet("font-size: 14px; font-weight: bold; color: #16A34A; border: none; background: transparent;")
+            tokenHeaderLayout.addWidget(self.todayTokenTotalLabel)
+            tokenCardLayout.addLayout(tokenHeaderLayout)
+            
+            # 分项：报告输出 / 活动分析
+            tokenBreakdownLayout = QHBoxLayout()
+            tokenBreakdownLayout.setSpacing(12)
+            
+            # 报告输出 token
+            reportTokenWidget = QFrame()
+            reportTokenWidget.setStyleSheet("QFrame { background-color: #F9FAFB; border-radius: 8px; border: 1px solid #F0F0F0; }")
+            reportTokenLayout = QVBoxLayout(reportTokenWidget)
+            reportTokenLayout.setContentsMargins(14, 12, 14, 12)
+            reportTokenLayout.setSpacing(4)
+            self.reportTokenLabel = QLabel("0")
+            self.reportTokenLabel.setStyleSheet("font-size: 18px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            reportTokenLayout.addWidget(self.reportTokenLabel)
+            reportTokenSub = QLabel("报告生成输出")
+            reportTokenSub.setStyleSheet("font-size: 11px; color: #999999; border: none; background: transparent;")
+            reportTokenLayout.addWidget(reportTokenSub)
+            tokenBreakdownLayout.addWidget(reportTokenWidget, 1)
+            
+            # 活动分析 token
+            analysisTokenWidget = QFrame()
+            analysisTokenWidget.setStyleSheet("QFrame { background-color: #F9FAFB; border-radius: 8px; border: 1px solid #F0F0F0; }")
+            analysisTokenLayout = QVBoxLayout(analysisTokenWidget)
+            analysisTokenLayout.setContentsMargins(14, 12, 14, 12)
+            analysisTokenLayout.setSpacing(4)
+            self.analysisTokenLabel = QLabel("0")
+            self.analysisTokenLabel.setStyleSheet("font-size: 18px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            analysisTokenLayout.addWidget(self.analysisTokenLabel)
+            analysisTokenSub = QLabel("活动分析")
+            analysisTokenSub.setStyleSheet("font-size: 11px; color: #999999; border: none; background: transparent;")
+            analysisTokenLayout.addWidget(analysisTokenSub)
+            tokenBreakdownLayout.addWidget(analysisTokenWidget, 1)
+            
+            tokenCardLayout.addLayout(tokenBreakdownLayout)
+            
+            layout.addWidget(tokenCard)
+            
             # 添加弹性空间
             layout.addStretch()
             
@@ -1759,6 +1839,23 @@ def main():
                 monLayout.addStretch()
                 
                 self.monitorListLayout.addWidget(monWidget)
+            
+            # 更新今日 Token 用量（报告输出 + 活动分析）
+            from store import get_token_stats, format_token_count
+            try:
+                ts = get_token_stats()
+                report_out = ts.get('today_report_output', 0)
+                analysis = ts.get('today_analysis', 0)
+                self.reportTokenLabel.setText(format_token_count(report_out))
+                self.reportTokenLabel.setToolTip(f"今日报告生成输出 {report_out} Token")
+                self.analysisTokenLabel.setText(format_token_count(analysis))
+                self.analysisTokenLabel.setToolTip(f"今日活动分析消耗 {analysis} Token")
+                self.todayTokenTotalLabel.setText(format_token_count(report_out + analysis))
+                self.todayTokenTotalLabel.setToolTip(
+                    f"今日合计 {report_out + analysis} Token（报告输出 {report_out} + 活动分析 {analysis}）"
+                )
+            except Exception as e:
+                print(f"[Token] 统计失败: {e}")
 
     # ==================== 截图识别工作线程 ====================
     
@@ -2296,6 +2393,19 @@ def main():
             activeLayout.addWidget(activeSubLabel)
             statsLayout.addWidget(activeWidget)
             
+            # Token 消耗（活动分析）
+            tokenWidget = QWidget()
+            tokenWidget.setStyleSheet("border: none; background: transparent;")
+            tokenStatLayout = QVBoxLayout(tokenWidget)
+            tokenStatLayout.setSpacing(3)
+            self.tokenCountLabel = QLabel("0")
+            self.tokenCountLabel.setStyleSheet("font-size: 22px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            tokenStatLayout.addWidget(self.tokenCountLabel)
+            self.tokenSubLabel = QLabel("今日Token")
+            self.tokenSubLabel.setStyleSheet("font-size: 10px; color: #999999; border: none; background: transparent;")
+            tokenStatLayout.addWidget(self.tokenSubLabel)
+            statsLayout.addWidget(tokenWidget)
+            
             statsLayout.addStretch()
             
             # 显示分类时长分布开关
@@ -2605,6 +2715,23 @@ def main():
                 self.activeTimeLabel.setText(f"{earliest[:5]} — {latest[:5]}")
             else:
                 self.activeTimeLabel.setText("--:-- — --:--")
+            
+            # Token 消耗（活动分析）：今日总数 + 全部总数
+            from store import format_token_count
+            all_recs = read_records()
+            today_str = get_today()
+            today_tokens = 0
+            all_tokens = 0
+            for r in all_recs:
+                try:
+                    tk = int(float(r.get('消耗token数', 0) or 0))
+                except (TypeError, ValueError):
+                    tk = 0
+                all_tokens += tk
+                if r.get('日期', '') == today_str:
+                    today_tokens += tk
+            self.tokenCountLabel.setText(format_token_count(today_tokens))
+            self.tokenSubLabel.setText(f"今日Token · 全部 {format_token_count(all_tokens)}")
         
         def updateDistribution(self):
             """更新分类时长分布"""
@@ -2828,6 +2955,18 @@ def main():
                     timeRangeLabel.setStyleSheet("font-size: 10px; color: #CCCCCC; border: none; background: transparent;")
                     tagsLayout.addWidget(timeRangeLabel)
                 
+                # 消耗 token（显示在时间右侧）
+                try:
+                    rec_tokens = int(float(record.get('消耗token数', 0) or 0))
+                except (TypeError, ValueError):
+                    rec_tokens = 0
+                if rec_tokens > 0:
+                    from store import format_token_count
+                    tokenLabel = QLabel(f"🪙 {format_token_count(rec_tokens)}")
+                    tokenLabel.setStyleSheet("font-size: 10px; color: #9CA3AF; border: none; background: transparent;")
+                    tokenLabel.setToolTip(f"本次活动分析消耗 {rec_tokens} Token")
+                    tagsLayout.addWidget(tokenLabel)
+                
                 tagsLayout.addStretch()
                 cardLayout.addLayout(tagsLayout)
                 
@@ -2863,6 +3002,7 @@ def main():
             self.end_date = end_date
             self.report_type = report_type
             self.full_content = ""
+            self.usage = {"input": 0, "output": 0, "total": 0}  # 本次生成消耗的 token
         
         def run(self):
             try:
@@ -2870,17 +3010,19 @@ def main():
                     if chunk:
                         self.full_content += chunk
                         self.chunk_received.emit(chunk)
-                    if is_finished:
-                        self.generation_finished.emit(self.full_content)
+                    # 完成信号延迟到拿到 token 用量后再发出
                 
                 from screenshot import generate_report_stream
-                generate_report_stream(
+                content, usage = generate_report_stream(
                     self.template_prompt,
                     self.start_date,
                     self.end_date,
                     self.report_type,
                     callback=on_chunk
                 )
+                self.full_content = content
+                self.usage = usage or self.usage
+                self.generation_finished.emit(self.full_content)
             
             except Exception as e:
                 self.generation_error.emit(str(e))
@@ -3769,6 +3911,12 @@ def main():
             self.infoLabel = QLabel(f"模板：{template_name} · 0 字")
             self.infoLabel.setStyleSheet("font-size: 12px; color: #9CA3AF; border: none; background: transparent;")
             footerLayout.addWidget(self.infoLabel)
+            
+            # token 用量显示（生成完成后填充）
+            self.tokenLabel = QLabel("")
+            self.tokenLabel.setStyleSheet("font-size: 12px; color: #9CA3AF; border: none; background: transparent;")
+            self.tokenLabel.setToolTip("本次报告生成消耗的 Token")
+            footerLayout.addWidget(self.tokenLabel)
             footerLayout.addStretch()
             
             # 操作按钮
@@ -3852,18 +4000,27 @@ def main():
             self.full_content = content
             self.contentEdit.setPlainText(content)
             
-            # 保存报告到文件
+            # 读取本次生成消耗的 token 并显示
+            usage = getattr(self.worker, 'usage', None) or {"input": 0, "output": 0, "total": 0}
+            self.token_usage = usage
+            from store import format_token_count
+            self.tokenLabel.setText(f"·  Token：{format_token_count(usage.get('total', 0))}")
+            self.tokenLabel.setToolTip(
+                "总 Token：" + str(usage.get('total', 0)) + "\n输入：" + str(usage.get('input', 0)) + "\n输出：" + str(usage.get('output', 0))
+            )
+            
+            # 保存报告到文件（含 token 用量）
             from store import save_report
             title = f"工作{self.report_type} — {self.date_range}"
-            save_report(title, content, self.report_type, self.template_name)
+            save_report(title, content, self.report_type, self.template_name, tokens=usage)
             
             # 同步报告到服务器
             try:
                 from api_sync import sync_report_generated, upload_report
                 # 记录报告生成事件
                 sync_report_generated()
-                # 上传报告内容
-                upload_report(title, content, self.report_type)
+                # 上传报告内容（携带本次生成的 token 用量 input/output/total）
+                upload_report(title, content, self.report_type, tokens=usage)
             except Exception as e:
                 print(f"[同步] 报告同步失败: {e}")
             
@@ -5013,6 +5170,27 @@ def main():
                 }
             """)
             titleLayout.addWidget(statusTag)
+            
+            # Token 用量标签（默认只显示总数，鼠标悬停显示 总/输入/输出）
+            token_total = report_data.get("token_total", 0)
+            if token_total:
+                from store import format_token_count
+                tokenTag = QLabel(f"🪙 {format_token_count(token_total)}")
+                tokenTag.setStyleSheet("""
+                    QLabel {
+                        background-color: #f3f4f6;
+                        color: #6b7280;
+                        padding: 2px 8px;
+                        border-radius: 4px;
+                        font-size: 11px;
+                        border: none;
+                    }
+                """)
+                tokenTag.setToolTip(
+                    f"总 Token：{token_total}\n输入：{report_data.get('token_input', 0)}\n输出：{report_data.get('token_output', 0)}"
+                )
+                titleLayout.addWidget(tokenTag)
+            
             titleLayout.addStretch()
             
             infoLayout.addLayout(titleLayout)
@@ -6364,8 +6542,10 @@ def main():
             versionLabel.setAlignment(Qt.AlignCenter)
             cardLayout.addWidget(versionLabel)
             
-            # 更新日志
-            logLabel = QLabel(update_log)
+            # 更新日志（支持 Markdown 渲染）
+            logLabel = QLabel('')
+            logLabel.setTextFormat(Qt.MarkdownText)
+            logLabel.setText(update_log or '')
             logLabel.setWordWrap(True)
             logLabel.setStyleSheet("font-size: 12px; color: #666666; border: none; background: transparent;")
             logLabel.setAlignment(Qt.AlignCenter)
@@ -6454,10 +6634,11 @@ def main():
             logTitle.setStyleSheet("font-size: 14px; font-weight: bold; color: #333333; border: none; background: transparent;")
             cardLayout.addWidget(logTitle)
             
-            logContent = QLabel(update_log)
-            logContent.setWordWrap(True)
+            logContent = QTextBrowser()
+            logContent.setOpenExternalLinks(True)
+            logContent.setMarkdown(update_log or '暂无更新内容')
             logContent.setStyleSheet("""
-                QLabel {
+                QTextBrowser {
                     background-color: #F9FAFB;
                     padding: 12px;
                     border-radius: 8px;
@@ -6466,7 +6647,6 @@ def main():
                     border: 1px solid #E5E7EB;
                 }
             """)
-            logContent.setAlignment(Qt.AlignTop | Qt.AlignLeft)
             cardLayout.addWidget(logContent)
             
             cardLayout.addStretch()
@@ -7851,7 +8031,7 @@ def main():
             aboutLayout.addWidget(aboutTitle)
             
             aboutText = QLabel(
-                "工作日报助手 v1.1\n"
+                "工作日报助手 v1.2\n"
                 "自动截图分析工作内容，生成工作日报。"
             )
             aboutText.setWordWrap(True)
@@ -7883,7 +8063,7 @@ def main():
                 print(f"[checkUpdate] 开始检查, silent={silent}")
                 response = requests.get(
                     f"{API_BASE_URL}/api/check-update",
-                    params={"current_version": "v1.1"},
+                    params={"current_version": "v1.2"},
                     timeout=5
                 )
                 
@@ -7920,8 +8100,8 @@ def main():
                 
                 if result.get('success'):
                     has_update = result.get('has_update', False)
-                    current_version = result.get('current_version', 'v1.1')
-                    latest_version = result.get('latest_version', 'v1.1')
+                    current_version = result.get('current_version', 'v1.2')
+                    latest_version = result.get('latest_version', 'v1.2')
                     update_log = result.get('update_log', '')
                     download_url = result.get('download_url', '')
                     force_update = result.get('force_update', False)
@@ -8644,7 +8824,7 @@ def main():
                     self.showUpdateBadge(True)
                     # 弹窗提示
                     dialog = UpdateDialog(
-                        result.get('current_version', 'v1.1'),
+                        result.get('current_version', 'v1.2'),
                         result.get('latest_version', ''),
                         result.get('update_log', ''),
                         result.get('download_url', ''),

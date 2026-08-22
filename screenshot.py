@@ -108,6 +108,56 @@ _use_glm = False
 # 测试模式（启用后保存截图）
 _test_mode = False
 
+# 最近一次报告生成的 token 用量
+_last_report_usage = {"input": 0, "output": 0, "total": 0}
+
+
+def get_last_report_usage():
+    """获取最近一次报告生成的 token 用量（input/output/total）"""
+    return dict(_last_report_usage)
+
+
+def _set_report_usage(usage):
+    """记录最近一次报告生成的 token 用量"""
+    global _last_report_usage
+    _last_report_usage = dict(usage or {"input": 0, "output": 0, "total": 0})
+
+
+def _extract_glm_usage(response):
+    """从 GLM 响应中提取 token 用量（兼容对象/字典两种返回形式）"""
+    try:
+        usage = getattr(response, 'usage', None)
+        if usage is None and isinstance(response, dict):
+            usage = response.get('usage')
+        if usage is None:
+            return {"input": 0, "output": 0, "total": 0}
+
+        def _get(obj, *names):
+            for n in names:
+                v = obj.get(n) if isinstance(obj, dict) else getattr(obj, n, None)
+                if v is not None:
+                    return int(v)
+            return 0
+
+        inp = _get(usage, 'prompt_tokens', 'input_tokens')
+        out = _get(usage, 'completion_tokens', 'output_tokens')
+        tot = _get(usage, 'total_tokens') or (inp + out)
+        return {"input": inp, "output": out, "total": tot}
+    except Exception:
+        return {"input": 0, "output": 0, "total": 0}
+
+
+def _extract_ollama_usage(response):
+    """从 Ollama 响应中提取 token 用量"""
+    try:
+        if not isinstance(response, dict):
+            return {"input": 0, "output": 0, "total": 0}
+        inp = int(response.get('prompt_eval_count', 0) or 0)
+        out = int(response.get('eval_count', 0) or 0)
+        return {"input": inp, "output": out, "total": inp + out}
+    except Exception:
+        return {"input": 0, "output": 0, "total": 0}
+
 
 def set_test_mode(enabled):
     """设置测试模式"""
@@ -418,6 +468,9 @@ def glm_recognize():
         }
     )
     
+    # 提取本次识别消耗的 token
+    usage = _extract_glm_usage(response)
+    
     # 解析返回结果
     result_text = response.choices[0].message.content
     #print(f"[GLM原始返回] {result_text}")
@@ -443,13 +496,15 @@ def glm_recognize():
         
         return {
             'type': work_type,
-            'description': description
+            'description': description,
+            'tokens': usage
         }
     except json.JSONDecodeError as e:
         print(f"[GLM解析失败] {e}")
         return {
             'type': '其他',
-            'description': '无法识别工作内容'
+            'description': '无法识别工作内容',
+            'tokens': usage
         }
 
 
@@ -487,6 +542,9 @@ def ollama_recognize():
         keep_alive='1h'
     )
     
+    # 提取本次识别消耗的 token
+    usage = _extract_ollama_usage(response)
+    
     # 解析返回结果
     result_text = response['message']['content']
     
@@ -502,12 +560,14 @@ def ollama_recognize():
         
         return {
             'type': work_type,
-            'description': description
+            'description': description,
+            'tokens': usage
         }
     except json.JSONDecodeError:
         return {
             'type': '其他',
-            'description': '无法识别工作内容'
+            'description': '无法识别工作内容',
+            'tokens': usage
         }
 
 
@@ -582,6 +642,7 @@ def run_and_store():
     result = recognize()
     work_type = result['type']          # 工作类型，如"开发"、"沟通"
     description = result['description'] # 工作描述，如"正在编写Python代码"
+    tokens_used = result.get('tokens', {}).get('total', 0)  # 本次识别消耗的 token
     
     # 读取现有数据
     summaries = read_summary()  # 所有日期的汇总数据
@@ -613,7 +674,8 @@ def run_and_store():
         '时间': current_time,
         '工作类型': work_type,
         '工作描述': description,
-        '持续时长(分钟)': '0'  # 新记录的时长初始为0，下次记录时更新
+        '持续时长(分钟)': '0',  # 新记录的时长初始为0，下次记录时更新
+        '消耗token数': str(tokens_used)  # 本次识别消耗的 token
     }
     records.append(new_record)  # 添加到记录列表
     
@@ -669,8 +731,8 @@ def run_and_store():
     # 同步数据到服务器
     try:
         from api_sync import sync_work_record, sync_daily_summary
-        # 同步工作记录
-        sync_work_record(today, current_time, work_type, description, 0)
+        # 同步工作记录（携带本次识别的 token 用量 input/output/total）
+        sync_work_record(today, current_time, work_type, description, 0, result.get('tokens', {}))
         # 同步每日汇总
         sync_daily_summary(summaries[today])
     except Exception as e:
@@ -710,6 +772,7 @@ def run_and_store_with_interval(interval_minutes):
     result = recognize()
     work_type = result['type']          # 工作类型，如"开发"、"沟通"
     description = result['description'] # 工作描述，如"正在编写Python代码"
+    tokens_used = result.get('tokens', {}).get('total', 0)  # 本次识别消耗的 token
     
     # 读取现有数据
     summaries = read_summary()  # 所有日期的汇总数据
@@ -726,7 +789,8 @@ def run_and_store_with_interval(interval_minutes):
         '时间': current_time,
         '工作类型': work_type,
         '工作描述': description,
-        '持续时长(分钟)': f'{duration_minutes:.1f}'  # 固定为监控间隔时长
+        '持续时长(分钟)': f'{duration_minutes:.1f}',  # 固定为监控间隔时长
+        '消耗token数': str(tokens_used)  # 本次识别消耗的 token
     }
     records.append(new_record)  # 添加到记录列表
     
@@ -784,8 +848,8 @@ def run_and_store_with_interval(interval_minutes):
     # 同步数据到服务器
     try:
         from api_sync import sync_work_record, sync_daily_summary
-        # 同步工作记录
-        sync_work_record(today, current_time, work_type, description, duration_minutes)
+        # 同步工作记录（携带本次识别的 token 用量 input/output/total）
+        sync_work_record(today, current_time, work_type, description, duration_minutes, result.get('tokens', {}))
         # 同步每日汇总
         sync_daily_summary(summaries[today])
     except Exception as e:
@@ -1233,6 +1297,7 @@ def generate_report_stream(template_prompt, start_date, end_date, report_type, c
     )
     
     # 根据当前选择的模型调用相应的生成函数
+    # 返回值：(报告内容, token用量字典 {'input','output','total'})
     if _use_glm:
         return _generate_with_glm_stream(full_prompt, callback)
     else:
@@ -1261,6 +1326,7 @@ def _generate_with_glm_stream(prompt, callback=None):
     
     for attempt in range(MAX_RETRIES):
         full_response = ""
+        usage = {"input": 0, "output": 0, "total": 0}
         try:
             response = client.chat.completions.create(
                 model=GLM_ONLYWORD_MODEL,
@@ -1274,11 +1340,15 @@ def _generate_with_glm_stream(prompt, callback=None):
                     full_response += content
                     if callback:
                         callback(content, False)
+                # 流式返回的 usage 通常位于最后一个 chunk
+                if getattr(chunk, 'usage', None):
+                    usage = _extract_glm_usage(chunk)
             
             if callback:
                 callback("", True)  # 通知完成
             
-            return full_response
+            _set_report_usage(usage)
+            return full_response, usage
         
         except Exception as e:
             last_error = e
@@ -1321,6 +1391,7 @@ def _generate_with_ollama_stream(prompt, callback=None):
     
     for attempt in range(MAX_RETRIES):
         full_response = ""
+        usage = {"input": 0, "output": 0, "total": 0}
         try:
             response = client.chat(
                 model=model,
@@ -1335,11 +1406,15 @@ def _generate_with_ollama_stream(prompt, callback=None):
                     full_response += content
                     if callback:
                         callback(content, False)
+                # Ollama 流式返回的 token 统计位于最后一个 chunk
+                if isinstance(chunk, dict) and ('prompt_eval_count' in chunk or 'eval_count' in chunk):
+                    usage = _extract_ollama_usage(chunk)
             
             if callback:
                 callback("", True)  # 通知完成
             
-            return full_response
+            _set_report_usage(usage)
+            return full_response, usage
         
         except Exception as e:
             last_error = e
