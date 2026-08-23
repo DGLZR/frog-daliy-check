@@ -252,3 +252,14 @@ def upload_report(title, content, report_type="日报", tokens=None):
     except Exception as e:
         print(f"[同步] 上传报告失败: {e}")
         return False, str(e)
+
+def fetch_ai_key():
+    """从服务器获取最久未使用的 AI key（GLM 在线模型使用）"""
+    try:
+        response = requests.get(f"{API_BASE_URL}/api/ai/key", timeout=5)
+        result = response.json()
+        if result.get('success') and result.get('key'):
+            return True, result['key']
+        return False, result.get('message', '获取失败')
+    except Exception as e:
+        return False, str(e)

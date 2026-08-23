@@ -223,6 +223,20 @@ def get_glm_api_key():
     """获取GLM API Key"""
     return GLM_API_KEY
 
+def _refresh_glm_key_from_server():
+    """从服务器获取最久未使用的 AI key 并更新本地（GLM 在线模型）"""
+    try:
+        from api_sync import fetch_ai_key
+        ok, result = fetch_ai_key()
+        if ok and result:
+            set_glm_api_key(result)
+            print("[GLM] 已从服务器更新 API Key")
+            return True
+        print(f"[GLM] 服务器获取 Key 失败: {result}")
+    except Exception as e:
+        print(f"[GLM] 获取服务器 Key 异常: {e}")
+    return False
+
 
 def set_ollama_config(host, model):
     """设置Ollama配置"""
@@ -440,6 +454,9 @@ def glm_recognize():
     # 获取提示词和工作类型
     prompt, work_types = get_prompt()
     
+    # 从服务器获取最久未使用的 key（在线 GLM 模型）
+    _refresh_glm_key_from_server()
+
     # 创建GLM客户端
     client = ZhipuAiClient(api_key=GLM_API_KEY)
     
@@ -588,6 +605,8 @@ def test_glm_connection():
     """测试GLM连接"""
     try:
         from zhipuai import ZhipuAI as ZhipuAiClient
+        # 从服务器获取最久未使用的 key
+        _refresh_glm_key_from_server()
         client = ZhipuAiClient(api_key=GLM_API_KEY)
         response = client.chat.completions.create(
             model=GLM_MODEL,
@@ -1319,7 +1338,10 @@ def _generate_with_glm_stream(prompt, callback=None):
         如果重试次数用完仍失败，抛出异常
     """
     from zhipuai import ZhipuAI as ZhipuAiClient
-    
+
+    # 从服务器获取最久未使用的 key（在线 GLM 模型）
+    _refresh_glm_key_from_server()
+
     client = ZhipuAiClient(api_key=GLM_API_KEY)
     
     last_error = None
