@@ -1016,7 +1016,7 @@ def start_monitor(interval_minutes, ollama_host=None, callback=None):
     返回值：无
     """
     global _monitor_timer, _monitor_workers
-    from PyQt5.QtCore import QTimer, QThread, pyqtSignal
+    from PyQt6.QtCore import QTimer, QThread, pyqtSignal
     
     # 初始化工作线程列表（保持引用防止被垃圾回收）
     if '_monitor_workers' not in globals():

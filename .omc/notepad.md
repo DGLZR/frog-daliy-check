@@ -2,7 +2,7 @@
 
 ## 技术栈
 - 语言: Python
-- GUI: PyQt5 + PyQt-Fluent-Widgets (Fluent Design)
+- GUI: PyQt6 + PyQt6-Fluent-Widgets (Fluent Design)
 - AI识别: GLM (zhipuai) / Ollama (minicpm-v4.6)
 - 图像处理: OpenCV, mss, numpy
 - 数据存储: CSV文件
@@ -42,9 +42,9 @@
 开发、沟通、生活、学习、设计、管理、文档、娱乐、产品、会议、运维、测试、数据分析、其他
 
 ## 依赖包
-- PyQt5>=5.15.0
-- PyQt5-Frameless-Window>=0.8.0
-- PyQt-Fluent-Widgets>=1.10.0
+- PyQt6>=6.4.0
+- PyQt6-Frameless-Window>=0.8.0
+- PyQt6-Fluent-Widgets>=1.10.0
 - opencv-python>=4.6.0
 - numpy>=1.24.0
 - Pillow>=9.0.0

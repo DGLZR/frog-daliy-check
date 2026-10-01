@@ -1,13 +1,13 @@
 # 工作日报助手 - Fluent Design 版本
 
-使用 PyQt-Fluent-Widgets 库实现的现代化界面。
+使用 PyQt6-Fluent-Widgets 库实现的现代化界面。
 
 ## 运行方式
 
 ```bash
 # 双击 run.bat
 # 或手动运行：
-conda activate deeplearning
+conda activate daily-AI
 python UI/main_fluent.py
 ```
 
@@ -29,8 +29,8 @@ python UI/main_fluent.py
 
 ## 依赖库
 
-- PyQt5
-- PyQt-Fluent-Widgets
+- PyQt6
+- PyQt6-Fluent-Widgets
 - opencv-python
 - numpy
 - mss
@@ -39,5 +39,5 @@ python UI/main_fluent.py
 ## 安装依赖
 
 ```bash
-pip install PyQt-Fluent-Widgets opencv-python numpy mss ollama
+pip install PyQt6-Fluent-Widgets opencv-python numpy mss ollama
 ```

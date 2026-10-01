@@ -1,7 +1,7 @@
 """
 工作日报助手 - Fluent Design 主程序
 
-使用 PyQt-Fluent-Widgets 库实现现代化界面
+使用 PyQt6-Fluent-Widgets 库实现现代化界面
 支持响应式布局，随窗口大小自动调整
 支持系统DPI缩放检测和手动调整
 """
@@ -13,11 +13,11 @@ import sys; sys.setrecursionlimit(sys.getrecursionlimit() * 5)
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# 顶部导入 PyQt5 组件（供 LoginWindow 使用）
-from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
+# 顶部导入 PyQt6 组件（供 LoginWindow 使用）
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
                              QPushButton, QApplication, QCheckBox, QGraphicsOpacityEffect, QTextBrowser)
-from PyQt5.QtCore import Qt, pyqtSignal, QPoint, QTimer, QPropertyAnimation, QEasingCurve
-from PyQt5.QtGui import QPixmap, QPainter, QPainterPath, QLinearGradient, QPen, QBrush, QColor
+from PyQt6.QtCore import Qt, pyqtSignal, QPoint, QTimer, QPropertyAnimation, QEasingCurve
+from PyQt6.QtGui import QPixmap, QPainter, QPainterPath, QLinearGradient, QPen, QBrush, QColor
 from datetime import datetime, timedelta, timezone
 
 # 东八区时区
@@ -245,7 +245,7 @@ class LoginWindow(QWidget):
     def paintEvent(self, event):
         """绘制渐变背景和装饰元素"""
         painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         
         w, h = self.width(), self.height()
         
@@ -257,7 +257,7 @@ class LoginWindow(QWidget):
         painter.fillRect(self.rect(), gradient)
         
         # 顶部装饰大圆（右上角，浅绿）
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(QColor(22, 163, 74, 18))
         painter.drawEllipse(w - 140, -100, 280, 280)
         
@@ -293,7 +293,7 @@ class LoginWindow(QWidget):
             fade.setDuration(500)
             fade.setStartValue(0.0)
             fade.setEndValue(1.0)
-            fade.setEasingCurve(QEasingCurve.OutCubic)
+            fade.setEasingCurve(QEasingCurve.Type.OutCubic)
             
             # 保存引用防止被回收
             if not hasattr(self, '_entrance_anims'):
@@ -307,7 +307,7 @@ class LoginWindow(QWidget):
         """设置界面"""
         self.setWindowTitle("工作日报助手 - 登录")
         self.setFixedSize(440, 580)
-        self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         
         # 主布局
         mainLayout = QVBoxLayout(self)
@@ -321,18 +321,18 @@ class LoginWindow(QWidget):
         # Logo 图标（使用图片，带绿色光环）
         logoIcon = QLabel()
         logoIcon.setFixedSize(52, 52)
-        logoIcon.setAlignment(Qt.AlignCenter)
+        logoIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         avatar_path = r"C:\Users\20057\Desktop\frog.jpg"
         if os.path.exists(avatar_path):
             pixmap = QPixmap(avatar_path)
-            pixmap = pixmap.scaled(44, 44, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+            pixmap = pixmap.scaled(44, 44, Qt.AspectRatioMode.KeepAspectRatioByExpanding, Qt.TransformationMode.SmoothTransformation)
             
             # 创建带绿色光环的圆形头像
             rounded = QPixmap(52, 52)
-            rounded.fill(Qt.transparent)
+            rounded.fill(Qt.GlobalColor.transparent)
             painter = QPainter(rounded)
-            painter.setRenderHint(QPainter.Antialiasing)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
             # 外圈绿色光环
             painter.setPen(QPen(QColor("#16A34A"), 3))
             painter.setBrush(QBrush(QColor("#E8F5E9")))
@@ -341,7 +341,7 @@ class LoginWindow(QWidget):
             path = QPainterPath()
             path.addEllipse(6, 6, 40, 40)
             painter.setClipPath(path)
-            painter.setPen(Qt.NoPen)
+            painter.setPen(Qt.PenStyle.NoPen)
             painter.drawPixmap(6, 6, pixmap)
             painter.end()
             
@@ -395,7 +395,7 @@ class LoginWindow(QWidget):
         
         # 切换按钮
         self.switchBtn = QPushButton("注册")
-        self.switchBtn.setCursor(Qt.PointingHandCursor)
+        self.switchBtn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.switchBtn.setStyleSheet("""
             QPushButton {
                 background: transparent;
@@ -460,7 +460,7 @@ class LoginWindow(QWidget):
         
         # 发送验证码按钮（注册/找回密码模式显示）
         self.sendCodeBtn = QPushButton("发送验证码")
-        self.sendCodeBtn.setCursor(Qt.PointingHandCursor)
+        self.sendCodeBtn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.sendCodeBtn.setFixedSize(104, 44)
         self.sendCodeBtn.setStyleSheet("""
             QPushButton {
@@ -498,7 +498,7 @@ class LoginWindow(QWidget):
         self.passwordInput = QLineEdit()
         self.passwordInput.setPlaceholderText("请输入密码")
         self.passwordInput.setFixedHeight(44)
-        self.passwordInput.setEchoMode(QLineEdit.Password)
+        self.passwordInput.setEchoMode(QLineEdit.EchoMode.Password)
         self.passwordInput.setStyleSheet("""
             QLineEdit {
                 background-color: white;
@@ -584,7 +584,7 @@ class LoginWindow(QWidget):
         # ========== 登录/注册按钮 ==========
         self.submitBtn = QPushButton("登  录")
         self.submitBtn.setFixedHeight(46)
-        self.submitBtn.setCursor(Qt.PointingHandCursor)
+        self.submitBtn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.submitBtn.setStyleSheet("""
             QPushButton {
                 background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0,
@@ -616,7 +616,7 @@ class LoginWindow(QWidget):
         forgotLayout.addStretch()
         
         self.forgotBtn = QPushButton("忘记密码？")
-        self.forgotBtn.setCursor(Qt.PointingHandCursor)
+        self.forgotBtn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.forgotBtn.setStyleSheet("""
             QPushButton {
                 background: transparent;
@@ -646,7 +646,7 @@ class LoginWindow(QWidget):
         bottomLayout.addWidget(tipLabel)
         
         termsBtn = QPushButton("服务条款")
-        termsBtn.setCursor(Qt.PointingHandCursor)
+        termsBtn.setCursor(Qt.CursorShape.PointingHandCursor)
         termsBtn.setStyleSheet("""
             QPushButton {
                 background: transparent;
@@ -667,7 +667,7 @@ class LoginWindow(QWidget):
         bottomLayout.addWidget(andLabel)
         
         privacyBtn = QPushButton("隐私政策")
-        privacyBtn.setCursor(Qt.PointingHandCursor)
+        privacyBtn.setCursor(Qt.CursorShape.PointingHandCursor)
         privacyBtn.setStyleSheet("""
             QPushButton {
                 background: transparent;
@@ -721,7 +721,7 @@ class LoginWindow(QWidget):
             self.passwordLabel.setVisible(True)
             self.passwordLabel.setText("密码")
             self.passwordInput.setPlaceholderText("请输入密码")
-            self.passwordInput.setEchoMode(QLineEdit.Password)
+            self.passwordInput.setEchoMode(QLineEdit.EchoMode.Password)
             self.rememberCheckBox.setVisible(True)
             self.forgotBtn.setVisible(True)
         else:
@@ -738,7 +738,7 @@ class LoginWindow(QWidget):
             self.passwordLabel.setVisible(True)
             self.passwordLabel.setText("密码")
             self.passwordInput.setPlaceholderText("设置密码（至少6位）")
-            self.passwordInput.setEchoMode(QLineEdit.Password)
+            self.passwordInput.setEchoMode(QLineEdit.EchoMode.Password)
             self.rememberCheckBox.setVisible(False)
             self.forgotBtn.setVisible(False)
         
@@ -771,7 +771,7 @@ class LoginWindow(QWidget):
         self.passwordInput.setPlaceholderText("设置新密码（至少6位）")
         self.passwordInput.setVisible(True)
         self.passwordLabel.setVisible(True)
-        self.passwordInput.setEchoMode(QLineEdit.Password)
+        self.passwordInput.setEchoMode(QLineEdit.EchoMode.Password)
         self.rememberCheckBox.setVisible(False)
         
         # 清空输入框
@@ -789,7 +789,7 @@ class LoginWindow(QWidget):
             InfoBar.warning(
                 title="提示",
                 content="请输入邮箱地址",
-                orient=Qt.Horizontal,
+                orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP,
                 duration=2000,
@@ -814,7 +814,7 @@ class LoginWindow(QWidget):
                 InfoBar.success(
                     title="发送成功",
                     content=result.get('message', f"验证码已发送到 {email}"),
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=3000,
@@ -822,7 +822,7 @@ class LoginWindow(QWidget):
                 )
                 self.sendCodeBtn.setText("已发送")
                 # 60秒后重新启用
-                from PyQt5.QtCore import QTimer
+                from PyQt6.QtCore import QTimer
                 QTimer.singleShot(60000, lambda: [
                     self.sendCodeBtn.setEnabled(True),
                     self.sendCodeBtn.setText("发送验证码")
@@ -831,7 +831,7 @@ class LoginWindow(QWidget):
                 InfoBar.error(
                     title="发送失败",
                     content=result.get('message', '发送验证码失败'),
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=3000,
@@ -844,7 +844,7 @@ class LoginWindow(QWidget):
             InfoBar.error(
                 title="连接失败",
                 content=f"无法连接到服务器: {str(e)}",
-                orient=Qt.Horizontal,
+                orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP,
                 duration=3000,
@@ -865,7 +865,7 @@ class LoginWindow(QWidget):
             InfoBar.warning(
                 title="提示",
                 content="请输入邮箱地址",
-                orient=Qt.Horizontal,
+                orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP,
                 duration=2000,
@@ -881,7 +881,7 @@ class LoginWindow(QWidget):
                 InfoBar.warning(
                     title="提示",
                     content="请输入新密码",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=2000,
@@ -893,7 +893,7 @@ class LoginWindow(QWidget):
                 InfoBar.warning(
                     title="提示",
                     content="请输入验证码",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=2000,
@@ -917,7 +917,7 @@ class LoginWindow(QWidget):
                     InfoBar.success(
                         title="重置成功",
                         content=result.get('message', '密码已重置，请重新登录'),
-                        orient=Qt.Horizontal,
+                        orient=Qt.Orientation.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.TOP,
                         duration=3000,
@@ -928,7 +928,7 @@ class LoginWindow(QWidget):
                     InfoBar.error(
                         title="重置失败",
                         content=result.get('message', '重置失败'),
-                        orient=Qt.Horizontal,
+                        orient=Qt.Orientation.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.TOP,
                         duration=3000,
@@ -941,7 +941,7 @@ class LoginWindow(QWidget):
                 InfoBar.error(
                     title="连接失败",
                     content=f"无法连接到服务器: {str(e)}",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=3000,
@@ -957,7 +957,7 @@ class LoginWindow(QWidget):
                 InfoBar.warning(
                     title="提示",
                     content="请输入密码",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=2000,
@@ -981,7 +981,7 @@ class LoginWindow(QWidget):
                     InfoBar.success(
                         title="登录成功",
                         content=result.get('message', '欢迎回来'),
-                        orient=Qt.Horizontal,
+                        orient=Qt.Orientation.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.TOP,
                         duration=2000,
@@ -998,7 +998,7 @@ class LoginWindow(QWidget):
                     InfoBar.error(
                         title="登录失败",
                         content=result.get('message', '邮箱或密码错误'),
-                        orient=Qt.Horizontal,
+                        orient=Qt.Orientation.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.TOP,
                         duration=3000,
@@ -1011,7 +1011,7 @@ class LoginWindow(QWidget):
                 InfoBar.error(
                     title="连接失败",
                     content=f"无法连接到服务器: {str(e)}",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=3000,
@@ -1027,7 +1027,7 @@ class LoginWindow(QWidget):
                 InfoBar.warning(
                     title="提示",
                     content="请输入密码",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=2000,
@@ -1039,7 +1039,7 @@ class LoginWindow(QWidget):
                 InfoBar.warning(
                     title="提示",
                     content="请输入验证码",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=2000,
@@ -1063,7 +1063,7 @@ class LoginWindow(QWidget):
                     InfoBar.success(
                         title="注册成功",
                         content=result.get('message', '请使用新账号登录'),
-                        orient=Qt.Horizontal,
+                        orient=Qt.Orientation.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.TOP,
                         duration=3000,
@@ -1074,7 +1074,7 @@ class LoginWindow(QWidget):
                     InfoBar.error(
                         title="注册失败",
                         content=result.get('message', '注册失败'),
-                        orient=Qt.Horizontal,
+                        orient=Qt.Orientation.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.TOP,
                         duration=3000,
@@ -1087,7 +1087,7 @@ class LoginWindow(QWidget):
                 InfoBar.error(
                     title="连接失败",
                     content=f"无法连接到服务器: {str(e)}",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=3000,
@@ -1184,12 +1184,12 @@ class LoginWindow(QWidget):
 def main():
     global SCALE_FACTOR
     
-    from PyQt5.QtWidgets import QApplication
-    from PyQt5.QtCore import Qt, QSize, QTimer, QPropertyAnimation, QEasingCurve, QPoint
-    from PyQt5.QtGui import QFont, QColor, QPixmap, QPainter, QPainterPath, QBrush, QPen, QIcon
+    from PyQt6.QtWidgets import QApplication
+    from PyQt6.QtCore import Qt, QSize, QTimer, QPropertyAnimation, QEasingCurve, QPoint
+    from PyQt6.QtGui import QFont, QColor, QPixmap, QPainter, QPainterPath, QBrush, QPen, QIcon, QAction
     
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
-    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+    # Qt6 中高 DPI 缩放与高分辨率图标已是默认行为，
+    # Qt.AA_EnableHighDpiScaling / Qt.AA_UseHighDpiPixmaps 已在 Qt6 中移除。
     
     app = QApplication(sys.argv)
     
@@ -1215,21 +1215,85 @@ def main():
         }}
     """)
     
-    from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
+    from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
                                  QLabel, QFrame, QScrollArea, QCheckBox,
                                  QGraphicsDropShadowEffect, QGraphicsOpacityEffect,
-                                 QSizePolicy, QPushButton, QTableWidget, QTableWidgetItem,
+                                 QSizePolicy, QAbstractItemView, QPushButton, QTableWidget, QTableWidgetItem,
                                  QLineEdit, QDateEdit, QComboBox, QApplication,
-                                 QMessageBox, QSystemTrayIcon, QMenu, QAction, QDialog,
+                                 QMessageBox, QSystemTrayIcon, QMenu, QDialog,
                                  QTextEdit, QLayout, QSplitter, QTextBrowser, QSpinBox)
-    from PyQt5.QtCore import Qt, QSize, QTimer, QDate, QPropertyAnimation, QEasingCurve, QDateTime, QThread, pyqtSignal, QRect, QPoint
-    from PyQt5.QtGui import QFont, QColor, QPixmap, QPainter, QPainterPath, QBrush, QPen, QIcon
+    from PyQt6.QtCore import Qt, QEvent, QSize, QTimer, QDate, QPropertyAnimation, QEasingCurve, QDateTime, QThread, pyqtSignal, QRect, QPoint
+    from PyQt6.QtGui import QFont, QColor, QPixmap, QPainter, QPainterPath, QBrush, QPen, QIcon, QAction
     from qfluentwidgets import (FluentWindow, NavigationItemPosition, StrongBodyLabel,
                                 TitleLabel, SubtitleLabel, BodyLabel, CaptionLabel,
                                 PrimaryPushButton, TransparentPushButton, PillPushButton,
                                 SimpleCardWidget, HeaderCardWidget, TableWidget,
                                 FluentIcon, ComboBox, CalendarPicker, SearchLineEdit,
                                 InfoBar, InfoBarPosition, ToolButton, FluentIconBase)
+
+    # ------------------------------------------------------------------
+    # 性能优化（界面与功能完全不变）
+    #
+    # qfluentwidgets 的 CalendarPicker 每次点击都会重新 new 一个 CalendarView，
+    # 而它会为「当前年 ±100 年」共 201 年里的每一天各建一个 QListWidgetItem
+    # （73000+ 条），实测每次构造约 0.8 秒，期间界面完全冻结。
+    #
+    # 这里改成所有日期选择器共用同一个弹窗对象、构造一次后反复复用。
+    # 弹窗外观、可选年份范围、翻月/翻年、选日期的行为全部保持不变。
+    # ------------------------------------------------------------------
+    from qfluentwidgets.components.date_time.calendar_view import CalendarView
+    _calendar_view_cache = {'view': None, 'bound': None}
+
+    def _get_shared_calendar_view(parent):
+        """取全局唯一的日历弹窗（懒加载，整个进程只构造一次）"""
+        view = _calendar_view_cache['view']
+        if view is None:
+            view = CalendarView(parent)
+            # 复用弹窗：close() 时只隐藏，不销毁（默认 WA_DeleteOnClose 会销毁）
+            view.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, False)
+            _calendar_view_cache['view'] = view
+        return view
+
+    def _show_calendar_view_cached(self):
+        """替换 CalendarPicker._showCalendarView：复用弹窗，其余逻辑完全一致"""
+        view = _get_shared_calendar_view(self.window())
+        view.setResetEnabled(self.isRestEnabled())
+
+        # 弹窗是共用的，先解除上一个选择器的信号绑定
+        prev = _calendar_view_cache['bound']
+        if prev is not None:
+            for signal, slot in prev:
+                try:
+                    signal.disconnect(slot)
+                except TypeError:
+                    pass
+
+        pairs = ((view.resetted, self.reset),
+                 (view.dateChanged, self._onDateChanged))
+        for signal, slot in pairs:
+            signal.connect(slot)
+        _calendar_view_cache['bound'] = pairs
+
+        # 与「每次新建弹窗」保持一致：date 先置空，再按选择器当前值设置
+        view.date = QDate()
+        if self.date.isValid():
+            view.setDate(self.date)
+
+        x = int(self.width() / 2 - view.sizeHint().width() / 2)
+        y = self.height()
+        view.exec(self.mapToGlobal(QPoint(x, y)))
+
+    CalendarPicker._showCalendarView = _show_calendar_view_cached
+
+    def _prewarm_calendar_view():
+        """趁登录窗口还在（主窗口未显示），提前把日历弹窗建好，之后点日期选择器不再卡顿"""
+        for w in QApplication.topLevelWidgets():
+            if type(w).__name__ == 'MainWindow':
+                _get_shared_calendar_view(w)
+                return
+
+    QTimer.singleShot(1500, _prewarm_calendar_view)
+
     from store import init_db, get_daily_summary, get_daily_records, read_records
     from screenshot import run_and_store, get_today_stats, get_monitor_info, start_monitor, stop_monitor, set_use_glm, set_ollama_config, test_glm_connection, test_ollama_connection, set_test_mode, is_test_mode
     from datetime import datetime, timedelta
@@ -1243,22 +1307,22 @@ def main():
             pixmap = QPixmap(size, size)
             pixmap.fill(QColor("#E3F2FD"))
             painter = QPainter(pixmap)
-            painter.setRenderHint(QPainter.Antialiasing)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
             painter.setPen(QPen(QColor("#1976D2"), 2))
             painter.setBrush(QBrush(QColor("#BBDEFB")))
             painter.drawEllipse(2, 2, size - 4, size - 4)
             painter.setPen(QColor("#1976D2"))
             painter.setFont(QFont("Microsoft YaHei", size // 3))
-            painter.drawText(pixmap.rect(), Qt.AlignCenter, "👤")
+            painter.drawText(pixmap.rect(), Qt.AlignmentFlag.AlignCenter, "👤")
             painter.end()
         
-        pixmap = pixmap.scaled(size, size, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+        pixmap = pixmap.scaled(size, size, Qt.AspectRatioMode.KeepAspectRatioByExpanding, Qt.TransformationMode.SmoothTransformation)
         
         rounded = QPixmap(size, size)
-        rounded.fill(Qt.transparent)
+        rounded.fill(Qt.GlobalColor.transparent)
         
         painter = QPainter(rounded)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         painter.setPen(QPen(QColor("#4CAF50"), 3))
         painter.setBrush(QBrush(pixmap))
         painter.drawEllipse(2, 2, size - 4, size - 4)
@@ -1273,7 +1337,7 @@ def main():
         def __init__(self, title, value, icon=None, parent=None):
             super().__init__(parent)
             self.setMinimumSize(120, 70)
-            self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+            self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
             
             shadow = QGraphicsDropShadowEffect(self)
             shadow.setBlurRadius(10)
@@ -1289,7 +1353,7 @@ def main():
             if icon:
                 iconLabel = QLabel(self)
                 iconLabel.setFixedSize(28, 28)
-                iconLabel.setAlignment(Qt.AlignCenter)
+                iconLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
                 iconLabel.setStyleSheet("""
                     background-color: #E3F2FD;
                     border-radius: 14px;
@@ -1342,7 +1406,7 @@ def main():
             
             scrollArea = QScrollArea()
             scrollArea.setWidgetResizable(True)
-            scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
             scrollArea.setStyleSheet("QScrollArea { border: none; background-color: #F5F5F5; }")
             
             contentWidget = QWidget()
@@ -1446,7 +1510,7 @@ def main():
             
             # 分隔线
             separator = QFrame()
-            separator.setFrameShape(QFrame.HLine)
+            separator.setFrameShape(QFrame.Shape.HLine)
             separator.setFixedHeight(1)
             separator.setStyleSheet("background-color: #E0E0E0; border: none;")
             overviewLayout.addWidget(separator)
@@ -1457,15 +1521,15 @@ def main():
             
             self.recordCountLabel = QLabel("0")
             self.recordCountLabel.setStyleSheet("font-size: 27px; font-weight: bold; color: #4CAF50; border: none; background: transparent;")
-            self.recordCountLabel.setAlignment(Qt.AlignCenter)
+            self.recordCountLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
             
             self.durationLabel = QLabel("0h")
             self.durationLabel.setStyleSheet("font-size: 27px; font-weight: bold; color: #2196F3; border: none; background: transparent;")
-            self.durationLabel.setAlignment(Qt.AlignCenter)
+            self.durationLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
             
             self.mainWorkLabel = QLabel("暂无")
             self.mainWorkLabel.setStyleSheet("font-size: 20px; font-weight: bold; color: #FF9800; border: none; background: transparent;")
-            self.mainWorkLabel.setAlignment(Qt.AlignCenter)
+            self.mainWorkLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
             
             # 统计项布局
             for label, sub_text in [(self.recordCountLabel, "记录条数"), 
@@ -1475,12 +1539,12 @@ def main():
                 statWidget.setStyleSheet("border: none; background: transparent;")
                 statLayout = QVBoxLayout(statWidget)
                 statLayout.setSpacing(3)
-                statLayout.addWidget(label, 0, Qt.AlignCenter)
+                statLayout.addWidget(label, 0, Qt.AlignmentFlag.AlignCenter)
                 
                 subLabel = QLabel(sub_text)
                 subLabel.setStyleSheet("font-size: 11px; color: #999999; border: none; background: transparent;")
-                subLabel.setAlignment(Qt.AlignCenter)
-                statLayout.addWidget(subLabel, 0, Qt.AlignCenter)
+                subLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                statLayout.addWidget(subLabel, 0, Qt.AlignmentFlag.AlignCenter)
                 
                 statsLayout.addWidget(statWidget)
             
@@ -1545,8 +1609,8 @@ def main():
             for h in range(24):
                 block = QLabel("0")
                 block.setMinimumSize(30, 28)
-                block.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-                block.setAlignment(Qt.AlignCenter)
+                block.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+                block.setAlignment(Qt.AlignmentFlag.AlignCenter)
                 block.setStyleSheet("""
                     background-color: #E8F5E9;
                     border-radius: 6px;
@@ -1568,7 +1632,7 @@ def main():
                 if h % 3 == 0:
                     label = QLabel(f"{h}:00")
                     label.setStyleSheet("font-size: 11px; color: #999999; border: none; background: transparent;")
-                    label.setAlignment(Qt.AlignCenter)  # 居中对齐
+                    label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # 居中对齐
                     timeLabelsGrid.addWidget(label, 0, h)
                 else:
                     # 空占位符
@@ -1713,7 +1777,7 @@ def main():
                 anim.setDuration(400)
                 anim.setStartValue(0.0)
                 anim.setEndValue(1.0)
-                anim.setEasingCurve(QEasingCurve.OutCubic)
+                anim.setEasingCurve(QEasingCurve.Type.OutCubic)
                 
                 # 延迟启动
                 QTimer.singleShot(i * 150, anim.start)
@@ -1811,7 +1875,7 @@ def main():
                 # 序号
                 numLabel = QLabel(str(i + 1))
                 numLabel.setFixedSize(28, 28)
-                numLabel.setAlignment(Qt.AlignCenter)
+                numLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
                 numLabel.setStyleSheet("""
                     background-color: #4CAF50;
                     color: white;
@@ -1913,12 +1977,12 @@ def main():
             btnLayout = QVBoxLayout(btnCard)
             btnLayout.setContentsMargins(20, 15, 20, 15)
             btnLayout.setSpacing(8)
-            btnLayout.setAlignment(Qt.AlignCenter)
+            btnLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
             
             iconLabel = QLabel("📷", self)
-            iconLabel.setAlignment(Qt.AlignCenter)
+            iconLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
             iconLabel.setStyleSheet("font-size: 34px;")
-            btnLayout.addWidget(iconLabel, 0, Qt.AlignCenter)
+            btnLayout.addWidget(iconLabel, 0, Qt.AlignmentFlag.AlignCenter)
             
             self.captureBtn = PrimaryPushButton("开始截图分析", self)
             self.captureBtn.setFixedSize(160, 36)
@@ -1930,12 +1994,12 @@ def main():
                 }
             """)
             self.captureBtn.clicked.connect(self.startCapture)
-            btnLayout.addWidget(self.captureBtn, 0, Qt.AlignCenter)
+            btnLayout.addWidget(self.captureBtn, 0, Qt.AlignmentFlag.AlignCenter)
             
             self.statusLabel = CaptionLabel("等待操作...", btnCard)
-            self.statusLabel.setAlignment(Qt.AlignCenter)
+            self.statusLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.statusLabel.setStyleSheet("color: #999999; font-size: 11px;")
-            btnLayout.addWidget(self.statusLabel, 0, Qt.AlignCenter)
+            btnLayout.addWidget(self.statusLabel, 0, Qt.AlignmentFlag.AlignCenter)
             
             layout.addWidget(btnCard)
             
@@ -1958,7 +2022,7 @@ def main():
             resultLayout.addLayout(typeLayout)
             
             separator = QFrame(resultCard)
-            separator.setFrameShape(QFrame.HLine)
+            separator.setFrameShape(QFrame.Shape.HLine)
             separator.setStyleSheet("background-color: #E0E0E0;")
             resultLayout.addWidget(separator)
             
@@ -1997,7 +2061,7 @@ def main():
             InfoBar.success(
                 title="分析完成",
                 content=f"已识别为: {result['type']}",
-                orient=Qt.Horizontal,
+                orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP,
                 duration=3000,
@@ -2019,7 +2083,7 @@ def main():
             InfoBar.error(
                 title="分析失败",
                 content=error_msg,
-                orient=Qt.Horizontal,
+                orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP,
                 duration=5000,
@@ -2046,7 +2110,7 @@ def main():
             # 滚动区域
             scrollArea = QScrollArea()
             scrollArea.setWidgetResizable(True)
-            scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
             scrollArea.setStyleSheet("QScrollArea { border: none; background-color: #F5F5F5; }")
             
             contentWidget = QWidget()
@@ -2067,7 +2131,7 @@ def main():
             headerLayout.addStretch()
             
             refreshBtn = QPushButton("🔄 刷新")
-            refreshBtn.setCursor(Qt.PointingHandCursor)
+            refreshBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             refreshBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #E3F2FD;
@@ -2118,8 +2182,8 @@ def main():
             self.recordsTable.setColumnWidth(2, 80)
             self.recordsTable.setColumnWidth(3, 450)
             self.recordsTable.setColumnWidth(4, 80)
-            self.recordsTable.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-            self.recordsTable.setSelectionBehavior(QTableWidget.SelectRows)
+            self.recordsTable.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+            self.recordsTable.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
             self.recordsTable.setAlternatingRowColors(True)
             
             tableLayout.addWidget(self.recordsTable)
@@ -2141,17 +2205,17 @@ def main():
             for row, record in enumerate(records):
                 # 序号
                 idItem = QTableWidgetItem(str(row + 1))
-                idItem.setTextAlignment(Qt.AlignCenter)
+                idItem.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 self.recordsTable.setItem(row, 0, idItem)
                 
                 # 时间
                 timeItem = QTableWidgetItem(record['时间'])
-                timeItem.setTextAlignment(Qt.AlignCenter)
+                timeItem.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 self.recordsTable.setItem(row, 1, timeItem)
                 
                 # 类型
                 typeItem = QTableWidgetItem(record['工作类型'])
-                typeItem.setTextAlignment(Qt.AlignCenter)
+                typeItem.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 self.recordsTable.setItem(row, 2, typeItem)
                 
                 # 描述
@@ -2166,7 +2230,7 @@ def main():
                 except:
                     duration_text = "-"
                 durationItem = QTableWidgetItem(duration_text)
-                durationItem.setTextAlignment(Qt.AlignCenter)
+                durationItem.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 self.recordsTable.setItem(row, 4, durationItem)
 
     # ==================== 工作时间线页面 ====================
@@ -2213,7 +2277,7 @@ def main():
                 return
             
             painter = QPainter(self)
-            painter.setRenderHint(QPainter.Antialiasing)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
             
             # 计算可用区域
             width = self.width()
@@ -2264,7 +2328,7 @@ def main():
                 
                 # 绘制颜色方块
                 painter.setBrush(QColor(color))
-                painter.setPen(Qt.NoPen)
+                painter.setPen(Qt.PenStyle.NoPen)
                 painter.drawRoundedRect(int(legend_x), int(y), 12, 12, 2, 2)
                 
                 # 绘制文字
@@ -2298,7 +2362,7 @@ def main():
             # 滚动区域
             scrollArea = QScrollArea()
             scrollArea.setWidgetResizable(True)
-            scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
             scrollArea.setStyleSheet("QScrollArea { border: none; background-color: #F9F9F9; }")
             
             contentWidget = QWidget()
@@ -2461,14 +2525,14 @@ def main():
             
             # 时长/占比切换按钮
             self.distValueBtn = QPushButton("⏱️ 时长")
-            self.distValueBtn.setCursor(Qt.PointingHandCursor)
+            self.distValueBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             self.distValueBtn.setStyleSheet(btnStyle)
             self.distValueBtn.clicked.connect(self.toggleDistValueMode)
             distHeaderLayout.addWidget(self.distValueBtn)
             
             # 饼状图/条形图切换按钮
             self.distModeBtn = QPushButton("🥧 条形图")
-            self.distModeBtn.setCursor(Qt.PointingHandCursor)
+            self.distModeBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             self.distModeBtn.setStyleSheet(btnStyle)
             self.distModeBtn.clicked.connect(self.toggleDistMode)
             distHeaderLayout.addWidget(self.distModeBtn)
@@ -2528,7 +2592,7 @@ def main():
             # 快速时间筛选按钮（使用 Fluent PillPushButton）
             for text in ["近30分", "近1小时", "近2小时", "今天"]:
                 btn = PillPushButton(text)
-                btn.setCursor(Qt.PointingHandCursor)
+                btn.setCursor(Qt.CursorShape.PointingHandCursor)
                 btn.setCheckable(False)
                 btn.clicked.connect(lambda checked, t=text: self.quickFilter(t))
                 toolbarLayout.addWidget(btn)
@@ -2536,7 +2600,7 @@ def main():
             # 复制日志按钮（使用 Fluent TransparentPushButton）
             copyBtn = TransparentPushButton("复制日志")
             copyBtn.setIcon(FluentIcon.COPY)
-            copyBtn.setCursor(Qt.PointingHandCursor)
+            copyBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             copyBtn.clicked.connect(self.copyLog)
             toolbarLayout.addWidget(copyBtn)
             
@@ -2563,7 +2627,7 @@ def main():
         
         def toggleDistribution(self, state):
             """切换分类时长分布显示"""
-            self.distCard.setVisible(state == Qt.Checked)
+            self.distCard.setVisible(state == Qt.CheckState.Checked.value)
         
         def toggleDistMode(self):
             """切换条形图/饼状图模式"""
@@ -2633,7 +2697,7 @@ def main():
             InfoBar.success(
                 title="复制成功",
                 content=f"已复制 {len(records)} 条记录到剪贴板",
-                orient=Qt.Horizontal,
+                orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP,
                 duration=2000,
@@ -2667,7 +2731,7 @@ def main():
                 InfoBar.warning(
                     title="日期范围错误",
                     content="开始日期不能晚于结束日期",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=3000,
@@ -2794,7 +2858,7 @@ def main():
                 progressFill.setFixedWidth(fillWidth)
                 
                 # 添加到布局并左对齐
-                progressBgLayout.addWidget(progressFill, 0, Qt.AlignLeft)
+                progressBgLayout.addWidget(progressFill, 0, Qt.AlignmentFlag.AlignLeft)
                 progressBgLayout.addStretch(1)
                 
                 rowLayout.addWidget(progressBg, 1)
@@ -2806,7 +2870,7 @@ def main():
                     valueText = f"{hours:.1f}h"
                 timeLabel = QLabel(valueText)
                 timeLabel.setFixedWidth(50)
-                timeLabel.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+                timeLabel.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
                 timeLabel.setStyleSheet("font-size: 15px; color: #999999; border: none; background: transparent;")
                 rowLayout.addWidget(timeLabel)
                 
@@ -2870,7 +2934,7 @@ def main():
                 # 时间戳（包含日期和时间）
                 timeLabel = QLabel(f"{date_display}\n{time[:5]}")
                 timeLabel.setFixedWidth(55)
-                timeLabel.setAlignment(Qt.AlignRight | Qt.AlignTop)
+                timeLabel.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
                 timeLabel.setStyleSheet("font-size: 13px; color: #999999; border: none; background: transparent;")
                 itemLayout.addWidget(timeLabel)
                 
@@ -2886,14 +2950,14 @@ def main():
                 dot = QLabel()
                 dot.setFixedSize(10, 10)
                 dot.setStyleSheet(f"background-color: {color}; border-radius: 5px; border: none;")
-                indicatorLayout.addWidget(dot, 0, Qt.AlignHCenter)
+                indicatorLayout.addWidget(dot, 0, Qt.AlignmentFlag.AlignHCenter)
                 
                 # 连接线（如果不是最后一个）
                 if i < len(records) - 1:
                     line = QFrame()
                     line.setFixedWidth(2)
                     line.setStyleSheet("background-color: #E0E0E0; border: none;")
-                    indicatorLayout.addWidget(line, 1, Qt.AlignHCenter)
+                    indicatorLayout.addWidget(line, 1, Qt.AlignmentFlag.AlignHCenter)
                 
                 itemLayout.addWidget(indicatorWidget)
                 
@@ -2977,7 +3041,7 @@ def main():
             # 如果没有记录
             if not records:
                 emptyLabel = QLabel("暂无记录")
-                emptyLabel.setAlignment(Qt.AlignCenter)
+                emptyLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
                 emptyLabel.setStyleSheet("font-size: 17px; color: #CCCCCC; padding: 40px; border: none; background: transparent;")
                 self.timelineListLayout.addWidget(emptyLabel)
 
@@ -3041,7 +3105,7 @@ def main():
             self.is_selected = False
             self.is_hovered = False
             self.setFixedSize(180, 90)
-            self.setCursor(Qt.PointingHandCursor)
+            self.setCursor(Qt.CursorShape.PointingHandCursor)
             self.setMouseTracking(True)
             
             # 主布局
@@ -3059,7 +3123,7 @@ def main():
             # 选中对勾图标（默认隐藏）
             self.checkIcon = QLabel("✓")
             self.checkIcon.setFixedSize(14, 14)
-            self.checkIcon.setAlignment(Qt.AlignCenter)
+            self.checkIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.checkIcon.setStyleSheet("""
                 QLabel {
                     background-color: #16A34A;
@@ -3079,7 +3143,7 @@ def main():
             introLabel.setWordWrap(True)
             introLabel.setMaximumHeight(25)
             introLabel.setStyleSheet("font-size: 11px; color: #666666; border: none; background: transparent;")
-            introLabel.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+            introLabel.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
             layout.addWidget(introLabel)
             
             layout.addStretch()
@@ -3105,7 +3169,7 @@ def main():
             # 删除按钮（默认隐藏）
             self.deleteBtn = QPushButton("🗑")
             self.deleteBtn.setFixedSize(28, 28)
-            self.deleteBtn.setCursor(Qt.PointingHandCursor)
+            self.deleteBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             self.deleteBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #FEE2E2;
@@ -3124,7 +3188,7 @@ def main():
             # 预览按钮（默认隐藏）
             self.previewBtn = QPushButton("👁")
             self.previewBtn.setFixedSize(28, 28)
-            self.previewBtn.setCursor(Qt.PointingHandCursor)
+            self.previewBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             self.previewBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #F3F4F6;
@@ -3197,8 +3261,8 @@ def main():
             self.template_index = template_index
             self.template_name = template_name
             self.is_editing = False
-            self.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
-            self.setAttribute(Qt.WA_TranslucentBackground)
+            self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.Dialog)
+            self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
             self.setModal(True)
             
             # 主布局
@@ -3209,7 +3273,7 @@ def main():
             overlay = QWidget()
             overlay.setStyleSheet("background-color: rgba(0, 0, 0, 100);")
             overlayLayout = QVBoxLayout(overlay)
-            overlayLayout.setAlignment(Qt.AlignCenter)
+            overlayLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
             
             # 弹窗卡片
             card = QFrame()
@@ -3234,7 +3298,7 @@ def main():
             
             # 修改按钮
             self.editBtn = QPushButton("✏️ 修改")
-            self.editBtn.setCursor(Qt.PointingHandCursor)
+            self.editBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             self.editBtn.setStyleSheet("""
                 QPushButton {
                     background-color: white;
@@ -3254,7 +3318,7 @@ def main():
             
             closeBtn = QPushButton("✕")
             closeBtn.setFixedSize(32, 32)
-            closeBtn.setCursor(Qt.PointingHandCursor)
+            closeBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             closeBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #F3F4F6;
@@ -3296,7 +3360,7 @@ def main():
             
             # 分隔线
             separator = QFrame()
-            separator.setFrameShape(QFrame.HLine)
+            separator.setFrameShape(QFrame.Shape.HLine)
             separator.setStyleSheet("background-color: #F3F4F6; border: none; height: 1px;")
             cardLayout.addWidget(separator)
             
@@ -3325,7 +3389,7 @@ def main():
             self.saveBtnLayout.addStretch()
             
             cancelSaveBtn = QPushButton("取消")
-            cancelSaveBtn.setCursor(Qt.PointingHandCursor)
+            cancelSaveBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             cancelSaveBtn.setStyleSheet("""
                 QPushButton {
                     background-color: white;
@@ -3344,7 +3408,7 @@ def main():
             self.saveBtnLayout.addWidget(cancelSaveBtn)
             
             saveBtn = QPushButton("保存修改")
-            saveBtn.setCursor(Qt.PointingHandCursor)
+            saveBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             saveBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #16A34A;
@@ -3447,7 +3511,7 @@ def main():
             InfoBar.success(
                 title="保存成功",
                 content="模板提示词已更新",
-                orient=Qt.Horizontal,
+                orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP,
                 duration=2000,
@@ -3467,8 +3531,8 @@ def main():
         
         def __init__(self, parent=None):
             super().__init__(parent)
-            self.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
-            self.setAttribute(Qt.WA_TranslucentBackground)
+            self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.Dialog)
+            self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
             self.setModal(True)
             
             # 主布局
@@ -3479,7 +3543,7 @@ def main():
             overlay = QWidget()
             overlay.setStyleSheet("background-color: rgba(0, 0, 0, 100);")
             overlayLayout = QVBoxLayout(overlay)
-            overlayLayout.setAlignment(Qt.AlignCenter)
+            overlayLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
             
             # 弹窗卡片
             card = QFrame()
@@ -3504,7 +3568,7 @@ def main():
             
             closeBtn = QPushButton("✕")
             closeBtn.setFixedSize(32, 32)
-            closeBtn.setCursor(Qt.PointingHandCursor)
+            closeBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             closeBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #F3F4F6;
@@ -3632,7 +3696,7 @@ def main():
             btnLayout.addStretch()
             
             cancelBtn = QPushButton("取消")
-            cancelBtn.setCursor(Qt.PointingHandCursor)
+            cancelBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             cancelBtn.setStyleSheet("""
                 QPushButton {
                     background-color: white;
@@ -3651,7 +3715,7 @@ def main():
             btnLayout.addWidget(cancelBtn)
             
             saveBtn = QPushButton("保存模板")
-            saveBtn.setCursor(Qt.PointingHandCursor)
+            saveBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             saveBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #16A34A;
@@ -3697,8 +3761,8 @@ def main():
         
         def __init__(self, parent=None):
             super().__init__(parent)
-            self.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
-            self.setAttribute(Qt.WA_TranslucentBackground)
+            self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.Dialog)
+            self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
             self.setModal(True)
             
             # 主布局
@@ -3709,7 +3773,7 @@ def main():
             overlay = QWidget()
             overlay.setStyleSheet("background-color: rgba(0, 0, 0, 100);")
             overlayLayout = QVBoxLayout(overlay)
-            overlayLayout.setAlignment(Qt.AlignCenter)
+            overlayLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
             
             # 弹窗卡片
             card = QFrame()
@@ -3743,7 +3807,7 @@ def main():
             btnLayout.addStretch()
             
             stayBtn = QPushButton("留在此页")
-            stayBtn.setCursor(Qt.PointingHandCursor)
+            stayBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             stayBtn.setStyleSheet("""
                 QPushButton {
                     background-color: white;
@@ -3762,7 +3826,7 @@ def main():
             btnLayout.addWidget(stayBtn)
             
             goBtn = QPushButton("查看历史报告")
-            goBtn.setCursor(Qt.PointingHandCursor)
+            goBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             goBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #16A34A;
@@ -3806,8 +3870,8 @@ def main():
             self.is_generating = True
             self.full_content = ""
             
-            self.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
-            self.setAttribute(Qt.WA_TranslucentBackground)
+            self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.Dialog)
+            self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
             self.setModal(True)
             
             # 主布局
@@ -3818,7 +3882,7 @@ def main():
             overlay = QWidget()
             overlay.setStyleSheet("background-color: rgba(0, 0, 0, 100);")
             overlayLayout = QVBoxLayout(overlay)
-            overlayLayout.setAlignment(Qt.AlignCenter)
+            overlayLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
             
             # 弹窗卡片（接近全屏）
             card = QFrame()
@@ -3856,7 +3920,7 @@ def main():
             
             closeBtn = QPushButton("✕")
             closeBtn.setFixedSize(32, 32)
-            closeBtn.setCursor(Qt.PointingHandCursor)
+            closeBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             closeBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #F3F4F6;
@@ -3880,7 +3944,7 @@ def main():
             
             # 分隔线
             separator = QFrame()
-            separator.setFrameShape(QFrame.HLine)
+            separator.setFrameShape(QFrame.Shape.HLine)
             separator.setStyleSheet("background-color: #F3F4F6; border: none; height: 1px;")
             cardLayout.addWidget(separator)
             
@@ -3901,7 +3965,7 @@ def main():
             
             # 分隔线
             separator2 = QFrame()
-            separator2.setFrameShape(QFrame.HLine)
+            separator2.setFrameShape(QFrame.Shape.HLine)
             separator2.setStyleSheet("background-color: #F3F4F6; border: none; height: 1px;")
             cardLayout.addWidget(separator2)
             
@@ -3923,7 +3987,7 @@ def main():
             self.actionBtns = {}
             for icon, text, name in [("📋", "复制", "copy"), ("📥", "导出", "export"), ("🔄", "重新生成", "regenerate")]:
                 btn = QPushButton(f"{icon} {text}")
-                btn.setCursor(Qt.PointingHandCursor)
+                btn.setCursor(Qt.CursorShape.PointingHandCursor)
                 btn.setEnabled(False)  # 生成完成前禁用
                 btn.setStyleSheet("""
                     QPushButton {
@@ -4067,12 +4131,12 @@ def main():
             self.contentEdit.setPlainText("")
             
             # 显示错误弹窗
-            from PyQt5.QtWidgets import QMessageBox
+            from PyQt6.QtWidgets import QMessageBox
             QMessageBox.critical(
                 self,
                 "报告生成失败",
                 f"报告生成失败：\n\n{error}\n\n请稍后再试。",
-                QMessageBox.Ok
+                QMessageBox.StandardButton.Ok
             )
         
         def copyContent(self):
@@ -4081,7 +4145,7 @@ def main():
             InfoBar.success(
                 title="复制成功",
                 content="报告内容已复制到剪贴板",
-                orient=Qt.Horizontal,
+                orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP,
                 duration=2000,
@@ -4090,7 +4154,7 @@ def main():
         
         def exportContent(self):
             """导出内容"""
-            from PyQt5.QtWidgets import QFileDialog
+            from PyQt6.QtWidgets import QFileDialog
             file_path, _ = QFileDialog.getSaveFileName(
                 self, "导出报告", f"{self.report_type}报告_{self.date_range.replace('至', '-').strip()}.md",
                 "Markdown Files (*.md);;Text Files (*.txt);;All Files (*)"
@@ -4101,7 +4165,7 @@ def main():
                 InfoBar.success(
                     title="导出成功",
                     content=f"报告已保存到: {file_path}",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=3000,
@@ -4154,7 +4218,7 @@ def main():
             return None
         
         def expandingDirections(self):
-            return Qt.Orientations(0)
+            return Qt.Orientation(0)
         
         def hasHeightForWidth(self):
             return True
@@ -4223,7 +4287,7 @@ def main():
             # 滚动区域
             scrollArea = QScrollArea()
             scrollArea.setWidgetResizable(True)
-            scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
             scrollArea.setStyleSheet("QScrollArea { border: none; background-color: #F7F8F7; }")
             
             contentWidget = QWidget()
@@ -4251,7 +4315,7 @@ def main():
             
             iconLabel = QLabel("✨")
             iconLabel.setFixedSize(20, 20)
-            iconLabel.setAlignment(Qt.AlignCenter)
+            iconLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
             iconLabel.setStyleSheet("""
                 QLabel {
                     background-color: #F0FBF4;
@@ -4285,7 +4349,7 @@ def main():
             instrBtnLayout.setContentsMargins(0, 0, 0, 0)
             
             instrBtn = QPushButton("💬 自定义指令")
-            instrBtn.setCursor(Qt.PointingHandCursor)
+            instrBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             instrBtn.setStyleSheet("""
                 QPushButton {
                     background-color: white;
@@ -4305,7 +4369,7 @@ def main():
             # 建议填写角标
             badge = QLabel("建议填写")
             badge.setFixedSize(60, 14)
-            badge.setAlignment(Qt.AlignCenter)
+            badge.setAlignment(Qt.AlignmentFlag.AlignCenter)
             badge.setStyleSheet("""
                 QLabel {
                     background-color: #16A34A;
@@ -4324,7 +4388,7 @@ def main():
             
             # 开始生成按钮
             generateBtn = QPushButton("✨ 开始生成报告")
-            generateBtn.setCursor(Qt.PointingHandCursor)
+            generateBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             generateBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #16A34A;
@@ -4386,7 +4450,7 @@ def main():
             for i, (text, days) in enumerate([("日报", 0), ("周报", 7), ("月报", 30)]):
                 btn = QPushButton(text)
                 btn.setCheckable(True)
-                btn.setCursor(Qt.PointingHandCursor)
+                btn.setCursor(Qt.CursorShape.PointingHandCursor)
                 btn.setMinimumHeight(24)
                 btn.setProperty("days", days)
                 btn.clicked.connect(lambda checked, idx=i: self.selectReportType(idx))
@@ -4421,7 +4485,7 @@ def main():
             
             # 分隔线
             typeSep = QFrame()
-            typeSep.setFrameShape(QFrame.VLine)
+            typeSep.setFrameShape(QFrame.Shape.VLine)
             typeSep.setStyleSheet("background-color: #F3F4F6; border: none; width: 1px;")
             typeCardLayout.addWidget(typeSep)
             
@@ -4484,7 +4548,7 @@ def main():
             
             templateIcon = QLabel("📄")
             templateIcon.setFixedSize(18, 18)
-            templateIcon.setAlignment(Qt.AlignCenter)
+            templateIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
             templateIcon.setStyleSheet("""
                 QLabel {
                     background-color: #F0FBF4;
@@ -4502,7 +4566,7 @@ def main():
             
             # 导入模板按钮
             importBtn = QPushButton("📥 导入")
-            importBtn.setCursor(Qt.PointingHandCursor)
+            importBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             importBtn.setStyleSheet("""
                 QPushButton {
                     background-color: white;
@@ -4522,7 +4586,7 @@ def main():
             
             # 导出模板按钮
             exportBtn = QPushButton("📤 导出")
-            exportBtn.setCursor(Qt.PointingHandCursor)
+            exportBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             exportBtn.setStyleSheet("""
                 QPushButton {
                     background-color: white;
@@ -4542,7 +4606,7 @@ def main():
             
             # 创建模板按钮
             createBtn = QPushButton("＋ 创建")
-            createBtn.setCursor(Qt.PointingHandCursor)
+            createBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             createBtn.setStyleSheet("""
                 QPushButton {
                     background-color: white;
@@ -4583,8 +4647,8 @@ def main():
             # 将模板网格放在滚动区域中
             templateScrollArea = QScrollArea()
             templateScrollArea.setWidgetResizable(True)
-            templateScrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-            templateScrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            templateScrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            templateScrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
             templateScrollArea.setStyleSheet("QScrollArea { border: none; background: transparent; } QScrollBar { width: 0px; height: 0px; }")
             templateScrollArea.setWidget(templateGridWidget)
             
@@ -4618,7 +4682,7 @@ def main():
             
             previewIcon = QLabel("📄")
             previewIcon.setFixedSize(20, 20)
-            previewIcon.setAlignment(Qt.AlignCenter)
+            previewIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
             previewIcon.setStyleSheet("""
                 QLabel {
                     background-color: #F0FBF4;
@@ -4660,7 +4724,7 @@ def main():
             
             # 分隔线
             previewSep = QFrame()
-            previewSep.setFrameShape(QFrame.HLine)
+            previewSep.setFrameShape(QFrame.Shape.HLine)
             previewSep.setStyleSheet("background-color: #F3F4F6; border: none; height: 1px;")
             previewCardLayout.addWidget(previewSep)
             
@@ -4678,25 +4742,25 @@ def main():
                     border: 1px solid #E5E7EB;
                 }
             """)
-            self.previewContent.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+            self.previewContent.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
             self.previewContent.setMinimumHeight(150)
             
             previewScroll = QScrollArea()
             previewScroll.setWidget(self.previewContent)
             previewScroll.setWidgetResizable(True)
-            previewScroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-            previewScroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            previewScroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            previewScroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
             previewScroll.setStyleSheet("QScrollArea { border: none; background: transparent; } QScrollBar { width: 0px; height: 0px; }")
             previewCardLayout.addWidget(previewScroll)
             
             # 底部提示
             previewHint = QLabel("实际内容将基于你的工作记录自动生成")
             previewHint.setStyleSheet("font-size: 11px; color: #9CA3AF; border: none; background: transparent;")
-            previewHint.setAlignment(Qt.AlignCenter)
+            previewHint.setAlignment(Qt.AlignmentFlag.AlignCenter)
             previewCardLayout.addWidget(previewHint)
             
             # 使用 QSplitter 实现可调整的左右布局
-            self.splitter = QSplitter(Qt.Horizontal)
+            self.splitter = QSplitter(Qt.Orientation.Horizontal)
             self.splitter.setHandleWidth(8)
             self.splitter.setStyleSheet("""
                 QSplitter::handle {
@@ -4770,7 +4834,7 @@ def main():
                 InfoBar.warning(
                     title="日期范围错误",
                     content="开始日期不能晚于结束日期",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=3000,
@@ -4787,7 +4851,7 @@ def main():
             template = REPORT_TEMPLATES[index]
             dialog = TemplatePreviewDialog(index, template["name"], template["desc"], template["prompt"], self)
             dialog.prompt_updated.connect(self.onPromptUpdated)
-            dialog.exec_()
+            dialog.exec()
         
         def onPromptUpdated(self, index, new_content):
             """更新模板提示词"""
@@ -4800,7 +4864,7 @@ def main():
         
         def onImportTemplate(self):
             """导入模板"""
-            from PyQt5.QtWidgets import QFileDialog
+            from PyQt6.QtWidgets import QFileDialog
             file_path, _ = QFileDialog.getOpenFileName(
                 self, "导入模板", "",
                 "CSV Files (*.csv);;All Files (*)"
@@ -4819,7 +4883,7 @@ def main():
                     InfoBar.success(
                         title="导入成功",
                         content=f"已导入 {len(templates)} 个模板",
-                        orient=Qt.Horizontal,
+                        orient=Qt.Orientation.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.TOP,
                         duration=2000,
@@ -4829,7 +4893,7 @@ def main():
                     InfoBar.error(
                         title="导入失败",
                         content="无法解析模板文件",
-                        orient=Qt.Horizontal,
+                        orient=Qt.Orientation.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.TOP,
                         duration=3000,
@@ -4838,7 +4902,7 @@ def main():
         
         def onExportTemplate(self):
             """导出模板"""
-            from PyQt5.QtWidgets import QFileDialog
+            from PyQt6.QtWidgets import QFileDialog
             file_path, _ = QFileDialog.getSaveFileName(
                 self, "导出模板", "report_templates.csv",
                 "CSV Files (*.csv);;All Files (*)"
@@ -4848,7 +4912,7 @@ def main():
                     InfoBar.success(
                         title="导出成功",
                         content=f"模板已保存到: {file_path}",
-                        orient=Qt.Horizontal,
+                        orient=Qt.Orientation.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.TOP,
                         duration=3000,
@@ -4858,7 +4922,7 @@ def main():
                     InfoBar.error(
                         title="导出失败",
                         content="无法保存模板文件",
-                        orient=Qt.Horizontal,
+                        orient=Qt.Orientation.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.TOP,
                         duration=3000,
@@ -4869,7 +4933,7 @@ def main():
             """打开创建模板弹窗"""
             dialog = CreateTemplateDialog(self)
             dialog.template_created.connect(self.addNewTemplate)
-            dialog.exec_()
+            dialog.exec()
         
         def addNewTemplate(self, template):
             """添加新模板"""
@@ -4882,7 +4946,7 @@ def main():
             InfoBar.success(
                 title="创建成功",
                 content=f"模板「{template['name']}」已添加",
-                orient=Qt.Horizontal,
+                orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP,
                 duration=2000,
@@ -4917,7 +4981,7 @@ def main():
                 InfoBar.warning(
                     title="无法删除",
                     content="至少需要保留一个模板",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=2000,
@@ -4931,11 +4995,11 @@ def main():
             reply = QMessageBox.question(
                 self, "确认删除",
                 f"确定要删除模板「{template_name}」吗？",
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No
             )
             
-            if reply == QMessageBox.Yes:
+            if reply == QMessageBox.StandardButton.Yes:
                 # 从数据中删除
                 REPORT_TEMPLATES.pop(index)
                 delete_template(index)  # 保存到文件
@@ -4952,7 +5016,7 @@ def main():
                 InfoBar.success(
                     title="删除成功",
                     content=f"模板「{template_name}」已删除",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=2000,
@@ -4966,7 +5030,7 @@ def main():
                 InfoBar.warning(
                     title="日期范围错误",
                     content="开始日期不能晚于结束日期",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=3000,
@@ -4995,7 +5059,7 @@ def main():
             dialog = GenerateConfirmDialog(self)
             dialog.go_history.connect(self.goToHistory)
             dialog.stay_here.connect(self.resultDialog.show)
-            dialog.exec_()
+            dialog.exec()
         
         def simulateGenerate(self):
             """生成报告（保留兼容性）"""
@@ -5209,7 +5273,7 @@ def main():
             
             # 查看按钮
             viewBtn = QPushButton("👁 查看")
-            viewBtn.setCursor(Qt.PointingHandCursor)
+            viewBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             viewBtn.setStyleSheet("""
                 QPushButton {
                     background: transparent;
@@ -5227,7 +5291,7 @@ def main():
             
             # 复制按钮
             copyBtn = QPushButton("📋 复制")
-            copyBtn.setCursor(Qt.PointingHandCursor)
+            copyBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             copyBtn.setStyleSheet("""
                 QPushButton {
                     background: transparent;
@@ -5245,7 +5309,7 @@ def main():
             
             # 导出按钮
             exportBtn = QPushButton("📥 导出")
-            exportBtn.setCursor(Qt.PointingHandCursor)
+            exportBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             exportBtn.setStyleSheet("""
                 QPushButton {
                     background: transparent;
@@ -5263,7 +5327,7 @@ def main():
             
             # 删除按钮
             deleteBtn = QPushButton("🗑 删除")
-            deleteBtn.setCursor(Qt.PointingHandCursor)
+            deleteBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             deleteBtn.setStyleSheet("""
                 QPushButton {
                     background: transparent;
@@ -5353,7 +5417,7 @@ def main():
             # 编辑按钮
             editTitleBtn = QPushButton("✏️")
             editTitleBtn.setFixedSize(28, 28)
-            editTitleBtn.setCursor(Qt.PointingHandCursor)
+            editTitleBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             editTitleBtn.setStyleSheet("""
                 QPushButton {
                     background: transparent;
@@ -5370,7 +5434,7 @@ def main():
             # 关闭按钮
             closeBtn = QPushButton("✕")
             closeBtn.setFixedSize(32, 32)
-            closeBtn.setCursor(Qt.PointingHandCursor)
+            closeBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             closeBtn.setStyleSheet("""
                 QPushButton {
                     background: transparent;
@@ -5434,8 +5498,8 @@ def main():
                 }
             """)
             self.contentBrowser.setOpenExternalLinks(False)
-            self.contentBrowser.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-            self.contentBrowser.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+            self.contentBrowser.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            self.contentBrowser.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
             drawerLayout.addWidget(self.contentBrowser, 1)
             
             # 编辑模式（QTextEdit）- 默认隐藏
@@ -5450,8 +5514,8 @@ def main():
                     font-family: Consolas, monospace;
                 }
             """)
-            self.contentEdit.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-            self.contentEdit.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+            self.contentEdit.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            self.contentEdit.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
             self.contentEdit.setVisible(False)
             drawerLayout.addWidget(self.contentEdit, 1)
             
@@ -5476,7 +5540,7 @@ def main():
             webBtnLayout.setContentsMargins(0, 0, 0, 0)
             
             webBtn = QPushButton("🌐 网页报告")
-            webBtn.setCursor(Qt.PointingHandCursor)
+            webBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             webBtn.setStyleSheet("""
                 QPushButton {
                     background-color: white;
@@ -5512,7 +5576,7 @@ def main():
             
             # 编辑按钮
             self.editBtn = QPushButton("✏️ 编辑")
-            self.editBtn.setCursor(Qt.PointingHandCursor)
+            self.editBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             self.editBtn.setStyleSheet("""
                 QPushButton {
                     background-color: white;
@@ -5531,7 +5595,7 @@ def main():
             
             # 复制全文按钮
             copyBtn = QPushButton("📋 复制全文")
-            copyBtn.setCursor(Qt.PointingHandCursor)
+            copyBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             copyBtn.setStyleSheet("""
                 QPushButton {
                     background-color: white;
@@ -5550,7 +5614,7 @@ def main():
             
             # 导出按钮
             exportBtn = QPushButton("📥 导出")
-            exportBtn.setCursor(Qt.PointingHandCursor)
+            exportBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             exportBtn.setStyleSheet("""
                 QPushButton {
                     background-color: white;
@@ -5571,7 +5635,7 @@ def main():
         
         def eventFilter(self, obj, event):
             """事件过滤器，点击遮罩关闭抽屉"""
-            if obj == self.overlay and event.type() == event.MouseButtonPress:
+            if obj == self.overlay and event.type() == QEvent.Type.MouseButtonPress:
                 self.close()
                 return True
             return super().eventFilter(obj, event)
@@ -5739,7 +5803,7 @@ def main():
                 InfoBar.success(
                     title="复制成功",
                     content="报告内容已复制到剪贴板",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=2000,
@@ -5749,7 +5813,7 @@ def main():
         def exportContent(self):
             """导出内容"""
             if self.report_data:
-                from PyQt5.QtWidgets import QFileDialog
+                from PyQt6.QtWidgets import QFileDialog
                 file_path, _ = QFileDialog.getSaveFileName(
                     self, "导出报告",
                     f"{self.report_data.get('title', '报告')}.md",
@@ -5764,7 +5828,7 @@ def main():
                     InfoBar.success(
                         title="导出成功",
                         content=f"报告已保存到: {file_path}",
-                        orient=Qt.Horizontal,
+                        orient=Qt.Orientation.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.TOP,
                         duration=3000,
@@ -5835,7 +5899,7 @@ def main():
             for i, text in enumerate(["全部", "日报", "周报", "月报"]):
                 btn = QPushButton(text)
                 btn.setCheckable(True)
-                btn.setCursor(Qt.PointingHandCursor)
+                btn.setCursor(Qt.CursorShape.PointingHandCursor)
                 btn.setFixedHeight(28)
                 btn.setProperty("type", text)
                 btn.clicked.connect(lambda checked, idx=i: self.selectType(idx))
@@ -5908,7 +5972,7 @@ def main():
             # 刷新按钮
             refreshBtn = QPushButton("🔄")
             refreshBtn.setFixedSize(28, 28)
-            refreshBtn.setCursor(Qt.PointingHandCursor)
+            refreshBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             refreshBtn.setStyleSheet("""
                 QPushButton {
                     background-color: white;
@@ -5942,7 +6006,7 @@ def main():
             self.quickDateButtons = []
             for i, text in enumerate(["本周", "本月", "最近7天", "最近30天"]):
                 btn = QPushButton(text)
-                btn.setCursor(Qt.PointingHandCursor)
+                btn.setCursor(Qt.CursorShape.PointingHandCursor)
                 btn.setFixedHeight(28)
                 btn.setProperty("range", text)
                 btn.clicked.connect(lambda checked, t=text: self.selectQuickDate(t))
@@ -6070,15 +6134,15 @@ def main():
             
             # 分隔线
             separator = QFrame()
-            separator.setFrameShape(QFrame.HLine)
+            separator.setFrameShape(QFrame.Shape.HLine)
             separator.setStyleSheet("background-color: #f3f4f6; border: none; height: 1px;")
             listPanelLayout.addWidget(separator)
             
             # 报告列表（可滚动）
             self.listScrollArea = QScrollArea()
             self.listScrollArea.setWidgetResizable(True)
-            self.listScrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-            self.listScrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            self.listScrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            self.listScrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
             self.listScrollArea.setStyleSheet("QScrollArea { border: none; background: transparent; } QScrollBar { width: 0px; height: 0px; }")
             
             self.listWidget = QWidget()
@@ -6098,7 +6162,7 @@ def main():
             # 上一页按钮
             self.prevBtn = QPushButton("‹")
             self.prevBtn.setFixedSize(36, 36)
-            self.prevBtn.setCursor(Qt.PointingHandCursor)
+            self.prevBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             self.prevBtn.setEnabled(False)
             self.prevBtn.setStyleSheet("""
                 QPushButton {
@@ -6134,7 +6198,7 @@ def main():
             # 下一页按钮
             self.nextBtn = QPushButton("›")
             self.nextBtn.setFixedSize(36, 36)
-            self.nextBtn.setCursor(Qt.PointingHandCursor)
+            self.nextBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             self.nextBtn.setStyleSheet("""
                 QPushButton {
                     background-color: white;
@@ -6276,7 +6340,7 @@ def main():
                 InfoBar.warning(
                     title="日期范围错误",
                     content="开始日期不能晚于结束日期",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=3000,
@@ -6347,7 +6411,7 @@ def main():
                 
                 # 分隔线
                 separator = QFrame()
-                separator.setFrameShape(QFrame.HLine)
+                separator.setFrameShape(QFrame.Shape.HLine)
                 separator.setStyleSheet("background-color: #f3f4f6; border: none; height: 1px;")
                 self.listLayout.addWidget(separator)
             
@@ -6379,7 +6443,7 @@ def main():
             for i in range(1, self.total_pages + 1):
                 btn = QPushButton(str(i))
                 btn.setFixedSize(36, 36)
-                btn.setCursor(Qt.PointingHandCursor)
+                btn.setCursor(Qt.CursorShape.PointingHandCursor)
                 btn.setProperty("page", i)
                 btn.clicked.connect(lambda checked, p=i: self.goToPage(p))
                 self.pageButtons.append(btn)
@@ -6447,7 +6511,7 @@ def main():
             InfoBar.success(
                 title="复制成功",
                 content="报告内容已复制到剪贴板",
-                orient=Qt.Horizontal,
+                orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP,
                 duration=2000,
@@ -6456,7 +6520,7 @@ def main():
         
         def onExportReport(self, report):
             """导出报告"""
-            from PyQt5.QtWidgets import QFileDialog
+            from PyQt6.QtWidgets import QFileDialog
             from store import read_report
             
             file_path, _ = QFileDialog.getSaveFileName(
@@ -6472,7 +6536,7 @@ def main():
                 InfoBar.success(
                     title="导出成功",
                     content=f"报告已保存到: {file_path}",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=3000,
@@ -6484,16 +6548,16 @@ def main():
             reply = QMessageBox.question(
                 self, "确认删除",
                 f"确定要删除报告「{report['title']}」吗？",
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No
             )
-            if reply == QMessageBox.Yes:
+            if reply == QMessageBox.StandardButton.Yes:
                 self.reports.remove(report)
                 self.refreshList()
                 InfoBar.success(
                     title="删除成功",
                     content=f"报告已删除",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=2000,
@@ -6504,8 +6568,8 @@ def main():
         """最新版本弹窗"""
         def __init__(self, current_version, update_log, parent=None):
             super().__init__(parent)
-            self.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
-            self.setAttribute(Qt.WA_TranslucentBackground)
+            self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.Dialog)
+            self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
             self.setModal(True)
             
             mainLayout = QHBoxLayout(self)
@@ -6514,7 +6578,7 @@ def main():
             overlay = QWidget()
             overlay.setStyleSheet("background-color: rgba(0, 0, 0, 100);")
             overlayLayout = QVBoxLayout(overlay)
-            overlayLayout.setAlignment(Qt.AlignCenter)
+            overlayLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
             
             card = QFrame()
             card.setFixedSize(400, 350)
@@ -6526,29 +6590,29 @@ def main():
             # 图标
             iconLabel = QLabel("✅")
             iconLabel.setFixedSize(48, 48)
-            iconLabel.setAlignment(Qt.AlignCenter)
+            iconLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
             iconLabel.setStyleSheet("font-size: 39px; background: transparent; border: none;")
-            cardLayout.addWidget(iconLabel, 0, Qt.AlignCenter)
+            cardLayout.addWidget(iconLabel, 0, Qt.AlignmentFlag.AlignCenter)
             
             # 标题
             titleLabel = QLabel("已是最新版本")
             titleLabel.setStyleSheet("font-size: 22px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
-            titleLabel.setAlignment(Qt.AlignCenter)
+            titleLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
             cardLayout.addWidget(titleLabel)
             
             # 版本号
             versionLabel = QLabel(f"当前版本：{current_version}")
             versionLabel.setStyleSheet("font-size: 17px; color: #16A34A; font-weight: bold; border: none; background: transparent;")
-            versionLabel.setAlignment(Qt.AlignCenter)
+            versionLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
             cardLayout.addWidget(versionLabel)
             
             # 更新日志（支持 Markdown 渲染）
             logLabel = QLabel('')
-            logLabel.setTextFormat(Qt.MarkdownText)
+            logLabel.setTextFormat(Qt.TextFormat.MarkdownText)
             logLabel.setText(update_log or '')
             logLabel.setWordWrap(True)
             logLabel.setStyleSheet("font-size: 15px; color: #666666; border: none; background: transparent;")
-            logLabel.setAlignment(Qt.AlignCenter)
+            logLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
             cardLayout.addWidget(logLabel)
             
             cardLayout.addStretch()
@@ -6556,7 +6620,7 @@ def main():
             # 关闭按钮
             closeBtn = QPushButton("关闭")
             closeBtn.setFixedHeight(40)
-            closeBtn.setCursor(Qt.PointingHandCursor)
+            closeBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             closeBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #F44336;
@@ -6581,8 +6645,8 @@ def main():
             self.download_url = download_url
             self.force_update = force_update
             self._update_downloaded = False
-            self.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
-            self.setAttribute(Qt.WA_TranslucentBackground)
+            self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.Dialog)
+            self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
             self.setModal(True)
             
             mainLayout = QHBoxLayout(self)
@@ -6591,7 +6655,7 @@ def main():
             overlay = QWidget()
             overlay.setStyleSheet("background-color: rgba(0, 0, 0, 100);")
             overlayLayout = QVBoxLayout(overlay)
-            overlayLayout.setAlignment(Qt.AlignCenter)
+            overlayLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
             
             card = QFrame()
             card.setFixedSize(450, 400)
@@ -6614,19 +6678,19 @@ def main():
                         border: 1px solid #FECACA;
                     }
                 """)
-                forceBadge.setAlignment(Qt.AlignCenter)
+                forceBadge.setAlignment(Qt.AlignmentFlag.AlignCenter)
                 cardLayout.addWidget(forceBadge)
             
             # 版本号标题
             versionTitle = QLabel(f"{current_version} → {latest_version}")
             versionTitle.setStyleSheet("font-size: 24px; font-weight: bold; color: #16A34A; border: none; background: transparent;")
-            versionTitle.setAlignment(Qt.AlignCenter)
+            versionTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
             cardLayout.addWidget(versionTitle)
             
             # 发现新版本
             newVersionLabel = QLabel("发现新版本！")
             newVersionLabel.setStyleSheet("font-size: 17px; color: #666666; border: none; background: transparent;")
-            newVersionLabel.setAlignment(Qt.AlignCenter)
+            newVersionLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
             cardLayout.addWidget(newVersionLabel)
             
             # 更新日志
@@ -6659,7 +6723,7 @@ def main():
             if not self.force_update:
                 closeBtn = QPushButton("关闭")
                 closeBtn.setFixedHeight(40)
-                closeBtn.setCursor(Qt.PointingHandCursor)
+                closeBtn.setCursor(Qt.CursorShape.PointingHandCursor)
                 closeBtn.setStyleSheet("""
                     QPushButton {
                         background-color: #F44336;
@@ -6676,7 +6740,7 @@ def main():
             else:
                 exitBtn = QPushButton("退出软件")
                 exitBtn.setFixedHeight(40)
-                exitBtn.setCursor(Qt.PointingHandCursor)
+                exitBtn.setCursor(Qt.CursorShape.PointingHandCursor)
                 exitBtn.setStyleSheet("""
                     QPushButton {
                         background-color: #9CA3AF;
@@ -6693,7 +6757,7 @@ def main():
             
             updateBtn = QPushButton("立即更新" if self.force_update else "更新")
             updateBtn.setFixedHeight(40)
-            updateBtn.setCursor(Qt.PointingHandCursor)
+            updateBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             updateBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #16A34A;
@@ -6716,13 +6780,13 @@ def main():
         def startUpdate(self):
             """开始更新"""
             import requests
-            from PyQt5.QtWidgets import QFileDialog
+            from PyQt6.QtWidgets import QFileDialog
             
             if not self.download_url:
                 InfoBar.error(
                     title="下载失败",
                     content="没有可用的下载链接",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=3000,
@@ -6744,7 +6808,7 @@ def main():
                 InfoBar.info(
                     title="下载中",
                     content="正在下载更新文件...",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=3000,
@@ -6761,7 +6825,7 @@ def main():
                 InfoBar.success(
                     title="下载完成",
                     content=f"更新文件已保存到: {file_path}",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=5000,
@@ -6776,7 +6840,7 @@ def main():
                 InfoBar.error(
                     title="下载失败",
                     content=f"下载失败: {str(e)}",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=3000,
@@ -6791,7 +6855,7 @@ def main():
         
         def exitApp(self):
             """退出整个软件"""
-            from PyQt5.QtWidgets import QApplication
+            from PyQt6.QtWidgets import QApplication
             self._update_downloaded = True  # 放行弹窗关闭
             self.accept()  # 结束弹窗模态循环
             app = QApplication.instance()
@@ -6800,7 +6864,7 @@ def main():
         
         def keyPressEvent(self, event):
             """强制更新时拦截 ESC 键"""
-            if self.force_update and event.key() == Qt.Key_Escape:
+            if self.force_update and event.key() == Qt.Key.Key_Escape:
                 return
             super().keyPressEvent(event)
         
@@ -6883,7 +6947,7 @@ def main():
         
         def paintEvent(self, event):
             painter = QPainter(self)
-            painter.setRenderHint(QPainter.Antialiasing)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
             
             rows = self._rows()
             cols = self._cols()
@@ -6910,14 +6974,14 @@ def main():
                     color = self._green(intensity) if v > 0 else QColor("#EBEBEB")
                     x = x0 + ci * (cell + sp)
                     y = y0 + ri * (cell + sp)
-                    painter.setPen(Qt.NoPen)
+                    painter.setPen(Qt.PenStyle.NoPen)
                     painter.setBrush(color)
                     painter.drawRoundedRect(x, y, cell, cell, 3, 3)
                     # 数值文字（时段模式格子较大时显示）
                     if v > 0 and cell >= 22:
                         painter.setPen(QColor("white") if intensity > 0.5 else QColor("#333333"))
-                        painter.setFont(QFont("Microsoft YaHei", 8, QFont.Bold))
-                        painter.drawText(QRect(x, y, cell, cell), Qt.AlignCenter, str(v))
+                        painter.setFont(QFont("Microsoft YaHei", 8, QFont.Weight.Bold))
+                        painter.drawText(QRect(x, y, cell, cell), Qt.AlignmentFlag.AlignCenter, str(v))
             
             # 行标签（左侧）
             painter.setPen(QColor("#888888"))
@@ -6927,14 +6991,14 @@ def main():
                 label = self.row_labels[ri] if ri < len(self.row_labels) else ""
                 if isinstance(label, tuple):
                     main, sub = label
-                    painter.drawText(QRect(0, y - 2, self.left_gutter - 6, cell), Qt.AlignRight | Qt.AlignTop, main)
+                    painter.drawText(QRect(0, y - 2, self.left_gutter - 6, cell), Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop, main)
                     painter.setPen(QColor("#BBBBBB"))
                     painter.setFont(QFont("Microsoft YaHei", 8))
-                    painter.drawText(QRect(0, y + cell // 2, self.left_gutter - 6, cell), Qt.AlignRight | Qt.AlignTop, sub)
+                    painter.drawText(QRect(0, y + cell // 2, self.left_gutter - 6, cell), Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop, sub)
                     painter.setPen(QColor("#888888"))
                     painter.setFont(QFont("Microsoft YaHei", 9))
                 else:
-                    painter.drawText(QRect(0, y, self.left_gutter - 6, cell), Qt.AlignRight | Qt.AlignVCenter, label)
+                    painter.drawText(QRect(0, y, self.left_gutter - 6, cell), Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter, label)
             
             # 列标签
             painter.setPen(QColor("#999999"))
@@ -6942,10 +7006,10 @@ def main():
             for ci, text in self.col_labels:
                 x = x0 + ci * (cell + sp)
                 if self.col_label_pos == "top":
-                    painter.drawText(QRect(x, 0, cell * 3 + sp * 2, self.edge_gutter - 4), Qt.AlignLeft | Qt.AlignVCenter, text)
+                    painter.drawText(QRect(x, 0, cell * 3 + sp * 2, self.edge_gutter - 4), Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter, text)
                 else:
                     y = y0 + rows * (cell + sp) + 2
-                    painter.drawText(QRect(x, y, cell * 3 + sp * 2, 16), Qt.AlignLeft | Qt.AlignVCenter, text)
+                    painter.drawText(QRect(x, y, cell * 3 + sp * 2, 16), Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter, text)
             
             painter.end()
 
@@ -6970,7 +7034,7 @@ def main():
             
             scrollArea = QScrollArea()
             scrollArea.setWidgetResizable(True)
-            scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
             scrollArea.setStyleSheet("QScrollArea { border: none; background-color: #F5F6F7; }")
             
             contentWidget = QWidget()
@@ -7000,7 +7064,7 @@ def main():
             self.yearBtn = QPushButton("📆 年度")
             for b in (self.periodBtn, self.yearBtn):
                 b.setFixedHeight(36)
-                b.setCursor(Qt.PointingHandCursor)
+                b.setCursor(Qt.CursorShape.PointingHandCursor)
             self.periodBtn.clicked.connect(lambda: self.set_mode("period"))
             self.yearBtn.clicked.connect(lambda: self.set_mode("year"))
             topBar.addWidget(self.periodBtn)
@@ -7011,7 +7075,7 @@ def main():
             # 生成热力图按钮（导出对应的数据表格 .xlsx）
             self.exportBtn = QPushButton("🖼 生成热力图")
             self.exportBtn.setFixedHeight(36)
-            self.exportBtn.setCursor(Qt.PointingHandCursor)
+            self.exportBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             self.exportBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #16A34A; color: white;
@@ -7413,7 +7477,7 @@ def main():
         
         def export_heatmap_table(self):
             """导出热力图对应的数据表格（.xlsx，无第三方依赖，Excel/WPS 可直接打开）"""
-            from PyQt5.QtWidgets import QFileDialog
+            from PyQt6.QtWidgets import QFileDialog
             from qfluentwidgets import InfoBar, InfoBarPosition
             
             mode_name = "时段" if self.mode == "period" else "年度"
@@ -7436,14 +7500,14 @@ def main():
                 InfoBar.success(
                     title="导出成功",
                     content=f"数据表格已保存: {file_path}",
-                    orient=Qt.Horizontal, isClosable=True,
+                    orient=Qt.Orientation.Horizontal, isClosable=True,
                     position=InfoBarPosition.TOP, duration=3000, parent=self
                 )
             except Exception as e:
                 InfoBar.error(
                     title="导出失败",
                     content=str(e),
-                    orient=Qt.Horizontal, isClosable=True,
+                    orient=Qt.Orientation.Horizontal, isClosable=True,
                     position=InfoBarPosition.TOP, duration=4000, parent=self
                 )
         
@@ -7724,13 +7788,13 @@ def main():
             
             # 分隔线
             separator = QFrame()
-            separator.setFrameShape(QFrame.HLine)
+            separator.setFrameShape(QFrame.Shape.HLine)
             separator.setStyleSheet("background-color: #F0F0F0; border: none; height: 1px;")
             accountLayout.addWidget(separator)
             
             # 退出登录按钮
             logoutBtn = QPushButton("🚪 退出登录")
-            logoutBtn.setCursor(Qt.PointingHandCursor)
+            logoutBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             logoutBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #F44336;
@@ -7829,7 +7893,7 @@ def main():
             
             glmTestBtnLayout = QHBoxLayout()
             self.glmTestBtn = QPushButton("🔗 测试 GLM 连接")
-            self.glmTestBtn.setCursor(Qt.PointingHandCursor)
+            self.glmTestBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             self.glmTestBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #2196F3;
@@ -7907,7 +7971,7 @@ def main():
             ollamaBtnLayout = QHBoxLayout()
             
             applyBtn = QPushButton("✅ 应用设置")
-            applyBtn.setCursor(Qt.PointingHandCursor)
+            applyBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             applyBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #4CAF50;
@@ -7924,7 +7988,7 @@ def main():
             ollamaBtnLayout.addWidget(applyBtn)
             
             self.ollamaTestBtn = QPushButton("🔗 测试 Ollama 连接")
-            self.ollamaTestBtn.setCursor(Qt.PointingHandCursor)
+            self.ollamaTestBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             self.ollamaTestBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #2196F3;
@@ -8001,7 +8065,7 @@ def main():
             
             # 检查更新按钮
             checkUpdateBtn = QPushButton("检查更新")
-            checkUpdateBtn.setCursor(Qt.PointingHandCursor)
+            checkUpdateBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             checkUpdateBtn.setStyleSheet("""
                 QPushButton {
                     background-color: #2196F3;
@@ -8031,7 +8095,7 @@ def main():
             aboutLayout.addWidget(aboutTitle)
             
             aboutText = QLabel(
-                "工作日报助手 v1.2\n"
+                "工作日报助手 v1.4\n"
                 "自动截图分析工作内容，生成工作日报。"
             )
             aboutText.setWordWrap(True)
@@ -8063,7 +8127,7 @@ def main():
                 print(f"[checkUpdate] 开始检查, silent={silent}")
                 response = requests.get(
                     f"{API_BASE_URL}/api/check-update",
-                    params={"current_version": "v1.2"},
+                    params={"current_version": "v1.4"},
                     timeout=5
                 )
                 
@@ -8074,7 +8138,7 @@ def main():
                         InfoBar.error(
                             title="检查失败",
                             content=f"服务器返回错误: {response.status_code}",
-                            orient=Qt.Horizontal,
+                            orient=Qt.Orientation.Horizontal,
                             isClosable=True,
                             position=InfoBarPosition.TOP,
                             duration=3000,
@@ -8090,7 +8154,7 @@ def main():
                         InfoBar.error(
                             title="检查失败",
                             content="服务器返回数据格式错误",
-                            orient=Qt.Horizontal,
+                            orient=Qt.Orientation.Horizontal,
                             isClosable=True,
                             position=InfoBarPosition.TOP,
                             duration=3000,
@@ -8100,8 +8164,8 @@ def main():
                 
                 if result.get('success'):
                     has_update = result.get('has_update', False)
-                    current_version = result.get('current_version', 'v1.2')
-                    latest_version = result.get('latest_version', 'v1.2')
+                    current_version = result.get('current_version', 'v1.4')
+                    latest_version = result.get('latest_version', 'v1.4')
                     update_log = result.get('update_log', '')
                     download_url = result.get('download_url', '')
                     force_update = result.get('force_update', False)
@@ -8118,19 +8182,19 @@ def main():
                                 self,
                                 force_update=force_update
                             )
-                            dialog.exec_()
+                            dialog.exec()
                         return result
                     else:
                         if not silent:
                             dialog = LatestVersionDialog(current_version, update_log, self)
-                            dialog.exec_()
+                            dialog.exec()
                         return result
                 else:
                     if not silent:
                         InfoBar.error(
                             title="检查失败",
                             content=result.get('message', '无法获取版本信息'),
-                            orient=Qt.Horizontal,
+                            orient=Qt.Orientation.Horizontal,
                             isClosable=True,
                             position=InfoBarPosition.TOP,
                             duration=3000,
@@ -8143,7 +8207,7 @@ def main():
                     InfoBar.error(
                         title="检查失败",
                         content=f"发生错误: {str(e)}",
-                        orient=Qt.Horizontal,
+                        orient=Qt.Orientation.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.TOP,
                         duration=3000,
@@ -8196,7 +8260,7 @@ def main():
             InfoBar.success(
                 title="设置已保存",
                 content=f"Ollama 服务器: {host}\n模型: {model}",
-                orient=Qt.Horizontal,
+                orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP,
                 duration=3000,
@@ -8234,7 +8298,7 @@ def main():
         
         def onTestModeChanged(self, state):
             """测试模式开关变化"""
-            enabled = state == Qt.Checked
+            enabled = state == Qt.CheckState.Checked.value
             set_test_mode(enabled)
             self.updateTestStatus()
             
@@ -8242,7 +8306,7 @@ def main():
                 InfoBar.success(
                     title="测试模式已启用",
                     content="截图将保存到 data/photo 文件夹",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=3000,
@@ -8252,7 +8316,7 @@ def main():
                 InfoBar.info(
                     title="测试模式已关闭",
                     content="截图将不再保存",
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP,
                     duration=3000,
@@ -8299,11 +8363,11 @@ def main():
             reply = QMessageBox.question(
                 self, "确认退出",
                 "确定要退出登录吗？",
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No
             )
             
-            if reply == QMessageBox.Yes:
+            if reply == QMessageBox.StandardButton.Yes:
                 # 删除登录状态文件
                 import json
                 config_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data')
@@ -8325,7 +8389,7 @@ def main():
                     InfoBar.info(
                         title="缩放设置已更改",
                         content=f"新缩放比例: {text}，请重启程序使设置生效",
-                        orient=Qt.Horizontal,
+                        orient=Qt.Orientation.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.TOP,
                         duration=5000,
@@ -8376,7 +8440,7 @@ def main():
             # 滚动区域
             scrollArea = QScrollArea()
             scrollArea.setWidgetResizable(True)
-            scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
             scrollArea.setStyleSheet("QScrollArea { border: none; background-color: #F5F5F5; }")
             
             contentWidget = QWidget()
@@ -8448,7 +8512,7 @@ def main():
             for i, (minutes, text) in enumerate(self.interval_options):
                 btn = QPushButton(text)
                 btn.setCheckable(True)
-                btn.setCursor(Qt.PointingHandCursor)
+                btn.setCursor(Qt.CursorShape.PointingHandCursor)
                 btn.setMinimumHeight(40)
                 
                 # 默认选中10分钟
@@ -8510,7 +8574,7 @@ def main():
                 }
             """)
             self.logText.setWordWrap(True)
-            self.logText.setAlignment(Qt.AlignTop)
+            self.logText.setAlignment(Qt.AlignmentFlag.AlignTop)
             self.logText.setMinimumHeight(100)
             logLayout.addWidget(self.logText)
             
@@ -8525,7 +8589,7 @@ def main():
             
             # 开始监控按钮
             self.startBtn = QPushButton("▶️ 开始监控")
-            self.startBtn.setCursor(Qt.PointingHandCursor)
+            self.startBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             self.startBtn.setMinimumHeight(50)
             self.startBtn.setStyleSheet("""
                 QPushButton {
@@ -8546,7 +8610,7 @@ def main():
             
             # 结束监控按钮
             self.stopBtn = QPushButton("⏹️ 结束监控")
-            self.stopBtn.setCursor(Qt.PointingHandCursor)
+            self.stopBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             self.stopBtn.setMinimumHeight(50)
             self.stopBtn.setEnabled(False)
             self.stopBtn.setStyleSheet("""
@@ -8621,7 +8685,7 @@ def main():
             InfoBar.success(
                 title="监控已启动",
                 content=f"每 {self.selected_interval} 分钟自动截图分析",
-                orient=Qt.Horizontal,
+                orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP,
                 duration=3000,
@@ -8663,7 +8727,7 @@ def main():
             InfoBar.info(
                 title="监控已停止",
                 content="定时截图分析已结束",
-                orient=Qt.Horizontal,
+                orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP,
                 duration=3000,
@@ -8824,14 +8888,14 @@ def main():
                     self.showUpdateBadge(True)
                     # 弹窗提示
                     dialog = UpdateDialog(
-                        result.get('current_version', 'v1.2'),
+                        result.get('current_version', 'v1.4'),
                         result.get('latest_version', ''),
                         result.get('update_log', ''),
                         result.get('download_url', ''),
                         self,
                         force_update=result.get('force_update', False)
                     )
-                    dialog.exec_()
+                    dialog.exec()
                 else:
                     print("[更新检查] 已是最新版本")
             except Exception as e:
@@ -8852,7 +8916,7 @@ def main():
                             font-weight: bold;
                         }
                     """)
-                    self._update_badge.setCursor(Qt.PointingHandCursor)
+                    self._update_badge.setCursor(Qt.CursorShape.PointingHandCursor)
                     self._update_badge.mousePressEvent = lambda e: self.settingsPage.checkUpdate()
                 
                 # 定位到标题栏右侧
@@ -8883,20 +8947,20 @@ def main():
             if os.path.exists(icon_path):
                 # 加载图片并缩放为图标大小
                 pixmap = QPixmap(icon_path)
-                pixmap = pixmap.scaled(32, 32, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                pixmap = pixmap.scaled(32, 32, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
                 self.trayIcon.setIcon(QIcon(pixmap))
             else:
                 # 如果图片不存在，使用默认图标
                 pixmap = QPixmap(32, 32)
-                pixmap.fill(Qt.transparent)
+                pixmap.fill(Qt.GlobalColor.transparent)
                 painter = QPainter(pixmap)
-                painter.setRenderHint(QPainter.Antialiasing)
+                painter.setRenderHint(QPainter.RenderHint.Antialiasing)
                 painter.setBrush(QBrush(QColor("#4CAF50")))
                 painter.setPen(QPen(QColor("#388E3C"), 2))
                 painter.drawEllipse(2, 2, 28, 28)
-                painter.setPen(QColor(Qt.white))
-                painter.setFont(QFont("Arial", 14, QFont.Bold))
-                painter.drawText(pixmap.rect(), Qt.AlignCenter, "W")
+                painter.setPen(QColor(Qt.GlobalColor.white))
+                painter.setFont(QFont("Arial", 14, QFont.Weight.Bold))
+                painter.drawText(pixmap.rect(), Qt.AlignmentFlag.AlignCenter, "W")
                 painter.end()
                 self.trayIcon.setIcon(QIcon(pixmap))
             
@@ -8926,7 +8990,7 @@ def main():
         
         def trayIconActivated(self, reason):
             """处理托盘图标激活事件"""
-            if reason == QSystemTrayIcon.DoubleClick:
+            if reason == QSystemTrayIcon.ActivationReason.DoubleClick:
                 self.showMainWindow()
         
         def showMainWindow(self):
@@ -8951,8 +9015,8 @@ def main():
             dialog = QDialog(self)
             dialog.setWindowTitle(" ")
             dialog.setFixedSize(380, 220)
-            dialog.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
-            dialog.setAttribute(Qt.WA_TranslucentBackground)
+            dialog.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.Dialog)
+            dialog.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
             
             # 主容器
             mainWidget = QWidget(dialog)
@@ -8994,7 +9058,7 @@ def main():
             
             # 最小化到任务栏按钮
             minimizeBtn = QPushButton("🌙 最小化到任务栏", mainWidget)
-            minimizeBtn.setCursor(Qt.PointingHandCursor)
+            minimizeBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             minimizeBtn.setMinimumHeight(40)
             minimizeBtn.setStyleSheet("""
                 QPushButton {
@@ -9018,7 +9082,7 @@ def main():
             
             # 直接退出按钮
             closeBtn = QPushButton("🚪 直接退出", mainWidget)
-            closeBtn.setCursor(Qt.PointingHandCursor)
+            closeBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             closeBtn.setMinimumHeight(40)
             closeBtn.setStyleSheet("""
                 QPushButton {
@@ -9044,7 +9108,7 @@ def main():
             
             # 取消按钮（文字按钮）
             cancelBtn = QPushButton("取消", mainWidget)
-            cancelBtn.setCursor(Qt.PointingHandCursor)
+            cancelBtn.setCursor(Qt.CursorShape.PointingHandCursor)
             cancelBtn.setStyleSheet("""
                 QPushButton {
                     background: transparent;
@@ -9058,10 +9122,10 @@ def main():
                 }
             """)
             cancelBtn.clicked.connect(lambda: dialog.done(0))
-            layout.addWidget(cancelBtn, 0, Qt.AlignCenter)
+            layout.addWidget(cancelBtn, 0, Qt.AlignmentFlag.AlignCenter)
             
             # 显示对话框并获取结果
-            result = dialog.exec_()
+            result = dialog.exec()
             
             # 根据用户选择执行操作
             if result == 1:
@@ -9071,7 +9135,7 @@ def main():
                 self.trayIcon.showMessage(
                     "工作日报助手",
                     "程序已最小化到任务栏，双击图标可恢复窗口",
-                    QSystemTrayIcon.Information,
+                    QSystemTrayIcon.MessageIcon.Information,
                     2000
                 )
             elif result == 2:
@@ -9081,9 +9145,9 @@ def main():
         
         def changeEvent(self, event):
             """处理窗口状态变化事件"""
-            if event.type() == event.WindowStateChange:
+            if event.type() == QEvent.Type.WindowStateChange:
                 # 如果窗口从最小化恢复
-                if self.windowState() == Qt.WindowNoState:
+                if self.windowState() == Qt.WindowState.WindowNoState:
                     self.show()
                     self.activateWindow()
                     self.raise_()
@@ -9091,7 +9155,7 @@ def main():
         
         def event(self, event):
             """处理事件，确保窗口能正常恢复"""
-            if event.type() == event.WindowStateChange:
+            if event.type() == QEvent.Type.WindowStateChange:
                 if self.isMinimized():
                     # 最小化时记录状态
                     self._was_minimized = True
@@ -9123,7 +9187,7 @@ def main():
     login_window.login_success.connect(on_login_success)
     login_window.show()
     
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 if __name__ == '__main__':

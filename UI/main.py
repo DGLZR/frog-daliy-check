@@ -10,12 +10,12 @@
 
 import sys
 import os
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QListWidgetItem, 
+from PyQt6.QtWidgets import (QApplication, QMainWindow, QListWidgetItem, 
                              QGraphicsDropShadowEffect, QMessageBox,
                              QTableWidgetItem)
-from PyQt5.QtCore import Qt, QSize, QPropertyAnimation, QEasingCurve, QTimer, QParallelAnimationGroup
-from PyQt5.QtGui import QColor, QIcon, QFont
-from PyQt5 import uic
+from PyQt6.QtCore import Qt, QSize, QPropertyAnimation, QEasingCurve, QTimer, QParallelAnimationGroup
+from PyQt6.QtGui import QColor, QIcon, QFont
+from PyQt6 import uic
 
 # 导入自定义模块
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -94,7 +94,7 @@ class MainWindow(QMainWindow):
         # 左侧面板动画
         nav_anim = QPropertyAnimation(self.leftPanel, b"maximumWidth")
         nav_anim.setDuration(300)
-        nav_anim.setEasingCurve(QEasingCurve.InOutQuad)
+        nav_anim.setEasingCurve(QEasingCurve.Type.InOutQuad)
         
         if self.nav_visible:
             # 隐藏导航栏（保留按钮宽度）
@@ -187,7 +187,7 @@ def main():
     app.setFont(font)
     window = MainWindow()
     window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 if __name__ == '__main__':

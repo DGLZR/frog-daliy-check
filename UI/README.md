@@ -18,7 +18,7 @@
 1. 打开命令行
 2. 激活conda环境：
    ```bash
-   conda activate deeplearning
+   conda activate daily-AI
    ```
 3. 运行程序：
    ```bash
@@ -52,7 +52,7 @@
 
 ## 依赖库
 
-- PyQt5
+- PyQt6
 - opencv-python
 - numpy
 - mss
@@ -61,5 +61,5 @@
 ## 安装依赖
 
 ```bash
-pip install PyQt5 opencv-python numpy mss ollama
+pip install PyQt6 opencv-python numpy mss ollama
 ```

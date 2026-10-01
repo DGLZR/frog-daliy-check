@@ -9,14 +9,14 @@
 - **本地存储**：所有数据仅存本地 CSV，不上传云端
 - **实时统计**：24 小时热力图展示工作分布，自动计算专注时长
 - **定时监控**：支持自定义间隔自动截图分析
-- **现代界面**：基于 PyQt-Fluent-Widgets 的 Fluent Design 风格
+- **现代界面**：基于 PyQt6-Fluent-Widgets 的 Fluent Design 风格
 
 ## 技术栈
 
 | 模块 | 技术 |
 |------|------|
 | 语言 | Python 3.10 |
-| GUI | PyQt5 + PyQt-Fluent-Widgets |
+| GUI | PyQt6 + PyQt6-Fluent-Widgets |
 | AI 模型 | GLM-4.6V-Flash / Ollama (MiniCPM-V) |
 | 图像处理 | OpenCV + mss + numpy |
 | 数据存储 | CSV |

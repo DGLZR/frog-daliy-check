@@ -4,7 +4,7 @@
 > and generates daily / weekly / monthly work reports — so you can stop writing overtime reports by hand.
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
-![GUI](https://img.shields.io/badge/GUI-PyQt5%20%7C%20Fluent%20Design-41CD52)
+![GUI](https://img.shields.io/badge/GUI-PyQt6%20%7C%20Fluent%20Design-41CD52)
 ![AI](https://img.shields.io/badge/AI-GLM%20%7C%20Ollama-4FC3F7)
 ![Storage](https://img.shields.io/badge/Storage-CSV-FFB300)
 ![Platform](https://img.shields.io/badge/Platform-Windows-0078D6)
@@ -33,7 +33,7 @@
 ## Overview
 
 **Work Diary Assistant** is a desktop productivity application for Windows built with
-PyQt5 / PyQt-Fluent-Widgets. It periodically captures the screen, uses a vision LLM
+PyQt6 / PyQt6-Fluent-Widgets. It periodically captures the screen, uses a vision LLM
 (GLM-4.6V-Flash or a local Ollama MiniCPM-V model) to recognize what you are working on,
 and accumulates the results into a local, privacy-first dataset. From that data it derives:
 
@@ -82,7 +82,7 @@ optionally syncs records to a companion server for cross-device statistics.
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                       UI  (PyQt5 + Fluent)                  │
+│                       UI  (PyQt6 + Fluent)                  │
 │   Today · Timeline · Reports · History · Heatmap · Monitor  │
 │   Records · Screenshot · Settings                            │
 └───────────────┬──────────────────────────────┬──────────────┘
@@ -107,7 +107,7 @@ optionally syncs records to a companion server for cross-device statistics.
 | Layer | Technology | Purpose |
 |---|---|---|
 | Language | Python 3.10+ | Application runtime |
-| GUI | PyQt5 ≥ 5.15, PyQt-Fluent-Widgets ≥ 1.10 | Fluent Design interface |
+| GUI | PyQt6 ≥ 6.4, PyQt6-Fluent-Widgets ≥ 1.10 | Fluent Design interface |
 | Vision AI | GLM-4.6V-Flash (zhipuai) / Ollama (MiniCPM-V) | Screen content recognition |
 | Report AI | GLM / Ollama chat with streaming | Report generation |
 | Image | OpenCV, numpy, Pillow, mss | Capture & pre-processing |

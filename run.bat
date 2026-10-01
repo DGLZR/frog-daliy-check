@@ -5,8 +5,8 @@ echo.
 REM 切换到项目目录
 cd /d "%~dp0"
 
-REM 使用deeplearning环境的Python直接运行
-"C:\Users\20057\miniconda3\envs\deeplearning\python.exe" "UI\main_fluent.py"
+REM 使用 daily-AI 环境的 Python 直接运行
+"D:\ProgramSoftware\anaconda3\envs\daily-AI\python.exe" "UI\main_fluent.py"
 
 REM 如果程序退出，暂停查看输出
 pause
