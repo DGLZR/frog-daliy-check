@@ -351,7 +351,7 @@ class LoginWindow(QWidget):
                 QLabel {
                     background-color: #16A34A;
                     border-radius: 26px;
-                    font-size: 26px;
+                    font-size: 32px;
                     color: white;
                 }
             """)
@@ -364,11 +364,11 @@ class LoginWindow(QWidget):
         titleLayout.setSpacing(3)
         
         titleLabel = QLabel("工作日报助手")
-        titleLabel.setStyleSheet("font-size: 22px; font-weight: 800; color: #14532D; border: none; background: transparent; letter-spacing: 1px;")
+        titleLabel.setStyleSheet("font-size: 27px; font-weight: 800; color: #14532D; border: none; background: transparent; letter-spacing: 1px;")
         titleLayout.addWidget(titleLabel)
         
         subtitleLabel = QLabel("AI 驱动的智能工作报告工具")
-        subtitleLabel.setStyleSheet("font-size: 11px; color: #6B7280; border: none; background: transparent; letter-spacing: 0.5px;")
+        subtitleLabel.setStyleSheet("font-size: 13px; color: #6B7280; border: none; background: transparent; letter-spacing: 0.5px;")
         titleLayout.addWidget(subtitleLabel)
         
         logoLayout.addLayout(titleLayout)
@@ -383,7 +383,7 @@ class LoginWindow(QWidget):
         headerLayout.setSpacing(8)
         
         self.modeTitle = QLabel("登录")
-        self.modeTitle.setStyleSheet("font-size: 26px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
+        self.modeTitle.setStyleSheet("font-size: 32px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
         headerLayout.addWidget(self.modeTitle)
         
         # 标题下方绿色装饰条
@@ -400,7 +400,7 @@ class LoginWindow(QWidget):
             QPushButton {
                 background: transparent;
                 color: #16A34A;
-                font-size: 14px;
+                font-size: 17px;
                 font-weight: bold;
                 border: none;
                 padding: 4px 10px;
@@ -420,13 +420,13 @@ class LoginWindow(QWidget):
         
         # 副标题
         self.modeSubtitle = QLabel("请输入您的账号信息")
-        self.modeSubtitle.setStyleSheet("font-size: 12px; color: #6B7280; border: none; background: transparent;")
+        self.modeSubtitle.setStyleSheet("font-size: 15px; color: #6B7280; border: none; background: transparent;")
         mainLayout.addWidget(self.modeSubtitle)
         mainLayout.addSpacing(22)
         
         # ========== 邮箱输入框 ==========
         emailLabel = QLabel("邮箱")
-        emailLabel.setStyleSheet("font-size: 12px; font-weight: 700; color: #374151; border: none; background: transparent;")
+        emailLabel.setStyleSheet("font-size: 15px; font-weight: 700; color: #374151; border: none; background: transparent;")
         mainLayout.addWidget(emailLabel)
         mainLayout.addSpacing(8)
         
@@ -445,7 +445,7 @@ class LoginWindow(QWidget):
                 border: 1.5px solid #E5E7EB;
                 border-radius: 10px;
                 padding: 0 14px;
-                font-size: 13px;
+                font-size: 16px;
                 color: #1a1a1a;
             }
             QLineEdit:hover {
@@ -468,7 +468,7 @@ class LoginWindow(QWidget):
                 color: white;
                 border: none;
                 border-radius: 10px;
-                font-size: 12px;
+                font-size: 15px;
                 font-weight: bold;
             }
             QPushButton:hover {
@@ -491,7 +491,7 @@ class LoginWindow(QWidget):
         
         # ========== 密码输入框 ==========
         self.passwordLabel = QLabel("密码")
-        self.passwordLabel.setStyleSheet("font-size: 12px; font-weight: 700; color: #374151; border: none; background: transparent;")
+        self.passwordLabel.setStyleSheet("font-size: 15px; font-weight: 700; color: #374151; border: none; background: transparent;")
         mainLayout.addWidget(self.passwordLabel)
         mainLayout.addSpacing(8)
         
@@ -505,7 +505,7 @@ class LoginWindow(QWidget):
                 border: 1.5px solid #E5E7EB;
                 border-radius: 10px;
                 padding: 0 14px;
-                font-size: 13px;
+                font-size: 16px;
                 color: #1a1a1a;
             }
             QLineEdit:hover {
@@ -523,7 +523,7 @@ class LoginWindow(QWidget):
         self.rememberCheckBox = QCheckBox("记住账号密码")
         self.rememberCheckBox.setStyleSheet("""
             QCheckBox {
-                font-size: 12px;
+                font-size: 15px;
                 color: #6B7280;
                 border: none;
                 background: transparent;
@@ -549,7 +549,7 @@ class LoginWindow(QWidget):
         
         # ========== 验证码输入框（注册/找回密码模式显示）==========
         self.codeLabel = QLabel("验证码")
-        self.codeLabel.setStyleSheet("font-size: 12px; font-weight: 700; color: #374151; border: none; background: transparent;")
+        self.codeLabel.setStyleSheet("font-size: 15px; font-weight: 700; color: #374151; border: none; background: transparent;")
         self.codeLabel.setVisible(False)
         mainLayout.addWidget(self.codeLabel)
         mainLayout.addSpacing(8)
@@ -563,7 +563,7 @@ class LoginWindow(QWidget):
                 border: 1.5px solid #E5E7EB;
                 border-radius: 10px;
                 padding: 0 14px;
-                font-size: 13px;
+                font-size: 16px;
                 color: #1a1a1a;
                 letter-spacing: 4px;
                 font-weight: bold;
@@ -592,7 +592,7 @@ class LoginWindow(QWidget):
                 color: white;
                 border: none;
                 border-radius: 12px;
-                font-size: 15px;
+                font-size: 18px;
                 font-weight: bold;
                 letter-spacing: 2px;
             }
@@ -621,7 +621,7 @@ class LoginWindow(QWidget):
             QPushButton {
                 background: transparent;
                 color: #16A34A;
-                font-size: 12px;
+                font-size: 15px;
                 border: none;
                 padding: 6px 4px;
             }
@@ -642,7 +642,7 @@ class LoginWindow(QWidget):
         bottomLayout.setSpacing(4)
         
         tipLabel = QLabel("登录即表示同意")
-        tipLabel.setStyleSheet("font-size: 11px; color: #9CA3AF; border: none; background: transparent;")
+        tipLabel.setStyleSheet("font-size: 13px; color: #9CA3AF; border: none; background: transparent;")
         bottomLayout.addWidget(tipLabel)
         
         termsBtn = QPushButton("服务条款")
@@ -651,7 +651,7 @@ class LoginWindow(QWidget):
             QPushButton {
                 background: transparent;
                 color: #16A34A;
-                font-size: 11px;
+                font-size: 13px;
                 border: none;
                 padding: 0;
             }
@@ -663,7 +663,7 @@ class LoginWindow(QWidget):
         bottomLayout.addWidget(termsBtn)
         
         andLabel = QLabel("和")
-        andLabel.setStyleSheet("font-size: 11px; color: #9CA3AF; border: none; background: transparent;")
+        andLabel.setStyleSheet("font-size: 13px; color: #9CA3AF; border: none; background: transparent;")
         bottomLayout.addWidget(andLabel)
         
         privacyBtn = QPushButton("隐私政策")
@@ -672,7 +672,7 @@ class LoginWindow(QWidget):
             QPushButton {
                 background: transparent;
                 color: #16A34A;
-                font-size: 11px;
+                font-size: 13px;
                 border: none;
                 padding: 0;
             }
@@ -1293,7 +1293,7 @@ def main():
                 iconLabel.setStyleSheet("""
                     background-color: #E3F2FD;
                     border-radius: 14px;
-                    font-size: 13px;
+                    font-size: 16px;
                 """)
                 iconLabel.setText(icon)
                 layout.addWidget(iconLabel)
@@ -1302,10 +1302,10 @@ def main():
             textLayout.setSpacing(2)
             
             self.titleLabel = BodyLabel(title, self)
-            self.titleLabel.setStyleSheet("color: #888888; font-size: 9px;")
+            self.titleLabel.setStyleSheet("color: #888888; font-size: 11px;")
             
             self.valueLabel = TitleLabel(value, self)
-            self.valueLabel.setStyleSheet("color: #1a1a1a; font-size: 15px; font-weight: bold;")
+            self.valueLabel.setStyleSheet("color: #1a1a1a; font-size: 18px; font-weight: bold;")
             
             textLayout.addWidget(self.titleLabel)
             textLayout.addWidget(self.valueLabel)
@@ -1322,7 +1322,7 @@ def main():
             layout.setContentsMargins(0, 5, 0, 3)
             
             self.label = StrongBodyLabel(title, self)
-            self.label.setStyleSheet("color: #333333; font-size: 11px; font-weight: bold;")
+            self.label.setStyleSheet("color: #333333; font-size: 13px; font-weight: bold;")
             layout.addWidget(self.label)
             layout.addStretch()
 
@@ -1380,11 +1380,11 @@ def main():
             infoLayout.setSpacing(4)
             
             mainTitle = QLabel("告别加班写周报")
-            mainTitle.setStyleSheet("font-size: 16px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            mainTitle.setStyleSheet("font-size: 20px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             infoLayout.addWidget(mainTitle)
             
             subTitle = QLabel("一周工作内容自动汇总，AI帮你梳理亮点，周五准时下班。")
-            subTitle.setStyleSheet("font-size: 10px; color: #888888; border: none; background: transparent;")
+            subTitle.setStyleSheet("font-size: 12px; color: #888888; border: none; background: transparent;")
             subTitle.setWordWrap(True)
             infoLayout.addWidget(subTitle)
             
@@ -1406,7 +1406,7 @@ def main():
                         color: #2E7D32;
                         padding: 3px 8px;
                         border-radius: 8px;
-                        font-size: 9px;
+                        font-size: 11px;
                         border: none;
                     }
                 """)
@@ -1435,12 +1435,12 @@ def main():
             
             # 标题
             overviewTitle = QLabel("工作概览")
-            overviewTitle.setStyleSheet("font-size: 14px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            overviewTitle.setStyleSheet("font-size: 17px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             overviewLayout.addWidget(overviewTitle)
             
             # 描述文本
             self.overviewDesc = QLabel("加载中...")
-            self.overviewDesc.setStyleSheet("font-size: 10px; color: #666666; line-height: 1.6; border: none; background: transparent;")
+            self.overviewDesc.setStyleSheet("font-size: 12px; color: #666666; line-height: 1.6; border: none; background: transparent;")
             self.overviewDesc.setWordWrap(True)
             overviewLayout.addWidget(self.overviewDesc)
             
@@ -1456,15 +1456,15 @@ def main():
             statsLayout.setSpacing(16)
             
             self.recordCountLabel = QLabel("0")
-            self.recordCountLabel.setStyleSheet("font-size: 22px; font-weight: bold; color: #4CAF50; border: none; background: transparent;")
+            self.recordCountLabel.setStyleSheet("font-size: 27px; font-weight: bold; color: #4CAF50; border: none; background: transparent;")
             self.recordCountLabel.setAlignment(Qt.AlignCenter)
             
             self.durationLabel = QLabel("0h")
-            self.durationLabel.setStyleSheet("font-size: 22px; font-weight: bold; color: #2196F3; border: none; background: transparent;")
+            self.durationLabel.setStyleSheet("font-size: 27px; font-weight: bold; color: #2196F3; border: none; background: transparent;")
             self.durationLabel.setAlignment(Qt.AlignCenter)
             
             self.mainWorkLabel = QLabel("暂无")
-            self.mainWorkLabel.setStyleSheet("font-size: 16px; font-weight: bold; color: #FF9800; border: none; background: transparent;")
+            self.mainWorkLabel.setStyleSheet("font-size: 20px; font-weight: bold; color: #FF9800; border: none; background: transparent;")
             self.mainWorkLabel.setAlignment(Qt.AlignCenter)
             
             # 统计项布局
@@ -1478,7 +1478,7 @@ def main():
                 statLayout.addWidget(label, 0, Qt.AlignCenter)
                 
                 subLabel = QLabel(sub_text)
-                subLabel.setStyleSheet("font-size: 9px; color: #999999; border: none; background: transparent;")
+                subLabel.setStyleSheet("font-size: 11px; color: #999999; border: none; background: transparent;")
                 subLabel.setAlignment(Qt.AlignCenter)
                 statLayout.addWidget(subLabel, 0, Qt.AlignCenter)
                 
@@ -1505,7 +1505,7 @@ def main():
             # 标题栏
             timeHeaderLayout = QHBoxLayout()
             timeTitle = QLabel("时段记录")
-            timeTitle.setStyleSheet("font-size: 16px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            timeTitle.setStyleSheet("font-size: 20px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             timeHeaderLayout.addWidget(timeTitle)
             timeHeaderLayout.addStretch()
             
@@ -1513,7 +1513,7 @@ def main():
             legendLayout = QHBoxLayout()
             legendLayout.setSpacing(5)
             legendLabel = QLabel("少")
-            legendLabel.setStyleSheet("font-size: 10px; color: #999999; border: none; background: transparent;")
+            legendLabel.setStyleSheet("font-size: 12px; color: #999999; border: none; background: transparent;")
             legendLayout.addWidget(legendLabel)
             
             for intensity in range(5):
@@ -1523,7 +1523,7 @@ def main():
                 legendLayout.addWidget(block)
             
             legendLabel2 = QLabel("多")
-            legendLabel2.setStyleSheet("font-size: 10px; color: #999999; border: none; background: transparent;")
+            legendLabel2.setStyleSheet("font-size: 12px; color: #999999; border: none; background: transparent;")
             legendLayout.addWidget(legendLabel2)
             
             timeHeaderLayout.addLayout(legendLayout)
@@ -1550,7 +1550,7 @@ def main():
                 block.setStyleSheet("""
                     background-color: #E8F5E9;
                     border-radius: 6px;
-                    font-size: 10px;
+                    font-size: 12px;
                     color: #666666;
                     border: none;
                 """)
@@ -1567,7 +1567,7 @@ def main():
             for h in range(24):
                 if h % 3 == 0:
                     label = QLabel(f"{h}:00")
-                    label.setStyleSheet("font-size: 9px; color: #999999; border: none; background: transparent;")
+                    label.setStyleSheet("font-size: 11px; color: #999999; border: none; background: transparent;")
                     label.setAlignment(Qt.AlignCenter)  # 居中对齐
                     timeLabelsGrid.addWidget(label, 0, h)
                 else:
@@ -1599,16 +1599,16 @@ def main():
             monitorHeaderLayout = QHBoxLayout()
             
             monitorIcon = QLabel("🖥️")
-            monitorIcon.setStyleSheet("font-size: 16px; border: none; background: transparent;")
+            monitorIcon.setStyleSheet("font-size: 20px; border: none; background: transparent;")
             monitorHeaderLayout.addWidget(monitorIcon)
             
             monitorTitle = QLabel("已连接显示器")
-            monitorTitle.setStyleSheet("font-size: 16px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            monitorTitle.setStyleSheet("font-size: 20px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             monitorHeaderLayout.addWidget(monitorTitle)
             monitorHeaderLayout.addStretch()
             
             self.monitorCountLabel = QLabel("0台")
-            self.monitorCountLabel.setStyleSheet("font-size: 12px; color: #999999; border: none; background: transparent;")
+            self.monitorCountLabel.setStyleSheet("font-size: 15px; color: #999999; border: none; background: transparent;")
             monitorHeaderLayout.addWidget(self.monitorCountLabel)
             
             monitorLayout.addLayout(monitorHeaderLayout)
@@ -1638,14 +1638,14 @@ def main():
             # 标题栏
             tokenHeaderLayout = QHBoxLayout()
             tokenIcon = QLabel("🪙")
-            tokenIcon.setStyleSheet("font-size: 16px; border: none; background: transparent;")
+            tokenIcon.setStyleSheet("font-size: 20px; border: none; background: transparent;")
             tokenHeaderLayout.addWidget(tokenIcon)
             tokenTitle = QLabel("今日 Token 用量")
-            tokenTitle.setStyleSheet("font-size: 16px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            tokenTitle.setStyleSheet("font-size: 20px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             tokenHeaderLayout.addWidget(tokenTitle)
             tokenHeaderLayout.addStretch()
             self.todayTokenTotalLabel = QLabel("0")
-            self.todayTokenTotalLabel.setStyleSheet("font-size: 14px; font-weight: bold; color: #16A34A; border: none; background: transparent;")
+            self.todayTokenTotalLabel.setStyleSheet("font-size: 17px; font-weight: bold; color: #16A34A; border: none; background: transparent;")
             tokenHeaderLayout.addWidget(self.todayTokenTotalLabel)
             tokenCardLayout.addLayout(tokenHeaderLayout)
             
@@ -1660,10 +1660,10 @@ def main():
             reportTokenLayout.setContentsMargins(14, 12, 14, 12)
             reportTokenLayout.setSpacing(4)
             self.reportTokenLabel = QLabel("0")
-            self.reportTokenLabel.setStyleSheet("font-size: 18px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            self.reportTokenLabel.setStyleSheet("font-size: 22px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             reportTokenLayout.addWidget(self.reportTokenLabel)
             reportTokenSub = QLabel("报告生成输出")
-            reportTokenSub.setStyleSheet("font-size: 11px; color: #999999; border: none; background: transparent;")
+            reportTokenSub.setStyleSheet("font-size: 13px; color: #999999; border: none; background: transparent;")
             reportTokenLayout.addWidget(reportTokenSub)
             tokenBreakdownLayout.addWidget(reportTokenWidget, 1)
             
@@ -1674,10 +1674,10 @@ def main():
             analysisTokenLayout.setContentsMargins(14, 12, 14, 12)
             analysisTokenLayout.setSpacing(4)
             self.analysisTokenLabel = QLabel("0")
-            self.analysisTokenLabel.setStyleSheet("font-size: 18px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            self.analysisTokenLabel.setStyleSheet("font-size: 22px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             analysisTokenLayout.addWidget(self.analysisTokenLabel)
             analysisTokenSub = QLabel("活动分析")
-            analysisTokenSub.setStyleSheet("font-size: 11px; color: #999999; border: none; background: transparent;")
+            analysisTokenSub.setStyleSheet("font-size: 13px; color: #999999; border: none; background: transparent;")
             analysisTokenLayout.addWidget(analysisTokenSub)
             tokenBreakdownLayout.addWidget(analysisTokenWidget, 1)
             
@@ -1778,7 +1778,7 @@ def main():
                 self.hourBlocks[h].setStyleSheet(f"""
                     background-color: {bg_color};
                     border-radius: 6px;
-                    font-size: 10px;
+                    font-size: 12px;
                     color: {text_color};
                     font-weight: bold;
                     border: none;
@@ -1816,7 +1816,7 @@ def main():
                     background-color: #4CAF50;
                     color: white;
                     border-radius: 14px;
-                    font-size: 12px;
+                    font-size: 15px;
                     font-weight: bold;
                     border: none;
                 """)
@@ -1827,12 +1827,12 @@ def main():
                 infoLayout.setSpacing(2)
                 
                 nameLabel = QLabel(monitor['name'])
-                nameLabel.setStyleSheet("font-size: 12px; font-weight: bold; color: #333333; border: none; background: transparent;")
+                nameLabel.setStyleSheet("font-size: 15px; font-weight: bold; color: #333333; border: none; background: transparent;")
                 infoLayout.addWidget(nameLabel)
                 
                 for text in [monitor['resolution'], monitor['scale'], monitor['refresh_rate']]:
                     label = QLabel(text)
-                    label.setStyleSheet("font-size: 10px; color: #888888; border: none; background: transparent;")
+                    label.setStyleSheet("font-size: 12px; color: #888888; border: none; background: transparent;")
                     infoLayout.addWidget(label)
                 
                 monLayout.addLayout(infoLayout)
@@ -1890,7 +1890,7 @@ def main():
             layout.setSpacing(12)
             
             title = SubtitleLabel("截图分析", self)
-            title.setStyleSheet("font-size: 14px; font-weight: bold;")
+            title.setStyleSheet("font-size: 17px; font-weight: bold;")
             layout.addWidget(title)
             
             infoCard = SimpleCardWidget(self)
@@ -1904,7 +1904,7 @@ def main():
                 infoCard
             )
             infoText.setWordWrap(True)
-            infoText.setStyleSheet("color: #666666; font-size: 10px; line-height: 1.4;")
+            infoText.setStyleSheet("color: #666666; font-size: 12px; line-height: 1.4;")
             infoLayout.addWidget(infoText)
             
             layout.addWidget(infoCard)
@@ -1917,14 +1917,14 @@ def main():
             
             iconLabel = QLabel("📷", self)
             iconLabel.setAlignment(Qt.AlignCenter)
-            iconLabel.setStyleSheet("font-size: 28px;")
+            iconLabel.setStyleSheet("font-size: 34px;")
             btnLayout.addWidget(iconLabel, 0, Qt.AlignCenter)
             
             self.captureBtn = PrimaryPushButton("开始截图分析", self)
             self.captureBtn.setFixedSize(160, 36)
             self.captureBtn.setStyleSheet("""
                 PrimaryPushButton {
-                    font-size: 12px;
+                    font-size: 15px;
                     font-weight: bold;
                     border-radius: 6px;
                 }
@@ -1934,7 +1934,7 @@ def main():
             
             self.statusLabel = CaptionLabel("等待操作...", btnCard)
             self.statusLabel.setAlignment(Qt.AlignCenter)
-            self.statusLabel.setStyleSheet("color: #999999; font-size: 9px;")
+            self.statusLabel.setStyleSheet("color: #999999; font-size: 11px;")
             btnLayout.addWidget(self.statusLabel, 0, Qt.AlignCenter)
             
             layout.addWidget(btnCard)
@@ -1949,9 +1949,9 @@ def main():
             
             typeLayout = QHBoxLayout()
             typeLabel = BodyLabel("工作类型:", resultCard)
-            typeLabel.setStyleSheet("color: #666666; font-weight: bold; font-size: 10px;")
+            typeLabel.setStyleSheet("color: #666666; font-weight: bold; font-size: 12px;")
             self.typeValue = BodyLabel("--", resultCard)
-            self.typeValue.setStyleSheet("color: #0078d4; font-size: 12px; font-weight: bold;")
+            self.typeValue.setStyleSheet("color: #0078d4; font-size: 15px; font-weight: bold;")
             typeLayout.addWidget(typeLabel)
             typeLayout.addWidget(self.typeValue)
             typeLayout.addStretch()
@@ -1963,12 +1963,12 @@ def main():
             resultLayout.addWidget(separator)
             
             descLabel = BodyLabel("工作描述:", resultCard)
-            descLabel.setStyleSheet("color: #666666; font-weight: bold; font-size: 10px;")
+            descLabel.setStyleSheet("color: #666666; font-weight: bold; font-size: 12px;")
             resultLayout.addWidget(descLabel)
             
             self.descValue = BodyLabel("暂无分析结果", resultCard)
             self.descValue.setWordWrap(True)
-            self.descValue.setStyleSheet("color: #333333; font-size: 10px; line-height: 1.4;")
+            self.descValue.setStyleSheet("color: #333333; font-size: 12px; line-height: 1.4;")
             resultLayout.addWidget(self.descValue)
             
             layout.addWidget(resultCard, 1)
@@ -1979,7 +1979,7 @@ def main():
             self.captureBtn.setEnabled(False)
             self.captureBtn.setText("分析中...")
             self.statusLabel.setText("正在截图并分析，请稍候...")
-            self.statusLabel.setStyleSheet("color: #FF9800; font-size: 9px;")
+            self.statusLabel.setStyleSheet("color: #FF9800; font-size: 11px;")
             
             # 创建并启动工作线程
             self.worker = ScreenshotWorker()
@@ -1992,7 +1992,7 @@ def main():
             self.typeValue.setText(result['type'])
             self.descValue.setText(result['description'])
             self.statusLabel.setText("分析完成！")
-            self.statusLabel.setStyleSheet("color: #4CAF50; font-size: 9px;")
+            self.statusLabel.setStyleSheet("color: #4CAF50; font-size: 11px;")
             
             InfoBar.success(
                 title="分析完成",
@@ -2014,7 +2014,7 @@ def main():
         def onCaptureError(self, error_msg):
             """识别失败的回调函数"""
             self.statusLabel.setText(f"分析失败: {error_msg}")
-            self.statusLabel.setStyleSheet("color: #F44336; font-size: 9px;")
+            self.statusLabel.setStyleSheet("color: #F44336; font-size: 11px;")
             
             InfoBar.error(
                 title="分析失败",
@@ -2062,7 +2062,7 @@ def main():
             headerLayout.setContentsMargins(20, 15, 20, 15)
             
             title = QLabel("📋 工作记录")
-            title.setStyleSheet("font-size: 18px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            title.setStyleSheet("font-size: 22px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             headerLayout.addWidget(title)
             headerLayout.addStretch()
             
@@ -2074,7 +2074,7 @@ def main():
                     color: #1976D2;
                     padding: 8px 16px;
                     border-radius: 8px;
-                    font-size: 12px;
+                    font-size: 15px;
                     font-weight: bold;
                     border: none;
                 }
@@ -2094,7 +2094,7 @@ def main():
             statsLayout.setSpacing(30)
             
             self.countLabel = QLabel("📊 共 0 条记录")
-            self.countLabel.setStyleSheet("font-size: 14px; color: #333333; font-weight: bold; border: none; background: transparent;")
+            self.countLabel.setStyleSheet("font-size: 17px; color: #333333; font-weight: bold; border: none; background: transparent;")
             statsLayout.addWidget(self.countLabel)
             statsLayout.addStretch()
             
@@ -2318,20 +2318,20 @@ def main():
             self.startDatePicker = CalendarPicker()
             self.startDatePicker.setDate(QDate.currentDate())
             self.startDatePicker.setDateFormat("yyyy/MM/dd")
-            self.startDatePicker.setFixedWidth(110)
+            self.startDatePicker.setFixedWidth(145)
             self.startDatePicker.dateChanged.connect(self.updateData)
             filterLayout.addWidget(self.startDatePicker)
             
             # "至" 文本
             toLabel = QLabel("至")
-            toLabel.setStyleSheet("color: #666666; font-size: 10px; border: none; background: transparent;")
+            toLabel.setStyleSheet("color: #666666; font-size: 12px; border: none; background: transparent;")
             filterLayout.addWidget(toLabel)
             
             # 日期选择 - 结束日期（使用 Fluent CalendarPicker）
             self.endDatePicker = CalendarPicker()
             self.endDatePicker.setDate(QDate.currentDate())
             self.endDatePicker.setDateFormat("yyyy/MM/dd")
-            self.endDatePicker.setFixedWidth(110)
+            self.endDatePicker.setFixedWidth(145)
             self.endDatePicker.dateChanged.connect(self.updateData)
             filterLayout.addWidget(self.endDatePicker)
             
@@ -2360,10 +2360,10 @@ def main():
             recordLayout = QVBoxLayout(recordWidget)
             recordLayout.setSpacing(3)
             self.recordCountLabel = QLabel("0")
-            self.recordCountLabel.setStyleSheet("font-size: 22px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            self.recordCountLabel.setStyleSheet("font-size: 27px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             recordLayout.addWidget(self.recordCountLabel)
             recordSubLabel = QLabel("记录条数")
-            recordSubLabel.setStyleSheet("font-size: 10px; color: #999999; border: none; background: transparent;")
+            recordSubLabel.setStyleSheet("font-size: 12px; color: #999999; border: none; background: transparent;")
             recordLayout.addWidget(recordSubLabel)
             statsLayout.addWidget(recordWidget)
             
@@ -2373,10 +2373,10 @@ def main():
             durationLayout = QVBoxLayout(durationWidget)
             durationLayout.setSpacing(3)
             self.durationLabel = QLabel("0h")
-            self.durationLabel.setStyleSheet("font-size: 22px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            self.durationLabel.setStyleSheet("font-size: 27px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             durationLayout.addWidget(self.durationLabel)
             durationSubLabel = QLabel("专注时长")
-            durationSubLabel.setStyleSheet("font-size: 10px; color: #999999; border: none; background: transparent;")
+            durationSubLabel.setStyleSheet("font-size: 12px; color: #999999; border: none; background: transparent;")
             durationLayout.addWidget(durationSubLabel)
             statsLayout.addWidget(durationWidget)
             
@@ -2386,10 +2386,10 @@ def main():
             activeLayout = QVBoxLayout(activeWidget)
             activeLayout.setSpacing(3)
             self.activeTimeLabel = QLabel("--:-- — --:--")
-            self.activeTimeLabel.setStyleSheet("font-size: 16px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            self.activeTimeLabel.setStyleSheet("font-size: 20px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             activeLayout.addWidget(self.activeTimeLabel)
             activeSubLabel = QLabel("活跃时段")
-            activeSubLabel.setStyleSheet("font-size: 10px; color: #999999; border: none; background: transparent;")
+            activeSubLabel.setStyleSheet("font-size: 12px; color: #999999; border: none; background: transparent;")
             activeLayout.addWidget(activeSubLabel)
             statsLayout.addWidget(activeWidget)
             
@@ -2399,10 +2399,10 @@ def main():
             tokenStatLayout = QVBoxLayout(tokenWidget)
             tokenStatLayout.setSpacing(3)
             self.tokenCountLabel = QLabel("0")
-            self.tokenCountLabel.setStyleSheet("font-size: 22px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            self.tokenCountLabel.setStyleSheet("font-size: 27px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             tokenStatLayout.addWidget(self.tokenCountLabel)
             self.tokenSubLabel = QLabel("今日Token")
-            self.tokenSubLabel.setStyleSheet("font-size: 10px; color: #999999; border: none; background: transparent;")
+            self.tokenSubLabel.setStyleSheet("font-size: 12px; color: #999999; border: none; background: transparent;")
             tokenStatLayout.addWidget(self.tokenSubLabel)
             statsLayout.addWidget(tokenWidget)
             
@@ -2413,7 +2413,7 @@ def main():
             self.showDistCheckBox.setChecked(True)
             self.showDistCheckBox.setStyleSheet("""
                 QCheckBox {
-                    font-size: 10px; color: #333333; border: none; background: transparent;
+                    font-size: 12px; color: #333333; border: none; background: transparent;
                     spacing: 4px;
                 }
                 QCheckBox::indicator {
@@ -2442,7 +2442,7 @@ def main():
             # 标题栏（含切换按钮）
             distHeaderLayout = QHBoxLayout()
             distTitle = QLabel("📊 分类时长分布")
-            distTitle.setStyleSheet("font-size: 12px; font-weight: bold; color: #333333; border: none; background: transparent;")
+            distTitle.setStyleSheet("font-size: 15px; font-weight: bold; color: #333333; border: none; background: transparent;")
             distHeaderLayout.addWidget(distTitle)
             distHeaderLayout.addStretch()
             
@@ -2453,7 +2453,7 @@ def main():
                     color: #1976D2;
                     padding: 3px 10px;
                     border-radius: 12px;
-                    font-size: 9px;
+                    font-size: 11px;
                     border: none;
                 }
                 QPushButton:hover { background-color: #BBDEFB; }
@@ -2512,7 +2512,7 @@ def main():
             toolbarLayout = QHBoxLayout()
             
             toolbarTitle = QLabel("⏱️ 活动时间线")
-            toolbarTitle.setStyleSheet("font-size: 12px; font-weight: bold; color: #333333; border: none; background: transparent;")
+            toolbarTitle.setStyleSheet("font-size: 15px; font-weight: bold; color: #333333; border: none; background: transparent;")
             toolbarLayout.addWidget(toolbarTitle)
             
             # 标签筛选下拉框（使用 Fluent ComboBox）
@@ -2772,8 +2772,8 @@ def main():
                 
                 # 类型名称
                 nameLabel = QLabel(work_type)
-                nameLabel.setFixedWidth(50)
-                nameLabel.setStyleSheet(f"font-size: 12px; color: {color}; font-weight: bold; border: none; background: transparent;")
+                nameLabel.setFixedWidth(85)
+                nameLabel.setStyleSheet(f"font-size: 15px; color: {color}; font-weight: bold; border: none; background: transparent;")
                 rowLayout.addWidget(nameLabel)
                 
                 # 进度条背景
@@ -2807,7 +2807,7 @@ def main():
                 timeLabel = QLabel(valueText)
                 timeLabel.setFixedWidth(50)
                 timeLabel.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-                timeLabel.setStyleSheet("font-size: 12px; color: #999999; border: none; background: transparent;")
+                timeLabel.setStyleSheet("font-size: 15px; color: #999999; border: none; background: transparent;")
                 rowLayout.addWidget(timeLabel)
                 
                 self.distListLayout.addWidget(rowWidget)
@@ -2871,7 +2871,7 @@ def main():
                 timeLabel = QLabel(f"{date_display}\n{time[:5]}")
                 timeLabel.setFixedWidth(55)
                 timeLabel.setAlignment(Qt.AlignRight | Qt.AlignTop)
-                timeLabel.setStyleSheet("font-size: 11px; color: #999999; border: none; background: transparent;")
+                timeLabel.setStyleSheet("font-size: 13px; color: #999999; border: none; background: transparent;")
                 itemLayout.addWidget(timeLabel)
                 
                 # 时间轴指示器
@@ -2913,7 +2913,7 @@ def main():
                 # 文本内容
                 descLabel = QLabel(description)
                 descLabel.setWordWrap(True)
-                descLabel.setStyleSheet("font-size: 12px; color: #333333; border: none; background: transparent;")
+                descLabel.setStyleSheet("font-size: 15px; color: #333333; border: none; background: transparent;")
                 cardLayout.addWidget(descLabel)
                 
                 # 底部标签栏
@@ -2928,7 +2928,7 @@ def main():
                         color: white;
                         padding: 2px 8px;
                         border-radius: 10px;
-                        font-size: 10px;
+                        font-size: 12px;
                         font-weight: bold;
                         border: none;
                     }}
@@ -2943,7 +2943,7 @@ def main():
                         color: #666666;
                         padding: 2px 8px;
                         border-radius: 10px;
-                        font-size: 10px;
+                        font-size: 12px;
                         border: none;
                     }
                 """)
@@ -2952,7 +2952,7 @@ def main():
                 # 时间段
                 if time_range:
                     timeRangeLabel = QLabel(time_range)
-                    timeRangeLabel.setStyleSheet("font-size: 10px; color: #CCCCCC; border: none; background: transparent;")
+                    timeRangeLabel.setStyleSheet("font-size: 12px; color: #CCCCCC; border: none; background: transparent;")
                     tagsLayout.addWidget(timeRangeLabel)
                 
                 # 消耗 token（显示在时间右侧）
@@ -2963,7 +2963,7 @@ def main():
                 if rec_tokens > 0:
                     from store import format_token_count
                     tokenLabel = QLabel(f"🪙 {format_token_count(rec_tokens)}")
-                    tokenLabel.setStyleSheet("font-size: 10px; color: #9CA3AF; border: none; background: transparent;")
+                    tokenLabel.setStyleSheet("font-size: 12px; color: #9CA3AF; border: none; background: transparent;")
                     tokenLabel.setToolTip(f"本次活动分析消耗 {rec_tokens} Token")
                     tagsLayout.addWidget(tokenLabel)
                 
@@ -2978,7 +2978,7 @@ def main():
             if not records:
                 emptyLabel = QLabel("暂无记录")
                 emptyLabel.setAlignment(Qt.AlignCenter)
-                emptyLabel.setStyleSheet("font-size: 14px; color: #CCCCCC; padding: 40px; border: none; background: transparent;")
+                emptyLabel.setStyleSheet("font-size: 17px; color: #CCCCCC; padding: 40px; border: none; background: transparent;")
                 self.timelineListLayout.addWidget(emptyLabel)
 
     # ==================== 报告模板数据 ====================
@@ -3052,7 +3052,7 @@ def main():
             # 标题行
             titleLayout = QHBoxLayout()
             titleLabel = QLabel(name)
-            titleLabel.setStyleSheet("font-size: 11px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            titleLabel.setStyleSheet("font-size: 13px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             titleLayout.addWidget(titleLabel)
             titleLayout.addStretch()
             
@@ -3065,7 +3065,7 @@ def main():
                     background-color: #16A34A;
                     color: white;
                     border-radius: 7px;
-                    font-size: 9px;
+                    font-size: 11px;
                     font-weight: bold;
                     border: none;
                 }
@@ -3078,7 +3078,7 @@ def main():
             introLabel = QLabel(intro)
             introLabel.setWordWrap(True)
             introLabel.setMaximumHeight(25)
-            introLabel.setStyleSheet("font-size: 9px; color: #666666; border: none; background: transparent;")
+            introLabel.setStyleSheet("font-size: 11px; color: #666666; border: none; background: transparent;")
             introLabel.setAlignment(Qt.AlignTop | Qt.AlignLeft)
             layout.addWidget(introLabel)
             
@@ -3094,7 +3094,7 @@ def main():
                         color: #16A34A;
                         padding: 2px 8px;
                         border-radius: 10px;
-                        font-size: 10px;
+                        font-size: 12px;
                         font-weight: bold;
                         border: none;
                     }
@@ -3110,7 +3110,7 @@ def main():
                 QPushButton {
                     background-color: #FEE2E2;
                     border-radius: 14px;
-                    font-size: 14px;
+                    font-size: 17px;
                     border: none;
                 }
                 QPushButton:hover {
@@ -3130,7 +3130,7 @@ def main():
                     background-color: #F3F4F6;
                     border: 1px solid #E5E7EB;
                     border-radius: 14px;
-                    font-size: 14px;
+                    font-size: 17px;
                     border: none;
                 }
                 QPushButton:hover {
@@ -3228,7 +3228,7 @@ def main():
             # 头部
             headerLayout = QHBoxLayout()
             titleLabel = QLabel(template_name)
-            titleLabel.setStyleSheet("font-size: 18px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            titleLabel.setStyleSheet("font-size: 22px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             headerLayout.addWidget(titleLabel)
             headerLayout.addStretch()
             
@@ -3242,7 +3242,7 @@ def main():
                     padding: 8px 16px;
                     border: 1px solid #E5E7EB;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     font-weight: bold;
                 }
                 QPushButton:hover {
@@ -3260,7 +3260,7 @@ def main():
                     background-color: #F3F4F6;
                     border: none;
                     border-radius: 16px;
-                    font-size: 16px;
+                    font-size: 20px;
                     color: #666666;
                 }
                 QPushButton:hover {
@@ -3274,7 +3274,7 @@ def main():
             # 描述
             descLayout = QHBoxLayout()
             descLabel = QLabel(template_desc)
-            descLabel.setStyleSheet("font-size: 13px; color: #666666; border: none; background: transparent;")
+            descLabel.setStyleSheet("font-size: 16px; color: #666666; border: none; background: transparent;")
             descLabel.setWordWrap(True)
             descLayout.addWidget(descLabel)
             
@@ -3285,7 +3285,7 @@ def main():
                     color: #16A34A;
                     padding: 2px 8px;
                     border-radius: 10px;
-                    font-size: 10px;
+                    font-size: 12px;
                     font-weight: bold;
                     border: none;
                 }
@@ -3309,7 +3309,7 @@ def main():
                     background-color: #F9FAFB;
                     padding: 16px;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     color: #374151;
                     font-family: Consolas, monospace;
                     border: 1px solid #E5E7EB;
@@ -3333,7 +3333,7 @@ def main():
                     padding: 10px 20px;
                     border: 1px solid #E5E7EB;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     font-weight: bold;
                 }
                 QPushButton:hover {
@@ -3352,7 +3352,7 @@ def main():
                     padding: 10px 20px;
                     border: none;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     font-weight: bold;
                 }
                 QPushButton:hover {
@@ -3380,7 +3380,7 @@ def main():
                         background-color: white;
                         padding: 16px;
                         border-radius: 8px;
-                        font-size: 13px;
+                        font-size: 16px;
                         color: #374151;
                         font-family: Consolas, monospace;
                         border: 2px solid #16A34A;
@@ -3395,7 +3395,7 @@ def main():
                         background-color: #F9FAFB;
                         padding: 16px;
                         border-radius: 8px;
-                        font-size: 13px;
+                        font-size: 16px;
                         color: #374151;
                         font-family: Consolas, monospace;
                         border: 1px solid #E5E7EB;
@@ -3413,7 +3413,7 @@ def main():
                     background-color: #F9FAFB;
                     padding: 16px;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     color: #374151;
                     font-family: Consolas, monospace;
                     border: 1px solid #E5E7EB;
@@ -3435,7 +3435,7 @@ def main():
                     background-color: #F9FAFB;
                     padding: 16px;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     color: #374151;
                     font-family: Consolas, monospace;
                     border: 1px solid #E5E7EB;
@@ -3498,7 +3498,7 @@ def main():
             # 头部
             headerLayout = QHBoxLayout()
             titleLabel = QLabel("创建模板")
-            titleLabel.setStyleSheet("font-size: 18px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            titleLabel.setStyleSheet("font-size: 22px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             headerLayout.addWidget(titleLabel)
             headerLayout.addStretch()
             
@@ -3510,7 +3510,7 @@ def main():
                     background-color: #F3F4F6;
                     border: none;
                     border-radius: 16px;
-                    font-size: 16px;
+                    font-size: 20px;
                     color: #666666;
                 }
                 QPushButton:hover {
@@ -3523,12 +3523,12 @@ def main():
             
             # 副标题
             subtitleLabel = QLabel("支持 Markdown 格式，AI 将参考此结构生成报告内容")
-            subtitleLabel.setStyleSheet("font-size: 13px; color: #666666; border: none; background: transparent;")
+            subtitleLabel.setStyleSheet("font-size: 16px; color: #666666; border: none; background: transparent;")
             cardLayout.addWidget(subtitleLabel)
             
             # 模板名称
             nameLabel = QLabel("模板名称")
-            nameLabel.setStyleSheet("font-size: 14px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            nameLabel.setStyleSheet("font-size: 17px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             cardLayout.addWidget(nameLabel)
             
             self.nameInput = QLineEdit()
@@ -3538,7 +3538,7 @@ def main():
                     padding: 10px 12px;
                     border: 1px solid #E5E7EB;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     color: #1a1a1a;
                     background-color: white;
                 }
@@ -3550,7 +3550,7 @@ def main():
             
             # 模板简介
             introLabel = QLabel("模板简介")
-            introLabel.setStyleSheet("font-size: 14px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            introLabel.setStyleSheet("font-size: 17px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             cardLayout.addWidget(introLabel)
             
             self.introInput = QLineEdit()
@@ -3560,7 +3560,7 @@ def main():
                     padding: 10px 12px;
                     border: 1px solid #E5E7EB;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     color: #1a1a1a;
                     background-color: white;
                 }
@@ -3572,7 +3572,7 @@ def main():
             
             # 模板正文
             bodyLabel = QLabel("模板正文")
-            bodyLabel.setStyleSheet("font-size: 14px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            bodyLabel.setStyleSheet("font-size: 17px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             cardLayout.addWidget(bodyLabel)
             
             self.bodyInput = QTextEdit()
@@ -3583,7 +3583,7 @@ def main():
                     padding: 10px 12px;
                     border: 1px solid #E5E7EB;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     color: #1a1a1a;
                     background-color: white;
                     font-family: Consolas, monospace;
@@ -3595,12 +3595,12 @@ def main():
             cardLayout.addWidget(self.bodyInput)
             
             bodyHint = QLabel("支持 Markdown 格式，AI 将参考此结构生成报告内容")
-            bodyHint.setStyleSheet("font-size: 11px; color: #9CA3AF; border: none; background: transparent;")
+            bodyHint.setStyleSheet("font-size: 13px; color: #9CA3AF; border: none; background: transparent;")
             cardLayout.addWidget(bodyHint)
             
             # 自定义指令
             instrLabel = QLabel("自定义指令")
-            instrLabel.setStyleSheet("font-size: 14px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            instrLabel.setStyleSheet("font-size: 17px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             cardLayout.addWidget(instrLabel)
             
             self.instrInput = QTextEdit()
@@ -3611,7 +3611,7 @@ def main():
                     padding: 10px 12px;
                     border: 1px solid #E5E7EB;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     color: #1a1a1a;
                     background-color: white;
                 }
@@ -3622,7 +3622,7 @@ def main():
             cardLayout.addWidget(self.instrInput)
             
             instrHint = QLabel("写模板固定的输出要求，会随该模板一起保存；生成时还可以叠加本次自定义指令")
-            instrHint.setStyleSheet("font-size: 11px; color: #9CA3AF; border: none; background: transparent;")
+            instrHint.setStyleSheet("font-size: 13px; color: #9CA3AF; border: none; background: transparent;")
             cardLayout.addWidget(instrHint)
             
             cardLayout.addStretch()
@@ -3640,7 +3640,7 @@ def main():
                     padding: 10px 20px;
                     border: 1px solid #E5E7EB;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     font-weight: bold;
                 }
                 QPushButton:hover {
@@ -3659,7 +3659,7 @@ def main():
                     padding: 10px 20px;
                     border: none;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     font-weight: bold;
                 }
                 QPushButton:hover {
@@ -3727,12 +3727,12 @@ def main():
             
             # 标题
             titleLabel = QLabel("报告正在生成中")
-            titleLabel.setStyleSheet("font-size: 18px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            titleLabel.setStyleSheet("font-size: 22px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             cardLayout.addWidget(titleLabel)
             
             # 描述
             descLabel = QLabel("已提交报告生成任务，AI 正在为你撰写报告。\n是否跳转到历史报告页面查看进度？")
-            descLabel.setStyleSheet("font-size: 13px; color: #666666; border: none; background: transparent;")
+            descLabel.setStyleSheet("font-size: 16px; color: #666666; border: none; background: transparent;")
             descLabel.setWordWrap(True)
             cardLayout.addWidget(descLabel)
             
@@ -3751,7 +3751,7 @@ def main():
                     padding: 10px 20px;
                     border: 1px solid #E5E7EB;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     font-weight: bold;
                 }
                 QPushButton:hover {
@@ -3770,7 +3770,7 @@ def main():
                     padding: 10px 20px;
                     border: none;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     font-weight: bold;
                 }
                 QPushButton:hover {
@@ -3838,14 +3838,14 @@ def main():
             headerLayout = QHBoxLayout()
             
             self.titleLabel = QLabel(f"{report_type}报告正在生成中...")
-            self.titleLabel.setStyleSheet("font-size: 18px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            self.titleLabel.setStyleSheet("font-size: 22px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             headerLayout.addWidget(self.titleLabel)
             
             self.statusTag = QLabel("生成中")
             self.statusTag.setStyleSheet("""
                 QLabel {
                     color: #F59E0B;
-                    font-size: 13px;
+                    font-size: 16px;
                     font-weight: bold;
                     border: none;
                     background: transparent;
@@ -3862,7 +3862,7 @@ def main():
                     background-color: #F3F4F6;
                     border: none;
                     border-radius: 16px;
-                    font-size: 16px;
+                    font-size: 20px;
                     color: #666666;
                 }
                 QPushButton:hover {
@@ -3875,7 +3875,7 @@ def main():
             
             # 副标题
             self.subtitleLabel = QLabel(f"工作{report_type} — {date_range}")
-            self.subtitleLabel.setStyleSheet("font-size: 13px; color: #666666; border: none; background: transparent;")
+            self.subtitleLabel.setStyleSheet("font-size: 16px; color: #666666; border: none; background: transparent;")
             cardLayout.addWidget(self.subtitleLabel)
             
             # 分隔线
@@ -3889,7 +3889,7 @@ def main():
             self.contentEdit.setReadOnly(True)
             self.contentEdit.setStyleSheet("""
                 QTextEdit {
-                    font-size: 14px;
+                    font-size: 17px;
                     color: #374151;
                     border: none;
                     background: transparent;
@@ -3909,12 +3909,12 @@ def main():
             footerLayout = QHBoxLayout()
             
             self.infoLabel = QLabel(f"模板：{template_name} · 0 字")
-            self.infoLabel.setStyleSheet("font-size: 12px; color: #9CA3AF; border: none; background: transparent;")
+            self.infoLabel.setStyleSheet("font-size: 15px; color: #9CA3AF; border: none; background: transparent;")
             footerLayout.addWidget(self.infoLabel)
             
             # token 用量显示（生成完成后填充）
             self.tokenLabel = QLabel("")
-            self.tokenLabel.setStyleSheet("font-size: 12px; color: #9CA3AF; border: none; background: transparent;")
+            self.tokenLabel.setStyleSheet("font-size: 15px; color: #9CA3AF; border: none; background: transparent;")
             self.tokenLabel.setToolTip("本次报告生成消耗的 Token")
             footerLayout.addWidget(self.tokenLabel)
             footerLayout.addStretch()
@@ -3932,7 +3932,7 @@ def main():
                         padding: 8px 16px;
                         border: 1px solid #E5E7EB;
                         border-radius: 8px;
-                        font-size: 12px;
+                        font-size: 15px;
                         border: none;
                     }
                     QPushButton:hover {
@@ -4033,7 +4033,7 @@ def main():
             self.statusTag.setStyleSheet("""
                 QLabel {
                     color: #16A34A;
-                    font-size: 13px;
+                    font-size: 16px;
                     font-weight: bold;
                     border: none;
                     background: transparent;
@@ -4056,7 +4056,7 @@ def main():
             self.statusTag.setStyleSheet("""
                 QLabel {
                     color: #EF4444;
-                    font-size: 13px;
+                    font-size: 16px;
                     font-weight: bold;
                     border: none;
                     background: transparent;
@@ -4118,7 +4118,7 @@ def main():
             self.statusTag.setStyleSheet("""
                 QLabel {
                     color: #F59E0B;
-                    font-size: 13px;
+                    font-size: 16px;
                     font-weight: bold;
                     border: none;
                     background: transparent;
@@ -4256,20 +4256,20 @@ def main():
                 QLabel {
                     background-color: #F0FBF4;
                     border-radius: 5px;
-                    font-size: 12px;
+                    font-size: 15px;
                     border: none;
                 }
             """)
             titleTopLayout.addWidget(iconLabel)
             
             titleLabel = QLabel("报告配置")
-            titleLabel.setStyleSheet("font-size: 14px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            titleLabel.setStyleSheet("font-size: 17px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             titleTopLayout.addWidget(titleLabel)
             titleTopLayout.addStretch()
             titleLeftLayout.addLayout(titleTopLayout)
             
             subtitleLabel = QLabel("配置参数后点击生成，AI 将基于工作记录自动撰写报告")
-            subtitleLabel.setStyleSheet("font-size: 10px; color: #666666; border: none; background: transparent;")
+            subtitleLabel.setStyleSheet("font-size: 12px; color: #666666; border: none; background: transparent;")
             titleLeftLayout.addWidget(subtitleLabel)
             
             headerLayout.addLayout(titleLeftLayout, 1)
@@ -4293,7 +4293,7 @@ def main():
                     padding: 4px 10px;
                     border: 1px solid #E5E7EB;
                     border-radius: 5px;
-                    font-size: 10px;
+                    font-size: 12px;
                     font-weight: bold;
                 }
                 QPushButton:hover {
@@ -4304,7 +4304,7 @@ def main():
             
             # 建议填写角标
             badge = QLabel("建议填写")
-            badge.setFixedSize(42, 14)
+            badge.setFixedSize(60, 14)
             badge.setAlignment(Qt.AlignCenter)
             badge.setStyleSheet("""
                 QLabel {
@@ -4312,13 +4312,13 @@ def main():
                     color: white;
                     padding: 1px 3px;
                     border-radius: 7px;
-                    font-size: 8px;
+                    font-size: 10px;
                     font-weight: bold;
                     border: none;
                 }
             """)
             badge.setParent(instrBtn)
-            badge.move(instrBtn.width() - 35, -5)
+            badge.move(instrBtn.width() - 53, -5)
             
             btnLayout.addWidget(instrBtnContainer)
             
@@ -4332,7 +4332,7 @@ def main():
                     padding: 4px 12px;
                     border: none;
                     border-radius: 5px;
-                    font-size: 10px;
+                    font-size: 12px;
                     font-weight: bold;
                 }
                 QPushButton:hover {
@@ -4371,11 +4371,11 @@ def main():
             reportTypeLayout.setSpacing(6)
             
             reportTypeTitle = QLabel("报告类型")
-            reportTypeTitle.setStyleSheet("font-size: 12px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            reportTypeTitle.setStyleSheet("font-size: 15px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             reportTypeLayout.addWidget(reportTypeTitle)
             
             reportTypeDesc = QLabel("选择要生成的报告周期")
-            reportTypeDesc.setStyleSheet("font-size: 9px; color: #666666; border: none; background: transparent;")
+            reportTypeDesc.setStyleSheet("font-size: 11px; color: #666666; border: none; background: transparent;")
             reportTypeLayout.addWidget(reportTypeDesc)
             
             # 分段选择按钮
@@ -4398,7 +4398,7 @@ def main():
                         padding: 3px 10px;
                         border: 1px solid #E5E7EB;
                         border-radius: 5px;
-                        font-size: 10px;
+                        font-size: 12px;
                         font-weight: bold;
                     }
                     QPushButton:checked {
@@ -4430,11 +4430,11 @@ def main():
             timeRangeLayout.setSpacing(6)
             
             timeRangeTitle = QLabel("时间范围")
-            timeRangeTitle.setStyleSheet("font-size: 12px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            timeRangeTitle.setStyleSheet("font-size: 15px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             timeRangeLayout.addWidget(timeRangeTitle)
             
             timeRangeDesc = QLabel("默认根据报告类型确定，可手动修改")
-            timeRangeDesc.setStyleSheet("font-size: 9px; color: #666666; border: none; background: transparent;")
+            timeRangeDesc.setStyleSheet("font-size: 11px; color: #666666; border: none; background: transparent;")
             timeRangeLayout.addWidget(timeRangeDesc)
             
             # 日期选择器（使用 Fluent CalendarPicker）
@@ -4444,18 +4444,18 @@ def main():
             self.startDateEdit = CalendarPicker()
             self.startDateEdit.setDate(QDate.currentDate())
             self.startDateEdit.setDateFormat("yyyy/MM/dd")
-            self.startDateEdit.setFixedWidth(105)
+            self.startDateEdit.setFixedWidth(145)
             self.startDateEdit.dateChanged.connect(self.updatePreviewDate)
             dateLayout.addWidget(self.startDateEdit)
             
             toLabel = QLabel("至")
-            toLabel.setStyleSheet("font-size: 10px; color: #666666; border: none; background: transparent;")
+            toLabel.setStyleSheet("font-size: 12px; color: #666666; border: none; background: transparent;")
             dateLayout.addWidget(toLabel)
             
             self.endDateEdit = CalendarPicker()
             self.endDateEdit.setDate(QDate.currentDate())
             self.endDateEdit.setDateFormat("yyyy/MM/dd")
-            self.endDateEdit.setFixedWidth(105)
+            self.endDateEdit.setFixedWidth(145)
             self.endDateEdit.dateChanged.connect(self.updatePreviewDate)
             dateLayout.addWidget(self.endDateEdit)
             
@@ -4489,14 +4489,14 @@ def main():
                 QLabel {
                     background-color: #F0FBF4;
                     border-radius: 4px;
-                    font-size: 10px;
+                    font-size: 12px;
                     border: none;
                 }
             """)
             templateHeaderLayout.addWidget(templateIcon)
             
             templateTitle = QLabel("选择报告模板")
-            templateTitle.setStyleSheet("font-size: 12px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            templateTitle.setStyleSheet("font-size: 15px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             templateHeaderLayout.addWidget(templateTitle)
             templateHeaderLayout.addStretch()
             
@@ -4510,7 +4510,7 @@ def main():
                     padding: 3px 8px;
                     border: 1px solid #E5E7EB;
                     border-radius: 5px;
-                    font-size: 9px;
+                    font-size: 11px;
                     border: none;
                 }
                 QPushButton:hover {
@@ -4530,7 +4530,7 @@ def main():
                     padding: 3px 8px;
                     border: 1px solid #E5E7EB;
                     border-radius: 5px;
-                    font-size: 9px;
+                    font-size: 11px;
                     border: none;
                 }
                 QPushButton:hover {
@@ -4550,7 +4550,7 @@ def main():
                     padding: 3px 8px;
                     border: 1px solid #E5E7EB;
                     border-radius: 5px;
-                    font-size: 9px;
+                    font-size: 11px;
                     border: none;
                 }
                 QPushButton:hover {
@@ -4564,7 +4564,7 @@ def main():
             
             # 副标题
             templateSubtitle = QLabel("选择合适的模板，AI 将为你生成更贴合需求的报告")
-            templateSubtitle.setStyleSheet("font-size: 9px; color: #666666; border: none; background: transparent;")
+            templateSubtitle.setStyleSheet("font-size: 11px; color: #666666; border: none; background: transparent;")
             templateCardLayout.addWidget(templateSubtitle)
             
             # 模板网格（使用流式布局，根据宽度动态调整列数）
@@ -4610,7 +4610,7 @@ def main():
             
             # 预览标题
             previewTitle = QLabel("模板预览")
-            previewTitle.setStyleSheet("font-size: 12px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            previewTitle.setStyleSheet("font-size: 15px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             previewCardLayout.addWidget(previewTitle)
             
             # 预览头部
@@ -4623,7 +4623,7 @@ def main():
                 QLabel {
                     background-color: #F0FBF4;
                     border-radius: 5px;
-                    font-size: 12px;
+                    font-size: 15px;
                     border: none;
                 }
             """)
@@ -4632,7 +4632,7 @@ def main():
             previewInfoLayout = QVBoxLayout()
             previewNameLayout = QHBoxLayout()
             self.previewNameLabel = QLabel(REPORT_TEMPLATES[2]["name"])
-            self.previewNameLabel.setStyleSheet("font-size: 12px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            self.previewNameLabel.setStyleSheet("font-size: 15px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             previewNameLayout.addWidget(self.previewNameLabel)
             
             previewCloudTag = QLabel("云端")
@@ -4642,7 +4642,7 @@ def main():
                     color: #16A34A;
                     padding: 1px 5px;
                     border-radius: 7px;
-                    font-size: 9px;
+                    font-size: 11px;
                     font-weight: bold;
                     border: none;
                 }
@@ -4652,7 +4652,7 @@ def main():
             previewInfoLayout.addLayout(previewNameLayout)
             
             self.previewDateLabel = QLabel(f"时间范围：{QDate.currentDate().toString('yyyy-MM-dd')} 至 {QDate.currentDate().toString('yyyy-MM-dd')}")
-            self.previewDateLabel.setStyleSheet("font-size: 9px; color: #666666; border: none; background: transparent;")
+            self.previewDateLabel.setStyleSheet("font-size: 11px; color: #666666; border: none; background: transparent;")
             previewInfoLayout.addWidget(self.previewDateLabel)
             
             previewHeaderLayout.addLayout(previewInfoLayout)
@@ -4672,7 +4672,7 @@ def main():
                     background-color: #F9FAFB;
                     padding: 8px;
                     border-radius: 5px;
-                    font-size: 10px;
+                    font-size: 12px;
                     color: #374151;
                     font-family: Consolas, monospace;
                     border: 1px solid #E5E7EB;
@@ -4691,7 +4691,7 @@ def main():
             
             # 底部提示
             previewHint = QLabel("实际内容将基于你的工作记录自动生成")
-            previewHint.setStyleSheet("font-size: 9px; color: #9CA3AF; border: none; background: transparent;")
+            previewHint.setStyleSheet("font-size: 11px; color: #9CA3AF; border: none; background: transparent;")
             previewHint.setAlignment(Qt.AlignCenter)
             previewCardLayout.addWidget(previewHint)
             
@@ -5123,7 +5123,7 @@ def main():
             titleLayout.setSpacing(8)
             
             titleLabel = QLabel(report_data["title"])
-            titleLabel.setStyleSheet("font-size: 14px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            titleLabel.setStyleSheet("font-size: 17px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             titleLayout.addWidget(titleLabel)
             
             # 类型标签
@@ -5136,7 +5136,7 @@ def main():
                         color: #0284c7;
                         padding: 2px 8px;
                         border-radius: 4px;
-                        font-size: 11px;
+                        font-size: 13px;
                         font-weight: bold;
                         border: none;
                     }
@@ -5149,7 +5149,7 @@ def main():
                         color: #16a34a;
                         padding: 2px 8px;
                         border-radius: 4px;
-                        font-size: 11px;
+                        font-size: 13px;
                         font-weight: bold;
                         border: none;
                     }
@@ -5164,7 +5164,7 @@ def main():
                     color: #16a34a;
                     padding: 2px 8px;
                     border-radius: 4px;
-                    font-size: 11px;
+                    font-size: 13px;
                     font-weight: bold;
                     border: none;
                 }
@@ -5182,7 +5182,7 @@ def main():
                         color: #6b7280;
                         padding: 2px 8px;
                         border-radius: 4px;
-                        font-size: 11px;
+                        font-size: 13px;
                         border: none;
                     }
                 """)
@@ -5198,7 +5198,7 @@ def main():
             # 元信息行
             metaText = f"{report_data['time']} · {report_data['word_count']} 字 · {report_data['output_method']} · {report_data['model']}"
             metaLabel = QLabel(metaText)
-            metaLabel.setStyleSheet("font-size: 12px; color: #9ca3af; border: none; background: transparent;")
+            metaLabel.setStyleSheet("font-size: 15px; color: #9ca3af; border: none; background: transparent;")
             infoLayout.addWidget(metaLabel)
             
             layout.addLayout(infoLayout, 1)
@@ -5215,7 +5215,7 @@ def main():
                     background: transparent;
                     color: #6b7280;
                     border: none;
-                    font-size: 12px;
+                    font-size: 15px;
                     padding: 4px 8px;
                 }
                 QPushButton:hover {
@@ -5233,7 +5233,7 @@ def main():
                     background: transparent;
                     color: #6b7280;
                     border: none;
-                    font-size: 12px;
+                    font-size: 15px;
                     padding: 4px 8px;
                 }
                 QPushButton:hover {
@@ -5251,7 +5251,7 @@ def main():
                     background: transparent;
                     color: #6b7280;
                     border: none;
-                    font-size: 12px;
+                    font-size: 15px;
                     padding: 4px 8px;
                 }
                 QPushButton:hover {
@@ -5269,7 +5269,7 @@ def main():
                     background: transparent;
                     color: #6b7280;
                     border: none;
-                    font-size: 12px;
+                    font-size: 15px;
                     padding: 4px 8px;
                 }
                 QPushButton:hover {
@@ -5341,7 +5341,7 @@ def main():
             self.titleLabel = QLabel("")
             self.titleLabel.setStyleSheet("""
                 QLabel {
-                    font-size: 18px;
+                    font-size: 22px;
                     font-weight: bold;
                     color: #1a1a1a;
                     border: none;
@@ -5358,7 +5358,7 @@ def main():
                 QPushButton {
                     background: transparent;
                     border: none;
-                    font-size: 14px;
+                    font-size: 17px;
                     color: #9ca3af;
                 }
                 QPushButton:hover {
@@ -5375,7 +5375,7 @@ def main():
                 QPushButton {
                     background: transparent;
                     border: none;
-                    font-size: 18px;
+                    font-size: 22px;
                     color: #9ca3af;
                 }
                 QPushButton:hover {
@@ -5398,7 +5398,7 @@ def main():
                     color: #0284c7;
                     padding: 2px 8px;
                     border-radius: 4px;
-                    font-size: 11px;
+                    font-size: 13px;
                     font-weight: bold;
                     border: none;
                 }
@@ -5408,7 +5408,7 @@ def main():
             self.metaLabel = QLabel("")
             self.metaLabel.setStyleSheet("""
                 QLabel {
-                    font-size: 12px;
+                    font-size: 15px;
                     color: #9ca3af;
                     border: none;
                     background: transparent;
@@ -5428,7 +5428,7 @@ def main():
                 QTextBrowser {
                     border: none;
                     background: white;
-                    font-size: 14px;
+                    font-size: 17px;
                     color: #1f2937;
                     padding: 32px 40px;
                 }
@@ -5444,7 +5444,7 @@ def main():
                 QTextEdit {
                     border: none;
                     background: white;
-                    font-size: 14px;
+                    font-size: 17px;
                     color: #1f2937;
                     padding: 32px 40px;
                     font-family: Consolas, monospace;
@@ -5484,7 +5484,7 @@ def main():
                     padding: 8px 16px;
                     border: 1px solid #e5e7eb;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                 }
                 QPushButton:hover {
                     background-color: #f9fafb;
@@ -5500,7 +5500,7 @@ def main():
                     color: #16a34a;
                     padding: 1px 6px;
                     border-radius: 8px;
-                    font-size: 10px;
+                    font-size: 12px;
                     font-weight: bold;
                     border: none;
                 }
@@ -5520,7 +5520,7 @@ def main():
                     padding: 8px 16px;
                     border: 1px solid #e5e7eb;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                 }
                 QPushButton:hover {
                     background-color: #f9fafb;
@@ -5539,7 +5539,7 @@ def main():
                     padding: 8px 16px;
                     border: 1px solid #e5e7eb;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                 }
                 QPushButton:hover {
                     background-color: #f9fafb;
@@ -5558,7 +5558,7 @@ def main():
                     padding: 8px 16px;
                     border: 1px solid #e5e7eb;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                 }
                 QPushButton:hover {
                     background-color: #f9fafb;
@@ -5594,7 +5594,7 @@ def main():
                         color: #0284c7;
                         padding: 2px 8px;
                         border-radius: 4px;
-                        font-size: 11px;
+                        font-size: 13px;
                         font-weight: bold;
                         border: none;
                     }
@@ -5607,7 +5607,7 @@ def main():
                         color: #16a34a;
                         padding: 2px 8px;
                         border-radius: 4px;
-                        font-size: 11px;
+                        font-size: 13px;
                         font-weight: bold;
                         border: none;
                     }
@@ -5698,12 +5698,12 @@ def main():
             html = re.sub(r'```(\w*)\n(.*?)```', r'<pre><code>\2</code></pre>', html, flags=re.DOTALL)
             
             # 行内代码
-            html = re.sub(r'`([^`]+)`', r'<code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-family: Consolas, monospace; font-size: 13px;">\1</code>', html)
+            html = re.sub(r'`([^`]+)`', r'<code style="background-color: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-family: Consolas, monospace; font-size: 16px;">\1</code>', html)
             
             # 标题
-            html = re.sub(r'^### (.+)$', r'<h3 style="font-size: 16px; font-weight: bold; color: #1a1a1a; margin-top: 24px; margin-bottom: 12px;">\1</h3>', html, flags=re.MULTILINE)
-            html = re.sub(r'^## (.+)$', r'<h2 style="font-size: 18px; font-weight: bold; color: #1a1a1a; margin-top: 28px; margin-bottom: 14px;">\1</h2>', html, flags=re.MULTILINE)
-            html = re.sub(r'^# (.+)$', r'<h1 style="font-size: 22px; font-weight: bold; color: #1a1a1a; margin-top: 32px; margin-bottom: 16px;">\1</h1>', html, flags=re.MULTILINE)
+            html = re.sub(r'^### (.+)$', r'<h3 style="font-size: 20px; font-weight: bold; color: #1a1a1a; margin-top: 24px; margin-bottom: 12px;">\1</h3>', html, flags=re.MULTILINE)
+            html = re.sub(r'^## (.+)$', r'<h2 style="font-size: 22px; font-weight: bold; color: #1a1a1a; margin-top: 28px; margin-bottom: 14px;">\1</h2>', html, flags=re.MULTILINE)
+            html = re.sub(r'^# (.+)$', r'<h1 style="font-size: 27px; font-weight: bold; color: #1a1a1a; margin-top: 32px; margin-bottom: 16px;">\1</h1>', html, flags=re.MULTILINE)
             
             # 粗体
             html = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', html)
@@ -5806,7 +5806,7 @@ def main():
             
             # ========== 顶部说明文字 ==========
             descLabel = QLabel("查看和管理所有 AI 生成的报告，支持按类型筛选和关键词搜索")
-            descLabel.setStyleSheet("font-size: 11px; color: #9ca3af; border: none; background: transparent;")
+            descLabel.setStyleSheet("font-size: 13px; color: #9ca3af; border: none; background: transparent;")
             mainLayout.addWidget(descLabel)
             
             # ========== 筛选面板 ==========
@@ -5847,7 +5847,7 @@ def main():
                             color: white;
                             border: 1px solid #16a34a;
                             padding: 0 12px;
-                            font-size: 11px;
+                            font-size: 13px;
                             font-weight: bold;
                             border-top-left-radius: 6px;
                             border-bottom-left-radius: 6px;
@@ -5862,7 +5862,7 @@ def main():
                             color: #374151;
                             border: 1px solid #e5e7eb;
                             padding: 0 12px;
-                            font-size: 11px;
+                            font-size: 13px;
                             border-top-left-radius: 0px;
                             border-bottom-left-radius: 0px;
                             border-top-right-radius: 6px;
@@ -5880,7 +5880,7 @@ def main():
                             border: 1px solid #e5e7eb;
                             border-left: none;
                             padding: 0 12px;
-                            font-size: 11px;
+                            font-size: 13px;
                             border-radius: 0px;
                         }
                         QPushButton:hover {
@@ -5914,7 +5914,7 @@ def main():
                     background-color: white;
                     border: 1px solid #e5e7eb;
                     border-radius: 6px;
-                    font-size: 14px;
+                    font-size: 17px;
                 }
                 QPushButton:hover {
                     background-color: #f9fafb;
@@ -5932,7 +5932,7 @@ def main():
             
             # 日期标签
             dateLabel = QLabel("日期")
-            dateLabel.setStyleSheet("font-size: 11px; color: #6b7280; border: none; background: transparent;")
+            dateLabel.setStyleSheet("font-size: 13px; color: #6b7280; border: none; background: transparent;")
             secondRowLayout.addWidget(dateLabel)
             
             # 快捷日期分段按钮
@@ -5954,7 +5954,7 @@ def main():
                             color: #374151;
                             border: 1px solid #e5e7eb;
                             padding: 0 10px;
-                            font-size: 10px;
+                            font-size: 12px;
                             border-top-left-radius: 6px;
                             border-bottom-left-radius: 6px;
                             border-top-right-radius: 0px;
@@ -5972,7 +5972,7 @@ def main():
                             border: 1px solid #e5e7eb;
                             border-left: none;
                             padding: 0 10px;
-                            font-size: 10px;
+                            font-size: 12px;
                             border-top-left-radius: 0px;
                             border-bottom-left-radius: 0px;
                             border-top-right-radius: 6px;
@@ -5990,7 +5990,7 @@ def main():
                             border: 1px solid #e5e7eb;
                             border-left: none;
                             padding: 0 10px;
-                            font-size: 10px;
+                            font-size: 12px;
                             border-radius: 0px;
                         }
                         QPushButton:hover {
@@ -6011,18 +6011,18 @@ def main():
             self.startDateEdit = CalendarPicker()
             self.startDateEdit.setDate(QDate.currentDate())
             self.startDateEdit.setDateFormat("yyyy/MM/dd")
-            self.startDateEdit.setFixedWidth(110)
+            self.startDateEdit.setFixedWidth(145)
             self.startDateEdit.dateChanged.connect(self.validateDateRange)
             dateRangeLayout.addWidget(self.startDateEdit)
             
             toLabel = QLabel("至")
-            toLabel.setStyleSheet("font-size: 10px; color: #6b7280; border: none; background: transparent;")
+            toLabel.setStyleSheet("font-size: 12px; color: #6b7280; border: none; background: transparent;")
             dateRangeLayout.addWidget(toLabel)
             
             self.endDateEdit = CalendarPicker()
             self.endDateEdit.setDate(QDate.currentDate())
             self.endDateEdit.setDateFormat("yyyy/MM/dd")
-            self.endDateEdit.setFixedWidth(110)
+            self.endDateEdit.setFixedWidth(145)
             self.endDateEdit.dateChanged.connect(self.validateDateRange)
             dateRangeLayout.addWidget(self.endDateEdit)
             
@@ -6056,14 +6056,14 @@ def main():
             headerLeftLayout.addWidget(docIcon)
             
             headerTitle = QLabel("报告列表")
-            headerTitle.setStyleSheet("font-size: 13px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            headerTitle.setStyleSheet("font-size: 16px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             headerLeftLayout.addWidget(headerTitle)
             
             headerLayout.addLayout(headerLeftLayout)
             headerLayout.addStretch()
             
             self.totalCountLabel = QLabel(f"共 {len(self.reports)} 份")
-            self.totalCountLabel.setStyleSheet("font-size: 11px; color: #9ca3af; border: none; background: transparent;")
+            self.totalCountLabel.setStyleSheet("font-size: 13px; color: #9ca3af; border: none; background: transparent;")
             headerLayout.addWidget(self.totalCountLabel)
             
             listPanelLayout.addLayout(headerLayout)
@@ -6105,7 +6105,7 @@ def main():
                     background-color: white;
                     border: 1px solid #e5e7eb;
                     border-radius: 8px;
-                    font-size: 18px;
+                    font-size: 22px;
                     color: #9ca3af;
                 }
                 QPushButton:hover:enabled {
@@ -6140,7 +6140,7 @@ def main():
                     background-color: white;
                     border: 1px solid #e5e7eb;
                     border-radius: 8px;
-                    font-size: 18px;
+                    font-size: 22px;
                     color: #374151;
                 }
                 QPushButton:hover {
@@ -6181,7 +6181,7 @@ def main():
                                 color: white;
                                 border: 1px solid #16a34a;
                                 padding: 0 16px;
-                                font-size: 13px;
+                                font-size: 16px;
                                 font-weight: bold;
                                 border-top-left-radius: 8px;
                                 border-bottom-left-radius: 8px;
@@ -6196,7 +6196,7 @@ def main():
                                 color: white;
                                 border: 1px solid #16a34a;
                                 padding: 0 16px;
-                                font-size: 13px;
+                                font-size: 16px;
                                 font-weight: bold;
                                 border-top-left-radius: 0px;
                                 border-bottom-left-radius: 0px;
@@ -6211,7 +6211,7 @@ def main():
                                 color: white;
                                 border: 1px solid #16a34a;
                                 padding: 0 16px;
-                                font-size: 13px;
+                                font-size: 16px;
                                 font-weight: bold;
                                 border-radius: 0px;
                             }
@@ -6225,7 +6225,7 @@ def main():
                                 color: #374151;
                                 border: 1px solid #e5e7eb;
                                 padding: 0 16px;
-                                font-size: 13px;
+                                font-size: 16px;
                                 border-top-left-radius: 8px;
                                 border-bottom-left-radius: 8px;
                                 border-top-right-radius: 0px;
@@ -6242,7 +6242,7 @@ def main():
                                 color: #374151;
                                 border: 1px solid #e5e7eb;
                                 padding: 0 16px;
-                                font-size: 13px;
+                                font-size: 16px;
                                 border-top-left-radius: 0px;
                                 border-bottom-left-radius: 0px;
                                 border-top-right-radius: 8px;
@@ -6260,7 +6260,7 @@ def main():
                                 border: 1px solid #e5e7eb;
                                 border-left: none;
                                 padding: 0 16px;
-                                font-size: 13px;
+                                font-size: 16px;
                                 border-radius: 0px;
                             }
                             QPushButton:hover {
@@ -6414,7 +6414,7 @@ def main():
                             color: white;
                             border: 1px solid #16a34a;
                             border-radius: 8px;
-                            font-size: 14px;
+                            font-size: 17px;
                             font-weight: bold;
                         }
                     """)
@@ -6425,7 +6425,7 @@ def main():
                             color: #374151;
                             border: 1px solid #e5e7eb;
                             border-radius: 8px;
-                            font-size: 14px;
+                            font-size: 17px;
                         }
                         QPushButton:hover {
                             background-color: #f9fafb;
@@ -6527,18 +6527,18 @@ def main():
             iconLabel = QLabel("✅")
             iconLabel.setFixedSize(48, 48)
             iconLabel.setAlignment(Qt.AlignCenter)
-            iconLabel.setStyleSheet("font-size: 32px; background: transparent; border: none;")
+            iconLabel.setStyleSheet("font-size: 39px; background: transparent; border: none;")
             cardLayout.addWidget(iconLabel, 0, Qt.AlignCenter)
             
             # 标题
             titleLabel = QLabel("已是最新版本")
-            titleLabel.setStyleSheet("font-size: 18px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            titleLabel.setStyleSheet("font-size: 22px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             titleLabel.setAlignment(Qt.AlignCenter)
             cardLayout.addWidget(titleLabel)
             
             # 版本号
             versionLabel = QLabel(f"当前版本：{current_version}")
-            versionLabel.setStyleSheet("font-size: 14px; color: #16A34A; font-weight: bold; border: none; background: transparent;")
+            versionLabel.setStyleSheet("font-size: 17px; color: #16A34A; font-weight: bold; border: none; background: transparent;")
             versionLabel.setAlignment(Qt.AlignCenter)
             cardLayout.addWidget(versionLabel)
             
@@ -6547,7 +6547,7 @@ def main():
             logLabel.setTextFormat(Qt.MarkdownText)
             logLabel.setText(update_log or '')
             logLabel.setWordWrap(True)
-            logLabel.setStyleSheet("font-size: 12px; color: #666666; border: none; background: transparent;")
+            logLabel.setStyleSheet("font-size: 15px; color: #666666; border: none; background: transparent;")
             logLabel.setAlignment(Qt.AlignCenter)
             cardLayout.addWidget(logLabel)
             
@@ -6563,7 +6563,7 @@ def main():
                     color: white;
                     border: none;
                     border-radius: 8px;
-                    font-size: 14px;
+                    font-size: 17px;
                     font-weight: bold;
                 }
                 QPushButton:hover { background-color: #E53935; }
@@ -6609,7 +6609,7 @@ def main():
                         color: #DC2626;
                         padding: 8px 12px;
                         border-radius: 8px;
-                        font-size: 12px;
+                        font-size: 15px;
                         font-weight: bold;
                         border: 1px solid #FECACA;
                     }
@@ -6619,19 +6619,19 @@ def main():
             
             # 版本号标题
             versionTitle = QLabel(f"{current_version} → {latest_version}")
-            versionTitle.setStyleSheet("font-size: 20px; font-weight: bold; color: #16A34A; border: none; background: transparent;")
+            versionTitle.setStyleSheet("font-size: 24px; font-weight: bold; color: #16A34A; border: none; background: transparent;")
             versionTitle.setAlignment(Qt.AlignCenter)
             cardLayout.addWidget(versionTitle)
             
             # 发现新版本
             newVersionLabel = QLabel("发现新版本！")
-            newVersionLabel.setStyleSheet("font-size: 14px; color: #666666; border: none; background: transparent;")
+            newVersionLabel.setStyleSheet("font-size: 17px; color: #666666; border: none; background: transparent;")
             newVersionLabel.setAlignment(Qt.AlignCenter)
             cardLayout.addWidget(newVersionLabel)
             
             # 更新日志
             logTitle = QLabel("更新日志")
-            logTitle.setStyleSheet("font-size: 14px; font-weight: bold; color: #333333; border: none; background: transparent;")
+            logTitle.setStyleSheet("font-size: 17px; font-weight: bold; color: #333333; border: none; background: transparent;")
             cardLayout.addWidget(logTitle)
             
             logContent = QTextBrowser()
@@ -6642,7 +6642,7 @@ def main():
                     background-color: #F9FAFB;
                     padding: 12px;
                     border-radius: 8px;
-                    font-size: 12px;
+                    font-size: 15px;
                     color: #374151;
                     border: 1px solid #E5E7EB;
                 }
@@ -6666,7 +6666,7 @@ def main():
                         color: white;
                         border: none;
                         border-radius: 8px;
-                        font-size: 14px;
+                        font-size: 17px;
                         font-weight: bold;
                     }
                     QPushButton:hover { background-color: #E53935; }
@@ -6683,7 +6683,7 @@ def main():
                         color: white;
                         border: none;
                         border-radius: 8px;
-                        font-size: 14px;
+                        font-size: 17px;
                         font-weight: bold;
                     }
                     QPushButton:hover { background-color: #6B7280; }
@@ -6700,7 +6700,7 @@ def main():
                     color: white;
                     border: none;
                     border-radius: 8px;
-                    font-size: 14px;
+                    font-size: 17px;
                     font-weight: bold;
                 }
                 QPushButton:hover { background-color: #15803D; }
@@ -6990,7 +6990,7 @@ def main():
                 QPushButton {
                     background-color: white; color: #1a1a1a;
                     border: 1px solid #E5E7EB; border-radius: 8px;
-                    font-size: 13px; font-weight: bold; padding: 0 16px;
+                    font-size: 16px; font-weight: bold; padding: 0 16px;
                 }
             """)
             topBar.addWidget(heatTag)
@@ -7016,7 +7016,7 @@ def main():
                 QPushButton {
                     background-color: #16A34A; color: white;
                     border: none; border-radius: 8px;
-                    font-size: 13px; font-weight: bold; padding: 0 18px;
+                    font-size: 16px; font-weight: bold; padding: 0 18px;
                 }
                 QPushButton:hover { background-color: #15803D; }
             """)
@@ -7025,10 +7025,10 @@ def main():
             
             # 年度选择（年度模式，使用 Fluent CalendarPicker，取所选日期的年份）
             self.yearLabel = QLabel("年份")
-            self.yearLabel.setStyleSheet("font-size: 12px; color: #666666; border: none; background: transparent;")
+            self.yearLabel.setStyleSheet("font-size: 15px; color: #666666; border: none; background: transparent;")
             self.yearEdit = CalendarPicker()
             self.yearEdit.setDateFormat("yyyy/MM/dd")
-            self.yearEdit.setFixedWidth(140)
+            self.yearEdit.setFixedWidth(145)
             self.yearEdit.setDate(QDate.currentDate())
             self.yearEdit.dateChanged.connect(lambda: self.updateData())
             topBar.addWidget(self.yearLabel)
@@ -7036,20 +7036,20 @@ def main():
             
             # 日期范围（时段模式，使用 Fluent CalendarPicker）
             self.startLabel = QLabel("从")
-            self.startLabel.setStyleSheet("font-size: 12px; color: #666666; border: none; background: transparent;")
+            self.startLabel.setStyleSheet("font-size: 15px; color: #666666; border: none; background: transparent;")
             self.startEdit = CalendarPicker()
             self.startEdit.setDateFormat("yyyy/MM/dd")
-            self.startEdit.setFixedWidth(140)
+            self.startEdit.setFixedWidth(145)
             self.startEdit.setDate(QDate.currentDate().addDays(-6))
             self.startEdit.dateChanged.connect(lambda: self.updateData())
             topBar.addWidget(self.startLabel)
             topBar.addWidget(self.startEdit)
             
             self.endLabel = QLabel("至")
-            self.endLabel.setStyleSheet("font-size: 12px; color: #666666; border: none; background: transparent;")
+            self.endLabel.setStyleSheet("font-size: 15px; color: #666666; border: none; background: transparent;")
             self.endEdit = CalendarPicker()
             self.endEdit.setDateFormat("yyyy/MM/dd")
-            self.endEdit.setFixedWidth(140)
+            self.endEdit.setFixedWidth(145)
             self.endEdit.setDate(QDate.currentDate())
             self.endEdit.dateChanged.connect(lambda: self.updateData())
             topBar.addWidget(self.endLabel)
@@ -7059,7 +7059,7 @@ def main():
             
             # 副标题
             subtitle = QLabel("查看多时段工作热力分布，直观了解工作节奏")
-            subtitle.setStyleSheet("font-size: 12px; color: #888888; border: none; background: transparent;")
+            subtitle.setStyleSheet("font-size: 15px; color: #888888; border: none; background: transparent;")
             layout.addWidget(subtitle)
             
             # ========== 统计卡片 ==========
@@ -7084,16 +7084,16 @@ def main():
                 w.setStyleSheet("border: none; background: transparent;")
                 vl = QVBoxLayout(w)
                 vl.setSpacing(4)
-                label.setStyleSheet("font-size: 22px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
+                label.setStyleSheet("font-size: 27px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
                 vl.addWidget(label)
                 sl = QLabel(sub)
-                sl.setStyleSheet("font-size: 11px; color: #999999; border: none; background: transparent;")
+                sl.setStyleSheet("font-size: 13px; color: #999999; border: none; background: transparent;")
                 vl.addWidget(sl)
                 statsLayout.addWidget(w)
             
             statsLayout.addStretch()
             self.statSlogan = QLabel("工作轨迹，清晰可见")
-            self.statSlogan.setStyleSheet("font-size: 12px; color: #BBBBBB; border: none; background: transparent;")
+            self.statSlogan.setStyleSheet("font-size: 15px; color: #BBBBBB; border: none; background: transparent;")
             statsLayout.addWidget(self.statSlogan)
             layout.addWidget(statsCard)
             
@@ -7125,10 +7125,10 @@ def main():
         
         def _update_mode_buttons(self):
             active = """
-                QPushButton { background-color: #1a1a1a; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; padding: 0 16px; }
+                QPushButton { background-color: #1a1a1a; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; padding: 0 16px; }
             """
             inactive = """
-                QPushButton { background-color: white; color: #374151; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 13px; padding: 0 16px; }
+                QPushButton { background-color: white; color: #374151; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 16px; padding: 0 16px; }
                 QPushButton:hover { background-color: #F9FAFB; }
             """
             if self.mode == "period":
@@ -7230,7 +7230,7 @@ def main():
             
             # 标题
             title = QLabel("时段记录")
-            title.setStyleSheet("font-size: 15px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
+            title.setStyleSheet("font-size: 18px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
             self.heatCardLayout.addWidget(title)
             
             # 构建矩阵与标签
@@ -7284,7 +7284,7 @@ def main():
             self.statDailyAvg.setText(str(daily_avg))
             
             title = QLabel(f"{year} 年度记录")
-            title.setStyleSheet("font-size: 15px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
+            title.setStyleSheet("font-size: 18px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
             self.heatCardLayout.addWidget(title)
             
             # 构建周x7网格
@@ -7333,7 +7333,7 @@ def main():
             
             import datetime as dt
             title = QLabel("年度概览")
-            title.setStyleSheet("font-size: 15px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
+            title.setStyleSheet("font-size: 18px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
             self.yearOverviewLayout.addWidget(title)
             
             # 最活跃月份
@@ -7397,11 +7397,11 @@ def main():
                 vl = QVBoxLayout(w)
                 vl.setSpacing(4)
                 s1 = QLabel(sub)
-                s1.setStyleSheet("font-size: 11px; color: #999999; border: none; background: transparent;")
+                s1.setStyleSheet("font-size: 13px; color: #999999; border: none; background: transparent;")
                 m = QLabel(main)
-                m.setStyleSheet("font-size: 16px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
+                m.setStyleSheet("font-size: 20px; font-weight: 800; color: #1a1a1a; border: none; background: transparent;")
                 s2 = QLabel(sub2)
-                s2.setStyleSheet("font-size: 11px; color: #999999; border: none; background: transparent;")
+                s2.setStyleSheet("font-size: 13px; color: #999999; border: none; background: transparent;")
                 vl.addWidget(s1)
                 vl.addWidget(m)
                 vl.addWidget(s2)
@@ -7696,7 +7696,7 @@ def main():
             
             # 页面标题
             title = QLabel("⚙️ 设置")
-            title.setStyleSheet("font-size: 18px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            title.setStyleSheet("font-size: 22px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             layout.addWidget(title)
             
             # ========== 账号信息 ==========
@@ -7707,17 +7707,17 @@ def main():
             accountLayout.setSpacing(12)
             
             accountTitle = QLabel("👤 账号信息")
-            accountTitle.setStyleSheet("font-size: 14px; font-weight: bold; color: #333333; border: none; background: transparent;")
+            accountTitle.setStyleSheet("font-size: 17px; font-weight: bold; color: #333333; border: none; background: transparent;")
             accountLayout.addWidget(accountTitle)
             
             # 邮箱信息
             emailLayout = QHBoxLayout()
             emailLabel = QLabel("邮箱:")
-            emailLabel.setStyleSheet("font-size: 12px; color: #666666; border: none; background: transparent;")
+            emailLabel.setStyleSheet("font-size: 15px; color: #666666; border: none; background: transparent;")
             emailLayout.addWidget(emailLabel)
             
             self.emailValue = QLabel("未登录")
-            self.emailValue.setStyleSheet("font-size: 12px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            self.emailValue.setStyleSheet("font-size: 15px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             emailLayout.addWidget(self.emailValue)
             emailLayout.addStretch()
             accountLayout.addLayout(emailLayout)
@@ -7738,7 +7738,7 @@ def main():
                     padding: 10px 20px;
                     border: none;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     font-weight: bold;
                 }
                 QPushButton:hover {
@@ -7764,16 +7764,16 @@ def main():
             scaleLayout.setSpacing(10)
             
             scaleTitle = QLabel("🖥️ 显示缩放")
-            scaleTitle.setStyleSheet("font-size: 14px; font-weight: bold; color: #333333; border: none; background: transparent;")
+            scaleTitle.setStyleSheet("font-size: 17px; font-weight: bold; color: #333333; border: none; background: transparent;")
             scaleLayout.addWidget(scaleTitle)
             
             scaleInfo = QLabel("界面缩放比例（修改后需重启程序生效）")
-            scaleInfo.setStyleSheet("color: #888888; font-size: 11px; border: none; background: transparent;")
+            scaleInfo.setStyleSheet("color: #888888; font-size: 13px; border: none; background: transparent;")
             scaleLayout.addWidget(scaleInfo)
             
             scaleComboLayout = QHBoxLayout()
             scaleLabel = QLabel("缩放比例:")
-            scaleLabel.setStyleSheet("font-size: 12px; color: #333333; border: none; background: transparent;")
+            scaleLabel.setStyleSheet("font-size: 15px; color: #333333; border: none; background: transparent;")
             scaleComboLayout.addWidget(scaleLabel)
             
             self.scaleCombo = ComboBox()
@@ -7786,7 +7786,7 @@ def main():
             scaleLayout.addLayout(scaleComboLayout)
             
             systemScaleLabel = QLabel(f"系统缩放: {get_system_dpi_scale() * 100:.0f}%")
-            systemScaleLabel.setStyleSheet("color: #999999; font-size: 10px; border: none; background: transparent;")
+            systemScaleLabel.setStyleSheet("color: #999999; font-size: 12px; border: none; background: transparent;")
             scaleLayout.addWidget(systemScaleLabel)
             
             layout.addWidget(scaleCard)
@@ -7799,13 +7799,13 @@ def main():
             modelLayout.setSpacing(12)
             
             modelTitle = QLabel("🧠 识别模型")
-            modelTitle.setStyleSheet("font-size: 14px; font-weight: bold; color: #333333; border: none; background: transparent;")
+            modelTitle.setStyleSheet("font-size: 17px; font-weight: bold; color: #333333; border: none; background: transparent;")
             modelLayout.addWidget(modelTitle)
             
             # 模型选择
             modelSelectLayout = QHBoxLayout()
             modelSelectLabel = QLabel("选择模型:")
-            modelSelectLabel.setStyleSheet("font-size: 12px; color: #333333; border: none; background: transparent;")
+            modelSelectLabel.setStyleSheet("font-size: 15px; color: #333333; border: none; background: transparent;")
             modelSelectLayout.addWidget(modelSelectLabel)
             
             self.modelCombo = ComboBox()
@@ -7824,7 +7824,7 @@ def main():
             glmLayout.setSpacing(8)
             
             glmInfo = QLabel("使用 GLM 通用模型（无需本地部署）")
-            glmInfo.setStyleSheet("color: #666666; font-size: 11px; border: none; background: transparent;")
+            glmInfo.setStyleSheet("color: #666666; font-size: 13px; border: none; background: transparent;")
             glmLayout.addWidget(glmInfo)
             
             glmTestBtnLayout = QHBoxLayout()
@@ -7836,7 +7836,7 @@ def main():
                     color: white;
                     padding: 8px 16px;
                     border-radius: 6px;
-                    font-size: 12px;
+                    font-size: 15px;
                     border: none;
                 }
                 QPushButton:hover { background-color: #1976D2; }
@@ -7848,7 +7848,7 @@ def main():
             glmLayout.addLayout(glmTestBtnLayout)
             
             self.glmStatusLabel = QLabel("")
-            self.glmStatusLabel.setStyleSheet("font-size: 11px; border: none; background: transparent;")
+            self.glmStatusLabel.setStyleSheet("font-size: 13px; border: none; background: transparent;")
             glmLayout.addWidget(self.glmStatusLabel)
             
             modelLayout.addWidget(self.glmWidget)
@@ -7862,7 +7862,7 @@ def main():
             
             ollamaHostLayout = QHBoxLayout()
             ollamaHostLabel = QLabel("服务器地址:")
-            ollamaHostLabel.setStyleSheet("font-size: 12px; color: #333333; border: none; background: transparent;")
+            ollamaHostLabel.setStyleSheet("font-size: 15px; color: #333333; border: none; background: transparent;")
             ollamaHostLayout.addWidget(ollamaHostLabel)
             
             self.ollamaHostInput = QLineEdit()
@@ -7873,7 +7873,7 @@ def main():
                     padding: 6px 10px;
                     border: 1px solid #E0E0E0;
                     border-radius: 6px;
-                    font-size: 12px;
+                    font-size: 15px;
                     color: #333333;
                     background-color: white;
                 }
@@ -7884,7 +7884,7 @@ def main():
             
             ollamaModelLayout = QHBoxLayout()
             ollamaModelLabel = QLabel("模型名称:")
-            ollamaModelLabel.setStyleSheet("font-size: 12px; color: #333333; border: none; background: transparent;")
+            ollamaModelLabel.setStyleSheet("font-size: 15px; color: #333333; border: none; background: transparent;")
             ollamaModelLayout.addWidget(ollamaModelLabel)
             
             self.ollamaModelInput = QLineEdit()
@@ -7895,7 +7895,7 @@ def main():
                     padding: 6px 10px;
                     border: 1px solid #E0E0E0;
                     border-radius: 6px;
-                    font-size: 12px;
+                    font-size: 15px;
                     color: #333333;
                     background-color: white;
                 }
@@ -7914,7 +7914,7 @@ def main():
                     color: white;
                     padding: 8px 16px;
                     border-radius: 6px;
-                    font-size: 12px;
+                    font-size: 15px;
                     border: none;
                 }
                 QPushButton:hover { background-color: #43A047; }
@@ -7931,7 +7931,7 @@ def main():
                     color: white;
                     padding: 8px 16px;
                     border-radius: 6px;
-                    font-size: 12px;
+                    font-size: 15px;
                     border: none;
                 }
                 QPushButton:hover { background-color: #1976D2; }
@@ -7943,7 +7943,7 @@ def main():
             ollamaLayout.addLayout(ollamaBtnLayout)
             
             self.ollamaStatusLabel = QLabel("")
-            self.ollamaStatusLabel.setStyleSheet("font-size: 11px; border: none; background: transparent;")
+            self.ollamaStatusLabel.setStyleSheet("font-size: 13px; border: none; background: transparent;")
             ollamaLayout.addWidget(self.ollamaStatusLabel)
             
             modelLayout.addWidget(self.ollamaWidget)
@@ -7958,18 +7958,18 @@ def main():
             testLayout.setSpacing(10)
             
             testTitle = QLabel("🧪 测试模式")
-            testTitle.setStyleSheet("font-size: 14px; font-weight: bold; color: #333333; border: none; background: transparent;")
+            testTitle.setStyleSheet("font-size: 17px; font-weight: bold; color: #333333; border: none; background: transparent;")
             testLayout.addWidget(testTitle)
             
             testInfo = QLabel("启用后将保存每次截图分析的图片到 data/photo 文件夹")
-            testInfo.setStyleSheet("color: #888888; font-size: 11px; border: none; background: transparent;")
+            testInfo.setStyleSheet("color: #888888; font-size: 13px; border: none; background: transparent;")
             testInfo.setWordWrap(True)
             testLayout.addWidget(testInfo)
             
             # 测试模式开关
             testSwitchLayout = QHBoxLayout()
             testSwitchLabel = QLabel("启用测试模式:")
-            testSwitchLabel.setStyleSheet("font-size: 12px; color: #333333; border: none; background: transparent;")
+            testSwitchLabel.setStyleSheet("font-size: 15px; color: #333333; border: none; background: transparent;")
             testSwitchLayout.addWidget(testSwitchLabel)
             
             self.testSwitch = QCheckBox()
@@ -7982,7 +7982,7 @@ def main():
             
             # 测试模式状态
             self.testStatusLabel = QLabel("")
-            self.testStatusLabel.setStyleSheet("font-size: 11px; border: none; background: transparent;")
+            self.testStatusLabel.setStyleSheet("font-size: 13px; border: none; background: transparent;")
             testLayout.addWidget(self.testStatusLabel)
             self.updateTestStatus()
             
@@ -7996,7 +7996,7 @@ def main():
             updateLayout.setSpacing(12)
             
             updateTitle = QLabel("🔄 更新")
-            updateTitle.setStyleSheet("font-size: 14px; font-weight: bold; color: #333333; border: none; background: transparent;")
+            updateTitle.setStyleSheet("font-size: 17px; font-weight: bold; color: #333333; border: none; background: transparent;")
             updateLayout.addWidget(updateTitle)
             
             # 检查更新按钮
@@ -8008,7 +8008,7 @@ def main():
                     color: white;
                     padding: 8px 16px;
                     border-radius: 6px;
-                    font-size: 12px;
+                    font-size: 15px;
                     border: none;
                 }
                 QPushButton:hover { background-color: #1976D2; }
@@ -8027,7 +8027,7 @@ def main():
             aboutLayout.setSpacing(8)
             
             aboutTitle = QLabel("ℹ️ 关于")
-            aboutTitle.setStyleSheet("font-size: 14px; font-weight: bold; color: #333333; border: none; background: transparent;")
+            aboutTitle.setStyleSheet("font-size: 17px; font-weight: bold; color: #333333; border: none; background: transparent;")
             aboutLayout.addWidget(aboutTitle)
             
             aboutText = QLabel(
@@ -8035,7 +8035,7 @@ def main():
                 "自动截图分析工作内容，生成工作日报。"
             )
             aboutText.setWordWrap(True)
-            aboutText.setStyleSheet("color: #666666; font-size: 12px; line-height: 1.5; border: none; background: transparent;")
+            aboutText.setStyleSheet("color: #666666; font-size: 15px; line-height: 1.5; border: none; background: transparent;")
             aboutLayout.addWidget(aboutText)
             
             layout.addWidget(aboutCard)
@@ -8167,7 +8167,7 @@ def main():
             self.glmTestBtn.setEnabled(False)
             self.glmTestBtn.setText("测试中...")
             self.glmStatusLabel.setText("⏳ 正在测试连接...")
-            self.glmStatusLabel.setStyleSheet("color: #FF9800; font-size: 11px; border: none; background: transparent;")
+            self.glmStatusLabel.setStyleSheet("color: #FF9800; font-size: 13px; border: none; background: transparent;")
             
             self._test_worker = ConnectionTestWorker("glm")
             self._test_worker.finished.connect(self.onGlmTestFinished)
@@ -8179,10 +8179,10 @@ def main():
             self.glmTestBtn.setText("🔗 测试 GLM 连接")
             if success:
                 self.glmStatusLabel.setText(f"✅ {message}")
-                self.glmStatusLabel.setStyleSheet("color: #4CAF50; font-size: 11px; border: none; background: transparent;")
+                self.glmStatusLabel.setStyleSheet("color: #4CAF50; font-size: 13px; border: none; background: transparent;")
             else:
                 self.glmStatusLabel.setText(f"❌ {message}")
-                self.glmStatusLabel.setStyleSheet("color: #F44336; font-size: 11px; border: none; background: transparent;")
+                self.glmStatusLabel.setStyleSheet("color: #F44336; font-size: 13px; border: none; background: transparent;")
         
         def applyOllamaSettings(self):
             """应用Ollama设置"""
@@ -8215,7 +8215,7 @@ def main():
             self.ollamaTestBtn.setEnabled(False)
             self.ollamaTestBtn.setText("测试中...")
             self.ollamaStatusLabel.setText("⏳ 正在测试连接...")
-            self.ollamaStatusLabel.setStyleSheet("color: #FF9800; font-size: 11px; border: none; background: transparent;")
+            self.ollamaStatusLabel.setStyleSheet("color: #FF9800; font-size: 13px; border: none; background: transparent;")
             
             self._test_worker = ConnectionTestWorker("ollama", host, model)
             self._test_worker.finished.connect(self.onOllamaTestFinished)
@@ -8227,10 +8227,10 @@ def main():
             self.ollamaTestBtn.setText("🔗 测试 Ollama 连接")
             if success:
                 self.ollamaStatusLabel.setText(f"✅ {message}")
-                self.ollamaStatusLabel.setStyleSheet("color: #4CAF50; font-size: 11px; border: none; background: transparent;")
+                self.ollamaStatusLabel.setStyleSheet("color: #4CAF50; font-size: 13px; border: none; background: transparent;")
             else:
                 self.ollamaStatusLabel.setText(f"❌ {message}")
-                self.ollamaStatusLabel.setStyleSheet("color: #F44336; font-size: 11px; border: none; background: transparent;")
+                self.ollamaStatusLabel.setStyleSheet("color: #F44336; font-size: 13px; border: none; background: transparent;")
         
         def onTestModeChanged(self, state):
             """测试模式开关变化"""
@@ -8272,10 +8272,10 @@ def main():
                 if os.path.exists(photo_dir):
                     file_count = len([f for f in os.listdir(photo_dir) if f.endswith('.png')])
                 self.testStatusLabel.setText(f"✅ 已启用 - 已保存 {file_count} 张截图")
-                self.testStatusLabel.setStyleSheet("color: #4CAF50; font-size: 11px; border: none; background: transparent;")
+                self.testStatusLabel.setStyleSheet("color: #4CAF50; font-size: 13px; border: none; background: transparent;")
             else:
                 self.testStatusLabel.setText("⏸️ 未启用")
-                self.testStatusLabel.setStyleSheet("color: #999999; font-size: 11px; border: none; background: transparent;")
+                self.testStatusLabel.setStyleSheet("color: #999999; font-size: 13px; border: none; background: transparent;")
         
         def updateAccountInfo(self):
             """更新账号信息"""
@@ -8392,7 +8392,7 @@ def main():
             headerLayout.setContentsMargins(20, 15, 20, 15)
             
             title = QLabel("⚙️ 管理监控")
-            title.setStyleSheet("font-size: 18px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            title.setStyleSheet("font-size: 22px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             headerLayout.addWidget(title)
             headerLayout.addStretch()
             
@@ -8404,7 +8404,7 @@ def main():
                     color: #666666;
                     padding: 6px 14px;
                     border-radius: 12px;
-                    font-size: 12px;
+                    font-size: 15px;
                     font-weight: bold;
                     border: none;
                 }
@@ -8422,12 +8422,12 @@ def main():
             
             # 标题
             intervalTitle = QLabel("⏱️ 监控间隔时长")
-            intervalTitle.setStyleSheet("font-size: 14px; font-weight: bold; color: #333333; border: none; background: transparent;")
+            intervalTitle.setStyleSheet("font-size: 17px; font-weight: bold; color: #333333; border: none; background: transparent;")
             intervalLayout.addWidget(intervalTitle)
             
             # 说明
             intervalDesc = QLabel("选择自动截图分析的时间间隔，点击开始后将在第一个间隔结束后进行首次分析")
-            intervalDesc.setStyleSheet("font-size: 11px; color: #888888; border: none; background: transparent;")
+            intervalDesc.setStyleSheet("font-size: 13px; color: #888888; border: none; background: transparent;")
             intervalDesc.setWordWrap(True)
             intervalLayout.addWidget(intervalDesc)
             
@@ -8462,7 +8462,7 @@ def main():
                         color: #333333;
                         border: 2px solid #E0E0E0;
                         border-radius: 8px;
-                        font-size: 12px;
+                        font-size: 15px;
                         font-weight: bold;
                         padding: 8px 16px;
                     }
@@ -8494,7 +8494,7 @@ def main():
             logLayout.setSpacing(10)
             
             logTitle = QLabel("📋 监控日志")
-            logTitle.setStyleSheet("font-size: 14px; font-weight: bold; color: #333333; border: none; background: transparent;")
+            logTitle.setStyleSheet("font-size: 17px; font-weight: bold; color: #333333; border: none; background: transparent;")
             logLayout.addWidget(logTitle)
             
             self.logText = QLabel("等待开始监控...")
@@ -8504,7 +8504,7 @@ def main():
                     color: #666666;
                     padding: 12px;
                     border-radius: 8px;
-                    font-size: 11px;
+                    font-size: 13px;
                     font-family: Consolas, monospace;
                     border: none;
                 }
@@ -8533,7 +8533,7 @@ def main():
                     color: white;
                     padding: 12px 30px;
                     border-radius: 10px;
-                    font-size: 15px;
+                    font-size: 18px;
                     font-weight: bold;
                     border: none;
                 }
@@ -8555,7 +8555,7 @@ def main():
                     color: white;
                     padding: 12px 30px;
                     border-radius: 10px;
-                    font-size: 15px;
+                    font-size: 18px;
                     font-weight: bold;
                     border: none;
                 }
@@ -8603,7 +8603,7 @@ def main():
                     color: #2E7D32;
                     padding: 6px 14px;
                     border-radius: 12px;
-                    font-size: 12px;
+                    font-size: 15px;
                     font-weight: bold;
                     border: none;
                 }
@@ -8650,7 +8650,7 @@ def main():
                     color: #666666;
                     padding: 6px 14px;
                     border-radius: 12px;
-                    font-size: 12px;
+                    font-size: 15px;
                     font-weight: bold;
                     border: none;
                 }
@@ -8848,7 +8848,7 @@ def main():
                             color: white;
                             padding: 4px 12px;
                             border-radius: 10px;
-                            font-size: 12px;
+                            font-size: 15px;
                             font-weight: bold;
                         }
                     """)
@@ -8980,12 +8980,12 @@ def main():
             
             # 标题
             titleLabel = QLabel("👋 确认操作", mainWidget)
-            titleLabel.setStyleSheet("font-size: 16px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
+            titleLabel.setStyleSheet("font-size: 20px; font-weight: bold; color: #1a1a1a; border: none; background: transparent;")
             layout.addWidget(titleLabel)
             
             # 描述文本
             descLabel = QLabel("请选择您要执行的操作：", mainWidget)
-            descLabel.setStyleSheet("font-size: 12px; color: #666666; border: none; background: transparent;")
+            descLabel.setStyleSheet("font-size: 15px; color: #666666; border: none; background: transparent;")
             layout.addWidget(descLabel)
             
             # 按钮容器
@@ -9002,7 +9002,7 @@ def main():
                     color: white;
                     padding: 8px 16px;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     font-weight: bold;
                     border: none;
                 }
@@ -9026,7 +9026,7 @@ def main():
                     color: white;
                     padding: 8px 16px;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 16px;
                     font-weight: bold;
                     border: none;
                 }
@@ -9051,7 +9051,7 @@ def main():
                     color: #999999;
                     padding: 4px 8px;
                     border: none;
-                    font-size: 11px;
+                    font-size: 13px;
                 }
                 QPushButton:hover {
                     color: #666666;
